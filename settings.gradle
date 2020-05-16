@@ -10,3 +10,4 @@
 rootProject.name = 'doodlejump'
 include 'client'
 include 'server'
+include 'core'
