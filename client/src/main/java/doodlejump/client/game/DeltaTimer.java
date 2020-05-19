@@ -1,4 +1,4 @@
-package doodlejump.core;
+package doodlejump.client.game;
 
 /**
  * DeltaTimer is used for timing purposes using a delta time notation.
