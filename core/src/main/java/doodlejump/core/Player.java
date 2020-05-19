@@ -2,6 +2,8 @@ package doodlejump.core;
 
 public class Player {
     private String name;
+    private double positionX;
+    private double positionY;
 
     public Player(String name) {
         this.name = name;
