@@ -8,9 +8,17 @@
 
 plugins {
     id 'java-library'
+
+    // Apply JavaFX plugin
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+}
+
+javafx {
+    version = "14"
+    modules = [ 'javafx.controls', 'javafx.graphics' ]
 }
