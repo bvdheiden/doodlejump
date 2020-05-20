@@ -43,4 +43,9 @@ public class Room {
     public void removeClient(SocketClient client) {
         clientList.remove(client);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Room %d: %d/%d players", id, clientList.size(), MAX_CLIENTS);
+    }
 }

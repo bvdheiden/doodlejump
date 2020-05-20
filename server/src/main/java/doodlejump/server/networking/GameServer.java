@@ -4,6 +4,9 @@ import doodlejump.core.networking.Room;
 import doodlejump.core.networking.SocketClient;
 import doodlejump.core.networking.Transaction;
 import doodlejump.core.networking.TransactionType;
+import doodlejump.server.networking.listeners.RoomCreationListener;
+import doodlejump.server.networking.listeners.RoomDestructionListener;
+import doodlejump.server.networking.listeners.RoomUpdateListener;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,6 +23,9 @@ public class GameServer {
     private ServerSocket serverSocket;
 
     private int lastRoomId;
+    private RoomCreationListener roomCreationListener;
+    private RoomDestructionListener roomDestructionListener;
+    private RoomUpdateListener roomUpdateListener;
 
     public void start() {
         if (isRunning()) {
@@ -42,6 +48,11 @@ public class GameServer {
 
                         Room room = findRoom();
                         room.addClient(client);
+
+                        if (roomUpdateListener != null) {
+                            roomUpdateListener.onRoomUpdate(room);
+                        }
+
                         client.send(new Transaction(TransactionType.ROOM_JOINED, room.isFull()));
                         room.broadcast(client, new Transaction(TransactionType.PLAYER_CONNECTED));
 
@@ -53,8 +64,16 @@ public class GameServer {
                             room.broadcast(client, new Transaction(TransactionType.PLAYER_DISCONNECTED));
                             room.removeClient(client);
 
+                            if (roomUpdateListener != null) {
+                                roomUpdateListener.onRoomUpdate(room);
+                            }
+
                             if (room.isEmpty()) {
                                 System.out.printf("Removing room %d%n", room.getId());
+
+                                if (roomDestructionListener != null) {
+                                    roomDestructionListener.onRoomDestruction(room);
+                                }
 
                                 roomList.remove(room);
                             }
@@ -93,6 +112,18 @@ public class GameServer {
         return connecting.get() || (serverSocket != null && !serverSocket.isClosed());
     }
 
+    public void setOnRoomCreation(RoomCreationListener listener) {
+        this.roomCreationListener = listener;
+    }
+
+    public void setOnRoomDestruction(RoomDestructionListener listener) {
+        this.roomDestructionListener = listener;
+    }
+
+    public void setOnRoomUpdate(RoomUpdateListener listener) {
+        this.roomUpdateListener = listener;
+    }
+
     private Room findRoom() {
         for (Room room : roomList) {
             if (!room.isFull()) {
@@ -103,6 +134,11 @@ public class GameServer {
         System.out.println("New room created with id: " + (lastRoomId + 1));
 
         Room room = new Room(++lastRoomId);
+
+        if (roomCreationListener != null) {
+            roomCreationListener.onRoomCreated(room);
+        }
+
         roomList.add(room);
         return room;
     }
