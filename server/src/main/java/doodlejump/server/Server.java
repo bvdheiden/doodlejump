@@ -5,11 +5,10 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Server extends Application {
-    GameServer server;
+    GameServer server = new GameServer();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.server = new GameServer();
         server.start();
 
         primaryStage.setTitle("DoodleJump server");
@@ -19,7 +18,6 @@ public class Server extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-
         server.stop();
     }
 }

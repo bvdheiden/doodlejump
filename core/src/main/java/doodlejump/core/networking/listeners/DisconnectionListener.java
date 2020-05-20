@@ -1,4 +1,4 @@
-package doodlejump.core.networking;
+package doodlejump.core.networking.listeners;
 
 @FunctionalInterface
 public interface DisconnectionListener {

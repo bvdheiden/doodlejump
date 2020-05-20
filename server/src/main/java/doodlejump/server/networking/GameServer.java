@@ -46,11 +46,7 @@ public class GameServer {
                         room.broadcast(client, new Transaction(TransactionType.PLAYER_CONNECTED));
 
                         client.addTransactionListener((transaction) -> {
-                            for (SocketClient socketClient : room.getClientList()) {
-                                if (socketClient != client) {
-                                    socketClient.send(transaction);
-                                }
-                            }
+                            room.broadcast(client, transaction);
                         });
 
                         client.addDisconnectionListener(() -> {
@@ -60,7 +56,7 @@ public class GameServer {
                             if (room.isEmpty()) {
                                 System.out.printf("Removing room %d%n", room.getId());
 
-                                this.roomList.remove(room);
+                                roomList.remove(room);
                             }
 
                             socketClientList.remove(client);

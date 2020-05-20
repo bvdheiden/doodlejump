@@ -1,5 +1,8 @@
 package doodlejump.core.networking;
 
+import doodlejump.core.networking.listeners.DisconnectionListener;
+import doodlejump.core.networking.listeners.TransactionListener;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
@@ -71,8 +74,6 @@ public class SocketClient {
         try {
             socket.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
-
             System.out.println("Failed to close socket.");
         }
 
