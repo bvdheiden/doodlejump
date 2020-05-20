@@ -1,4 +1,4 @@
-package doodlejump.core;
+package doodlejump.core.networking.payloads;
 
 import java.io.Serializable;
 

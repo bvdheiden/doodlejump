@@ -1,16 +1,16 @@
 package doodlejump.server;
 
-import doodlejump.server.networking.ServerSdk;
+import doodlejump.server.networking.GameServer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Server extends Application {
-    private ServerSdk sdk;
+    GameServer server;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.sdk = new ServerSdk(10000);
-        sdk.connect();
+        this.server = new GameServer();
+        server.start();
 
         primaryStage.setTitle("DoodleJump server");
         primaryStage.show();
@@ -20,6 +20,6 @@ public class Server extends Application {
     public void stop() throws Exception {
         super.stop();
 
-        sdk.disconnect();
+        server.stop();
     }
 }

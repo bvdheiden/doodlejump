@@ -10,12 +10,13 @@ public class Transaction implements Serializable {
         this.type = type;
     }
 
-    public Object getPayload() {
-        return payload;
+    public Transaction(TransactionType type, Serializable payload) {
+        this.type = type;
+        this.payload = payload;
     }
 
-    public void setPayload(Serializable payload) {
-        this.payload = payload;
+    public Object getPayload() {
+        return payload;
     }
 
     public TransactionType getType() {
