@@ -25,18 +25,18 @@ public class SocketClient {
                 try {
                     Transaction transaction = (Transaction) in.readObject();
 
-                    System.out.printf("Received transaction %s with payload: %s%n", transaction.getType(), transaction.getPayload());
+                    Log.printf("Received transaction %s with payload: %s from client: %s.", transaction.getType(), transaction.getPayload(), hashCode());
 
                     for (TransactionListener listener : transactionListenerList) {
                         listener.onTransaction(transaction);
                     }
                 } catch (IOException | ClassNotFoundException exception) {
-                    System.out.println("Failed to receive data.");
+                    Log.printf("Failed to receive data from client: %s.", hashCode());
                     stop();
                 }
             }
 
-            System.out.println("Receiving thread died.");
+            Log.printf("Receiving thread died for client: %s.", hashCode());
         }).start();
     }
 
@@ -48,9 +48,9 @@ public class SocketClient {
         try {
             out.writeObject(transaction);
 
-            System.out.printf("Send transaction %s with payload: %s%n", transaction.getType(), transaction.getPayload());
+            Log.printf("send transaction %s with payload: %s to client: %s.", transaction.getType(), transaction.getPayload(), hashCode());
         } catch (IOException exception) {
-            System.out.println("Failed to send data.");
+            Log.printf("Failed to send data to client: %s.", hashCode());
             stop();
         }
     }
@@ -65,16 +65,16 @@ public class SocketClient {
 
     public void stop() {
         if (socket.isClosed()) {
-            System.out.println("Socket is already closed.");
+            Log.printf("Socket of client: %s is already closed.", hashCode());
             return;
         }
 
-        System.out.println("Closing socket.");
+        Log.printf("Closing socket for client: %s.", hashCode());
 
         try {
             socket.close();
         } catch (IOException exception) {
-            System.out.println("Failed to close socket.");
+            Log.printf("Failed to close socket for client: %s.", hashCode());
         }
 
         for (DisconnectionListener listener : disconnectionListenerList) {

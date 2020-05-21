@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Room {
-    private static final int MAX_CLIENTS = 2;
+    public static final int MAX_CLIENTS = 2;
     private final List<SocketClient> clientList = new CopyOnWriteArrayList<>();
     private int id;
 
@@ -17,7 +17,9 @@ public class Room {
     }
 
     public void addClient(SocketClient client) {
-        clientList.add(client);
+        if (clientList.size() < MAX_CLIENTS) {
+            clientList.add(client);
+        }
     }
 
     public void broadcast(SocketClient ignore, Transaction transaction) {

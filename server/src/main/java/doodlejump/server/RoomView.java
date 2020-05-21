@@ -1,5 +1,6 @@
 package doodlejump.server;
 
+import doodlejump.core.fx.ControlFactory;
 import doodlejump.core.networking.Room;
 import doodlejump.server.networking.listeners.RoomCreationListener;
 import doodlejump.server.networking.listeners.RoomDestructionListener;
@@ -8,14 +9,18 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 
-public class RoomView extends AnchorPane implements RoomCreationListener, RoomDestructionListener, RoomUpdateListener {
+public class RoomView extends VBox implements RoomCreationListener, RoomDestructionListener, RoomUpdateListener {
     private final ObservableList<Room> roomObservableArray = FXCollections.observableArrayList();
-    private final ListView<Room> listView = new ListView(roomObservableArray);
+    private final ListView<Room> listView = new ListView<>(roomObservableArray);
 
     public RoomView() {
-        getChildren().add(listView);
+        setSpacing(10);
+        getChildren().addAll(
+            ControlFactory.createLabel("Rooms", ControlFactory.LabelStyle.HEADER_1),
+            listView
+        );
     }
 
     @Override
@@ -34,8 +39,6 @@ public class RoomView extends AnchorPane implements RoomCreationListener, RoomDe
 
     @Override
     public void onRoomUpdate(Room room) {
-        Platform.runLater(() -> {
-            listView.refresh();
-        });
+        Platform.runLater(listView::refresh);
     }
 }

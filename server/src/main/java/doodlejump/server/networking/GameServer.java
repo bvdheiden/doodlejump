@@ -1,9 +1,6 @@
 package doodlejump.server.networking;
 
-import doodlejump.core.networking.Room;
-import doodlejump.core.networking.SocketClient;
-import doodlejump.core.networking.Transaction;
-import doodlejump.core.networking.TransactionType;
+import doodlejump.core.networking.*;
 import doodlejump.server.networking.listeners.RoomCreationListener;
 import doodlejump.server.networking.listeners.RoomDestructionListener;
 import doodlejump.server.networking.listeners.RoomUpdateListener;
@@ -27,6 +24,9 @@ public class GameServer {
     private RoomDestructionListener roomDestructionListener;
     private RoomUpdateListener roomUpdateListener;
 
+    /**
+     * Start the server socket and start listening for clients.
+     */
     public void start() {
         if (isRunning()) {
             return;
@@ -36,13 +36,13 @@ public class GameServer {
 
         new Thread(() -> {
             try {
-                System.out.println("Creating server socket.");
+                Log.print("Creating server socket.");
                 this.serverSocket = new ServerSocket(SERVER_PORT);
                 while (connecting.get()) {
                     try {
-                        System.out.println("Waiting for clients.");
+                        Log.print("Waiting for clients.");
                         Socket socket = serverSocket.accept();
-                        System.out.println("Client accepted.");
+                        Log.print("Client accepted.");
                         SocketClient client = new SocketClient(socket);
                         socketClientList.add(client);
 
@@ -69,7 +69,7 @@ public class GameServer {
                             }
 
                             if (room.isEmpty()) {
-                                System.out.printf("Removing room %d%n", room.getId());
+                                Log.printf("Removing room %d.", room.getId());
 
                                 if (roomDestructionListener != null) {
                                     roomDestructionListener.onRoomDestruction(room);
@@ -81,15 +81,18 @@ public class GameServer {
                             socketClientList.remove(client);
                         });
                     } catch (IOException exception) {
-                        System.out.println("Failed to accept and create client.");
+                        Log.print("Failed to accept and create client.");
                     }
                 }
             } catch (IOException exception) {
-                System.out.println("Failed to create server socket.");
+                Log.print("Failed to create server socket.");
             }
         }).start();
     }
 
+    /**
+     * Stop the server socket and stop listening for clients.
+     */
     public void stop() {
         if (!isRunning()) {
             return;
@@ -104,7 +107,7 @@ public class GameServer {
         try {
             serverSocket.close();
         } catch (IOException exception) {
-            System.out.println("Failed to close server socket.");
+            Log.print("Failed to close server socket.");
         }
     }
 
@@ -131,7 +134,7 @@ public class GameServer {
             }
         }
 
-        System.out.println("New room created with id: " + (lastRoomId + 1));
+        Log.printf("New room created with id: %d.", lastRoomId + 1);
 
         Room room = new Room(++lastRoomId);
 

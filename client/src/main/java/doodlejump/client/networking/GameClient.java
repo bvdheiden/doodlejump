@@ -1,5 +1,6 @@
 package doodlejump.client.networking;
 
+import doodlejump.core.networking.Log;
 import doodlejump.core.networking.listeners.*;
 import doodlejump.core.networking.payloads.Position;
 import doodlejump.core.networking.SocketClient;
@@ -40,9 +41,9 @@ public class GameClient {
         new Thread(() -> {
             while (connecting.get()) {
                 try {
-                    System.out.println("Connecting to server.");
+                    Log.print("Connecting to server.");
                     this.socket = new Socket(SERVER_HOST, SERVER_PORT);
-                    System.out.println("Connected to server");
+                    Log.print("Connected to server");
                     this.client = new SocketClient(socket);
 
                     if (connectionListener != null)
@@ -84,7 +85,7 @@ public class GameClient {
 
                     connecting.set(false);
                 } catch (IOException exception) {
-                    System.out.println("Failed to connect to server.");
+                    Log.print("Failed to connect to server.");
                 }
             }
         }).start();
@@ -107,7 +108,7 @@ public class GameClient {
         try {
             socket.close();
         } catch (IOException exception) {
-            System.out.println("Failed to close socket.");
+            Log.print("Failed to close socket.");
         }
     }
 
