@@ -52,7 +52,7 @@ public class GameView extends AnchorPane {
 
                 fixedUpdateTimer.update(deltaTime);
                 while (fixedUpdateTimer.timeout())
-                    fixedUpdate(deltaTime);
+                    fixedUpdate(fixedUpdateTimer.getWait());
 
                 last = now;
             }
