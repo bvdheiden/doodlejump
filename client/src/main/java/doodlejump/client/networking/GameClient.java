@@ -2,7 +2,6 @@ package doodlejump.client.networking;
 
 import doodlejump.core.networking.*;
 import doodlejump.core.networking.listeners.*;
-import doodlejump.core.networking.payloads.Position;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -16,6 +15,8 @@ public class GameClient {
 
     private Socket socket;
     private SocketClient client;
+
+    private Player player;
 
     private ConnectionListener connectionListener;
     private DisconnectionListener disconnectionListener;
@@ -56,7 +57,9 @@ public class GameClient {
                             case PLAYER_LOGIN -> {
                                 if (playerLoginListener != null) {
                                     if (transaction.getPayload() instanceof Player) {
-                                        playerLoginListener.onPlayerLogin((Player) transaction.getPayload());
+                                        Player player = (Player) transaction.getPayload();
+                                        this.player = player;
+                                        playerLoginListener.onPlayerLogin(player);
                                     } else {
                                         playerLoginListener.onPlayerLoginNameInUse();
                                     }
@@ -95,7 +98,7 @@ public class GameClient {
 
                             case PLAYER_POSITION -> {
                                 if (playerPositionListener != null)
-                                    playerPositionListener.onNewPlayerPosition();
+                                    playerPositionListener.onNewPlayerPosition((Player) transaction.getPayload());
                             }
                         }
                     }));
@@ -123,6 +126,8 @@ public class GameClient {
 
         connecting.set(false);
 
+        this.player = null;
+
         if (client != null) {
             client.stop();
         }
@@ -141,6 +146,10 @@ public class GameClient {
         return connecting.get() || (socket != null && socket.isConnected());
     }
 
+    /**
+     * Log in with username.
+     * @param name username
+     */
     public void login(String name) {
         if (!canSendTransaction()) {
             return;
@@ -149,6 +158,9 @@ public class GameClient {
         client.send(new Transaction(TransactionType.PLAYER_LOGIN, new Player(name)));
     }
 
+    /**
+     * Connect to a room.
+     */
     public void connectRoom() {
         if (!canSendTransaction()) {
             return;
@@ -157,6 +169,9 @@ public class GameClient {
         client.send(new Transaction(TransactionType.ROOM_CONNECT));
     }
 
+    /**
+     * Disconnect from the room.
+     */
     public void disconnectRoom() {
         if (!canSendTransaction()) {
             return;
@@ -165,6 +180,10 @@ public class GameClient {
         client.send(new Transaction(TransactionType.ROOM_DISCONNECT));
     }
 
+    /**
+     * Give ready signal.
+     * When all players are ready, the game will be started.
+     */
     public void ready() {
         if (!canSendTransaction()) {
             return;
@@ -175,53 +194,91 @@ public class GameClient {
 
     /**
      * Send player position to server.
-     * @param newX new x position
-     * @param newY new y position
      */
-    public void sendPlayerPosition(double newX, double newY) {
-        if (!isRunning() || client == null) {
+    public void sendPosition() {
+        if (!isRunning() || client == null || player == null) {
             return;
         }
 
-        client.send(new Transaction(TransactionType.PLAYER_POSITION, new Position(newX, newY)));
+        client.send(new Transaction(TransactionType.PLAYER_POSITION, player));
     }
 
+    /**
+     * On server connection callback.
+     * @param listener callback
+     */
     public void setOnConnection(ConnectionListener listener) {
         this.connectionListener = listener;
     }
 
+    /**
+     * On server disconnection callback.
+     * @param listener callback
+     */
     public void setOnDisconnection(DisconnectionListener listener) {
         this.disconnectionListener = listener;
     }
 
+    /**
+     * On player login callback.
+     * @param listener callback
+     */
     public void setOnPlayerLogin(PlayerLoginListener listener) {
         this.playerLoginListener = listener;
     }
 
+    /**
+     * On room connection callback.
+     * @param listener callback
+     */
     public void setOnRoomConnection(ConnectionListener listener) {
         this.roomConnectionListener = listener;
     }
 
+    /**
+     * On room disconnection callback.
+     * @param listener callback
+     */
     public void setOnRoomDisconnection(DisconnectionListener listener) {
         this.roomDisconnectionListener = listener;
     }
 
+    /**
+     * On player in room connection callback.
+     * @param listener callback
+     */
     public void setOnPlayerConnection(PlayerConnectionListener listener) {
         this.playerConnectionListener = listener;
     }
 
+    /**
+     * On player in room disconnection callback.
+     * @param listener callback
+     */
     public void setOnPlayerDisconnection(PlayerDisconnectionListener listener) {
         this.playerDisconnectionListener = listener;
     }
 
+    /**
+     * On player in room ready callback.
+     * @param listener callback
+     */
     public void setOnPlayerReady(PlayerReadyListener listener) {
         this.playerReadyListener = listener;
     }
 
+    /**
+     * On player in room new position callback.
+     * @param listener callback
+     */
     public void setOnNewPlayerPosition(PlayerPositionListener listener) {
         this.playerPositionListener = listener;
     }
 
+    /**
+     * On game in room start callback.
+     * @param listener callback
+     */
     public void setOnGameStart(GameStartListener listener) {
         this.gameStartListener = listener;
     }

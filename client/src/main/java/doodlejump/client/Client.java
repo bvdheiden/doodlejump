@@ -32,12 +32,15 @@ public class Client extends Application {
     private Label startedLabel;
     private Button readyButton;
     private Label readyLabel;
+    private HBox loginLayout;
+    private HBox roomLayout;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.playerNameLabel = new Label("Enter player name: ");
         this.playerNameField = new TextField();
         this.loginButton = new Button("Login");
+        loginButton.setDisable(true);
         loginButton.setOnAction(event -> {
             if (playerNameField.getText().length() == 0) {
                 return;
@@ -46,7 +49,8 @@ public class Client extends Application {
             client.login(playerNameField.getText());
         });
 
-        HBox loginLayout = new HBox(playerNameLabel, playerNameField, loginButton);
+        this.loginLayout = new HBox(playerNameLabel, playerNameField, loginButton);
+        loginLayout.setVisible(false);
 
         this.roomButton = new Button("Connect room");
         roomButton.setDisable(true);
@@ -69,7 +73,8 @@ public class Client extends Application {
         });
         this.startedLabel = new Label("Not started");
 
-        HBox roomLayout = new HBox(roomButton, roomPlayersLabel, readyButton, readyLabel, startedLabel);
+        this.roomLayout = new HBox(roomButton, roomPlayersLabel, readyButton, readyLabel, startedLabel);
+        roomLayout.setVisible(false);
 
         GameView gameView = new GameView();
         gameView.setPrefSize(400, 800);
@@ -77,7 +82,6 @@ public class Client extends Application {
         VBox mainLayout = new VBox(loginLayout, roomLayout, gameView);
 
         primaryStage.setScene(new Scene(mainLayout));
-
 
         clientStuff();
 
@@ -88,6 +92,23 @@ public class Client extends Application {
     private void clientStuff() {
         client.start();
 
+        client.setOnConnection(() -> {
+           Platform.runLater(() -> {
+               loginLayout.setVisible(true);
+               loginButton.setDisable(false);
+           });
+        });
+
+        client.setOnDisconnection(() -> {
+            Platform.runLater(() -> {
+                loginLayout.setVisible(false);
+                roomLayout.setVisible(false);
+                loginButton.setDisable(true);
+                readyButton.setDisable(true);
+                roomButton.setDisable(true);
+            });
+        });
+
         client.setOnPlayerLogin(new PlayerLoginListener() {
             @Override
             public void onPlayerLogin(Player player) {
@@ -97,6 +118,7 @@ public class Client extends Application {
                     roomButton.setDisable(false);
                     currentPlayer = player;
                     playerNameLabel.setText("Logged in as: ");
+                    roomLayout.setVisible(true);
                 });
             }
 
@@ -125,7 +147,9 @@ public class Client extends Application {
                 roomButton.setText("Connect room");
                 this.inRoom = false;
                 players.clear();
+                readyPlayers.clear();
                 updateRoomPlayersLabel();
+                updateReadyPlayersLabel();
                 readyButton.setDisable(true);
                 startedLabel.setText("Not started");
             });
@@ -157,6 +181,8 @@ public class Client extends Application {
 
         client.setOnGameStart(() -> {
             Platform.runLater(() -> {
+                readyPlayers.clear();
+                updateReadyPlayersLabel();
                 startedLabel.setText("Started!");
             });
         });
