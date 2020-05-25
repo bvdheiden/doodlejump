@@ -63,7 +63,9 @@ public class Client extends Application {
         this.readyButton = new Button("Ready");
         readyButton.setDisable(true);
         readyButton.setOnAction(event -> {
+            readyPlayers.add(currentPlayer);
             client.ready();
+            updateReadyPlayersLabel();
         });
         this.startedLabel = new Label("Not started");
 
@@ -141,6 +143,7 @@ public class Client extends Application {
                 players.remove(player);
                 updateRoomPlayersLabel();
                 updateReadyPlayersLabel();
+                startedLabel.setText("Not started");
             });
         });
 

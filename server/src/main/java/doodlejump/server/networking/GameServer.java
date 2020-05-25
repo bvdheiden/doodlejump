@@ -152,6 +152,10 @@ public class GameServer {
             if (roomClient != client)
             client.send(new Transaction(TransactionType.PLAYER_CONNECTED, roomClient.getPlayer()));
         }
+        for (SocketClient roomClient : room.getReadyClientList()) {
+            if (roomClient != client)
+                client.send(new Transaction(TransactionType.PLAYER_READY, roomClient.getPlayer()));
+        }
 
         room.broadcast(client, new Transaction(TransactionType.PLAYER_CONNECTED, client.getPlayer()));
     }

@@ -1,5 +1,6 @@
 package doodlejump.core.networking;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +33,18 @@ public class Room {
         if (clientList.contains(client)) {
             readyMap.put(client, ready);
         }
+    }
+
+    public List<SocketClient> getReadyClientList() {
+        List<SocketClient> readyClientList = new ArrayList<>();
+
+        for (Map.Entry<SocketClient, Boolean> entry : readyMap.entrySet()) {
+            if (entry.getValue()) {
+                readyClientList.add(entry.getKey());
+            }
+        }
+
+        return readyClientList;
     }
 
     public boolean isReady() {
