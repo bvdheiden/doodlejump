@@ -46,40 +46,17 @@ public class GameServer {
                         SocketClient client = new SocketClient(socket);
                         socketClientList.add(client);
 
-                        Room room = findRoom();
-                        room.addClient(client);
-
-                        if (roomUpdateListener != null) {
-                            roomUpdateListener.onRoomUpdate(room);
-                        }
-
-                        client.send(new Transaction(TransactionType.ROOM_JOINED, room.isFull()));
-                        room.broadcast(client, new Transaction(TransactionType.PLAYER_CONNECTED));
-
                         client.addTransactionListener((transaction) -> {
-                            room.broadcast(client, transaction);
+                            switch (transaction.getType()) {
+                                case PLAYER_LOGIN -> playerLogin(client, (Player) transaction.getPayload());
+                                case ROOM_CONNECT -> roomConnect(client);
+                                case ROOM_DISCONNECT -> roomDisconnect(client);
+                                case PLAYER_READY -> playerReady(client);
+                                default -> roomBroadcast(client, transaction);
+                            }
                         });
 
-                        client.addDisconnectionListener(() -> {
-                            room.broadcast(client, new Transaction(TransactionType.PLAYER_DISCONNECTED));
-                            room.removeClient(client);
-
-                            if (roomUpdateListener != null) {
-                                roomUpdateListener.onRoomUpdate(room);
-                            }
-
-                            if (room.isEmpty()) {
-                                Log.printf("Removing room %d.", room.getId());
-
-                                if (roomDestructionListener != null) {
-                                    roomDestructionListener.onRoomDestruction(room);
-                                }
-
-                                roomList.remove(room);
-                            }
-
-                            socketClientList.remove(client);
-                        });
+                        client.addDisconnectionListener(() -> clientDisconnect(client));
                     } catch (IOException exception) {
                         Log.print("Failed to accept and create client.");
                     }
@@ -125,6 +102,106 @@ public class GameServer {
 
     public void setOnRoomUpdate(RoomUpdateListener listener) {
         this.roomUpdateListener = listener;
+    }
+
+    private void playerLogin(SocketClient client, Player player) {
+        if (!nameAvailable(player.getName())) {
+            client.send(new Transaction(TransactionType.PLAYER_LOGIN, false));
+            return;
+        }
+
+        client.setPlayer(player);
+        client.send(new Transaction(TransactionType.PLAYER_LOGIN, player));
+    }
+
+    private void playerReady(SocketClient client) {
+        Room room = client.getRoom();
+        if (room == null) {
+            return;
+        }
+
+        room.setReady(client, true);
+        room.broadcast(client, new Transaction(TransactionType.PLAYER_READY, client.getPlayer()));
+
+        if (room.isReady()) {
+            room.start();
+            room.broadcast(null, new Transaction(TransactionType.GAME_STARTED));
+        }
+    }
+
+    private void clientDisconnect(SocketClient client) {
+        roomDisconnect(client);
+        socketClientList.remove(client);
+    }
+
+    private void roomConnect(SocketClient client) {
+        if (client.getPlayer() == null) {
+            return;
+        }
+
+        Room room = findRoom();
+        room.addClient(client);
+        client.setRoom(room);
+
+        if (roomUpdateListener != null) {
+            roomUpdateListener.onRoomUpdate(room);
+        }
+
+        client.send(new Transaction(TransactionType.ROOM_CONNECTED));
+        for (SocketClient roomClient : room.getClientList()) {
+            if (roomClient != client)
+            client.send(new Transaction(TransactionType.PLAYER_CONNECTED, roomClient.getPlayer()));
+        }
+
+        room.broadcast(client, new Transaction(TransactionType.PLAYER_CONNECTED, client.getPlayer()));
+    }
+
+    private void roomDisconnect(SocketClient client) {
+        Room room = client.getRoom();
+        if (room == null) {
+            return;
+        }
+
+        room.broadcast(client, new Transaction(TransactionType.PLAYER_DISCONNECTED, client.getPlayer()));
+        room.removeClient(client);
+        client.setRoom(null);
+
+        if (roomUpdateListener != null) {
+            roomUpdateListener.onRoomUpdate(room);
+        }
+
+        client.send(new Transaction(TransactionType.ROOM_DISCONNECTED));
+
+        if (room.isEmpty()) {
+            Log.printf("Removing room %d.", room.getId());
+
+            if (roomDestructionListener != null) {
+                roomDestructionListener.onRoomDestruction(room);
+            }
+
+            roomList.remove(room);
+        }
+    }
+
+    private void roomBroadcast(SocketClient client, Transaction transaction) {
+        if (client.getRoom() == null) {
+            return;
+        }
+
+        client.getRoom().broadcast(client, transaction);
+    }
+
+    private boolean nameAvailable(String name) {
+        for (SocketClient client : socketClientList) {
+            Player player = client.getPlayer();
+            if (player != null) {
+                if (name.equals(player.getName())) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private Room findRoom() {

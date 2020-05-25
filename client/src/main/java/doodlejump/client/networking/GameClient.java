@@ -1,11 +1,8 @@
 package doodlejump.client.networking;
 
-import doodlejump.core.networking.Log;
+import doodlejump.core.networking.*;
 import doodlejump.core.networking.listeners.*;
 import doodlejump.core.networking.payloads.Position;
-import doodlejump.core.networking.SocketClient;
-import doodlejump.core.networking.Transaction;
-import doodlejump.core.networking.TransactionType;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -22,11 +19,16 @@ public class GameClient {
 
     private ConnectionListener connectionListener;
     private DisconnectionListener disconnectionListener;
+    private ConnectionListener roomConnectionListener;
+    private DisconnectionListener roomDisconnectionListener;
+
     private GameStartListener gameStartListener;
-    private RoomJoinedListener roomJoinedListener;
     private PlayerConnectionListener playerConnectionListener;
     private PlayerDisconnectionListener playerDisconnectionListener;
     private PlayerPositionListener playerPositionListener;
+    private PlayerLoginListener playerLoginListener;
+    private PlayerReadyListener playerReadyListener;
+
 
     /**
      * Start the socket to the server.
@@ -51,29 +53,49 @@ public class GameClient {
 
                     this.client.addTransactionListener((transaction -> {
                         switch (transaction.getType()) {
+                            case PLAYER_LOGIN -> {
+                                if (playerLoginListener != null) {
+                                    if (transaction.getPayload() instanceof Player) {
+                                        playerLoginListener.onPlayerLogin((Player) transaction.getPayload());
+                                    } else {
+                                        playerLoginListener.onPlayerLoginNameInUse();
+                                    }
+                                }
+                            }
+
                             case PLAYER_CONNECTED -> {
                                 if (playerConnectionListener != null)
-                                    playerConnectionListener.onPlayerConnection();
+                                    playerConnectionListener.onPlayerConnection((Player) transaction.getPayload());
                             }
 
                             case PLAYER_DISCONNECTED -> {
                                 if (playerDisconnectionListener != null)
-                                    playerDisconnectionListener.onPlayerDisconnection();
+                                    playerDisconnectionListener.onPlayerDisconnection((Player) transaction.getPayload());
                             }
 
-                            case PLAYER_POSITION -> {
-                                if (playerPositionListener != null)
-                                    playerPositionListener.onNewPlayerPosition();
+                            case ROOM_CONNECTED -> {
+                                if (roomConnectionListener != null)
+                                    roomConnectionListener.onConnection();
                             }
 
-                            case ROOM_JOINED -> {
-                                if (roomJoinedListener != null)
-                                    roomJoinedListener.onRoomJoined();
+                            case ROOM_DISCONNECTED -> {
+                                if (roomDisconnectionListener != null)
+                                    roomDisconnectionListener.onDisconnection();
+                            }
+
+                            case PLAYER_READY -> {
+                                if (playerReadyListener != null)
+                                    playerReadyListener.onPlayerReady((Player) transaction.getPayload());
                             }
 
                             case GAME_STARTED -> {
                                 if (gameStartListener != null)
                                     gameStartListener.onGameStart();
+                            }
+
+                            case PLAYER_POSITION -> {
+                                if (playerPositionListener != null)
+                                    playerPositionListener.onNewPlayerPosition();
                             }
                         }
                     }));
@@ -119,11 +141,32 @@ public class GameClient {
         return connecting.get() || (socket != null && socket.isConnected());
     }
 
-    /**
-     * Send a ready signal to begin the game.
-     */
-    public void sendReadySignal() {
-        if (!isRunning() || client == null) {
+    public void login(String name) {
+        if (!canSendTransaction()) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.PLAYER_LOGIN, new Player(name)));
+    }
+
+    public void connectRoom() {
+        if (!canSendTransaction()) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.ROOM_CONNECT));
+    }
+
+    public void disconnectRoom() {
+        if (!canSendTransaction()) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.ROOM_DISCONNECT));
+    }
+
+    public void ready() {
+        if (!canSendTransaction()) {
             return;
         }
 
@@ -151,6 +194,18 @@ public class GameClient {
         this.disconnectionListener = listener;
     }
 
+    public void setOnPlayerLogin(PlayerLoginListener listener) {
+        this.playerLoginListener = listener;
+    }
+
+    public void setOnRoomConnection(ConnectionListener listener) {
+        this.roomConnectionListener = listener;
+    }
+
+    public void setOnRoomDisconnection(DisconnectionListener listener) {
+        this.roomDisconnectionListener = listener;
+    }
+
     public void setOnPlayerConnection(PlayerConnectionListener listener) {
         this.playerConnectionListener = listener;
     }
@@ -159,15 +214,19 @@ public class GameClient {
         this.playerDisconnectionListener = listener;
     }
 
+    public void setOnPlayerReady(PlayerReadyListener listener) {
+        this.playerReadyListener = listener;
+    }
+
     public void setOnNewPlayerPosition(PlayerPositionListener listener) {
         this.playerPositionListener = listener;
     }
 
-    public void setOnRoomJoined(RoomJoinedListener listener) {
-        this.roomJoinedListener = listener;
-    }
-
     public void setOnGameStart(GameStartListener listener) {
         this.gameStartListener = listener;
+    }
+
+    private boolean canSendTransaction() {
+        return isRunning() && client != null;
     }
 }

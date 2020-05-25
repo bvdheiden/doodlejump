@@ -1,12 +1,18 @@
 package doodlejump.core.networking;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Room {
     public static final int MAX_CLIENTS = 2;
+
     private final List<SocketClient> clientList = new CopyOnWriteArrayList<>();
-    private int id;
+    private final Map<SocketClient, Boolean> readyMap = new ConcurrentHashMap<>();
+    private final int id;
+
+    private boolean started;
 
     public Room(int id) {
         this.id = id;
@@ -20,6 +26,44 @@ public class Room {
         if (clientList.size() < MAX_CLIENTS) {
             clientList.add(client);
         }
+    }
+
+    public void setReady(SocketClient client, boolean ready) {
+        if (clientList.contains(client)) {
+            readyMap.put(client, ready);
+        }
+    }
+
+    public boolean isReady() {
+        if (!isFull()) {
+            return false;
+        }
+
+        if (readyMap.size() != clientList.size()) {
+            return false;
+        }
+
+        for (boolean ready : readyMap.values()) {
+            if (!ready) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void start() {
+        this.started = true;
+        readyMap.clear();
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void reset() {
+        this.started = false;
+        readyMap.clear();
     }
 
     public void broadcast(SocketClient ignore, Transaction transaction) {

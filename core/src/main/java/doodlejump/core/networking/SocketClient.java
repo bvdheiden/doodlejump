@@ -15,6 +15,9 @@ public class SocketClient {
     private final List<TransactionListener> transactionListenerList = new CopyOnWriteArrayList<>();
     private final List<DisconnectionListener> disconnectionListenerList = new CopyOnWriteArrayList<>();
 
+    private Player player;
+    private Room room;
+
     public SocketClient(Socket socket) throws IOException {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
@@ -80,5 +83,21 @@ public class SocketClient {
         for (DisconnectionListener listener : disconnectionListenerList) {
             listener.onDisconnection();
         }
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 }
