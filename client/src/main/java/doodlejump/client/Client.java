@@ -141,6 +141,7 @@ public class Client extends Application {
         client.setOnPlayerDisconnection(player -> {
             Platform.runLater(() -> {
                 players.remove(player);
+                readyPlayers.remove(player);
                 updateRoomPlayersLabel();
                 updateReadyPlayersLabel();
                 startedLabel.setText("Not started");

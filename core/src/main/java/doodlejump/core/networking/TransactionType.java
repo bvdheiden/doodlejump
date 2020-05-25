@@ -10,6 +10,5 @@ public enum TransactionType {
     ROOM_CONNECTED,
     ROOM_DISCONNECT,
     ROOM_DISCONNECTED,
-    ROOM_JOINED,
     GAME_STARTED,
 }
