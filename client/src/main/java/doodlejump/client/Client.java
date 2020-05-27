@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class Client extends Application {
-    private GameClient client = new GameClient();
+    private final GameClient client = GameClient.INSTANCE;
     private Label playerNameLabel;
     private TextField playerNameField;
     private Button loginButton;
