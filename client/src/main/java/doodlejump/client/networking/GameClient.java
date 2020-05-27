@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GameClient {
+public enum GameClient {
+    INSTANCE;
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 10_000;
 

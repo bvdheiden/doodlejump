@@ -14,6 +14,8 @@ public class GameView extends AnchorPane {
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
 
+
+
     public GameView() {
         this.getChildren().add(this.canvas = new Canvas(getWidth(), getHeight()));
         this.graphicsContext = this.canvas.getGraphicsContext2D();
