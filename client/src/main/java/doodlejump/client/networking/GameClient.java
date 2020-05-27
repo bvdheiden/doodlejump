@@ -132,6 +132,10 @@ public class GameClient {
             client.stop();
         }
 
+        if (socket != null) {
+            return;
+        }
+
         try {
             socket.close();
         } catch (IOException exception) {
