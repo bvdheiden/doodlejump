@@ -39,7 +39,7 @@ public class PlatformGenerator {
 
         double width = minPlatformWidth + (random.nextDouble() * (maxPlatformWidth - minPlatformWidth));
 
-        double x = random.nextDouble() * (gameWidth - width);
+        double x = (width / 2) + random.nextDouble() * (gameWidth - (width / 2));
         double y = lastY + minPlatformDistance + (random.nextDouble() * (maxPlatformDistance - minPlatformDistance));
 
         Platform platform = new Platform(x, y, width, 4.0);
