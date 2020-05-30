@@ -1,6 +1,7 @@
 package doodlejump.client.game;
 
 import doodlejump.core.networking.listeners.PlayerMovementListener;
+import javafx.beans.property.SimpleIntegerProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,38 +15,50 @@ public class ChunkLoader implements PlayerMovementListener {
     private final LinkedList<Chunk> chunkList = new LinkedList<>();
     private final List<ChunkGenerator> generatorList = new ArrayList<>();
     private final long seed;
+    private final double windowWidth;
+    private final double windowHeight;
+
+    private SimpleIntegerProperty chunkDifficulty = new SimpleIntegerProperty();
 
     private ChunkLoadListener chunkLoadListener;
     private ChunkUnloadListener chunkUnloadListener;
 
-    public ChunkLoader(long seed) {
+    public ChunkLoader(long seed, double windowWidth, double windowHeight) {
         this.seed = seed;
+        this.windowWidth = windowWidth;
+        this.windowHeight = windowHeight;
     }
 
     public void addGenerator(@NotNull ChunkGenerator generator) {
+        generator.setSeed(seed);
+        generator.setWindowWidth(windowWidth);
+        generator.setWindowHeight(windowHeight);
         generatorList.add(generator);
     }
 
-    /**
-     * Fill the window with chunks.
-     * @param windowHeight height of the window
-     */
-    public void initialize(double windowHeight) {
-        double lastEndY = 0.0;
-        while (lastEndY < windowHeight) {
-            Chunk chunk = generateChunk();
-            chunkList.addLast(chunk);
-            lastEndY = chunk.getEndY();
-        }
+    public int getChunkDifficulty() {
+        return chunkDifficulty.get();
+    }
+
+    public SimpleIntegerProperty chunkDifficultyProperty() {
+        return chunkDifficulty;
     }
 
     @Override
     public void onPlayerMovement(double newX, double newY) {
+        if (chunkList.size() == 0)
+            initialize();
+
         // check if player is well passed a chunk
-        if (newY + 200.0 > chunkList.getFirst().getEndY()) {
+        if (newY - 200 > chunkList.getFirst().getEndY()) {
             unloadChunk();
+        }
+
+        if (newY + 1000 > chunkList.getLast().getEndY()) {
             loadChunk();
         }
+
+        chunkDifficulty.set(calculateChunkDifficulty(newY));
     }
 
     public void setOnChunkLoad(@Nullable ChunkLoadListener listener) {
@@ -64,6 +77,14 @@ public class ChunkLoader implements PlayerMovementListener {
     @FunctionalInterface
     public interface ChunkUnloadListener {
         void onChunkUnload(Chunk chunk);
+    }
+
+    private void initialize() {
+        double lastEndY = 0.0;
+        while (lastEndY < windowHeight) {
+            loadChunk();
+            lastEndY = chunkList.getLast().getEndY();
+        }
     }
 
     private void loadChunk() {
@@ -108,6 +129,6 @@ public class ChunkLoader implements PlayerMovementListener {
         if (startY == 0.0)
             return 0;
 
-        return (int) (startY / 10.0);
+        return (int) (startY / 100.0);
     }
 }

@@ -14,14 +14,11 @@ import java.util.Random;
  * Simple generator for normal platforming experience.
  * Generates only 1 path upwards without pickups.
  */
-public class SimpleGenerator extends ChunkGenerator {
-    private static final int MIN_PLATFORMS = 4;
-    private static final int MAX_PLATFORMS = 10;
-    private static final double MIN_PLATFORM_DISTANCE = 20.0;
-    private static final double MAX_PLATFORM_DISTANCE = 20.0;
+public abstract class SimpleGenerator extends ChunkGenerator {
 
-    public SimpleGenerator(long seed, int difficulty, double windowWidth, double windowHeight) {
-        super(seed, difficulty, windowWidth, windowHeight);
+
+    public SimpleGenerator(int difficulty) {
+        super(difficulty);
     }
 
     @Override
@@ -36,7 +33,7 @@ public class SimpleGenerator extends ChunkGenerator {
 
         for (int i = 0; i < platforms; i++) {
             double platformY = nextPlatformY;
-            double platformWidth = getPlatformWidth();
+            double platformWidth = getRandomPlatformWidth(getRandom(nextPlatformY));
             double platformX = getRandomPlatformX(getRandom(nextPlatformY), platformWidth, windowWidth);
 
             Platform platform = new Platform(platformX, platformY, platformWidth);
@@ -48,22 +45,8 @@ public class SimpleGenerator extends ChunkGenerator {
         return new Chunk(platformList, pickupList, startY, nextPlatformY);
     }
 
-    private int getRandomPlatformAmount(Random random) {
-        return MIN_PLATFORMS + random.nextInt(MAX_PLATFORMS - MIN_PLATFORMS);
-    }
-
-    private double getRandomPlatformDistance(Random random) {
-        return MIN_PLATFORM_DISTANCE + (random.nextDouble() * (MAX_PLATFORM_DISTANCE - MIN_PLATFORM_DISTANCE));
-    }
-
-    private double getPlatformWidth() {
-        return 20.0;
-    }
-
-    private double getRandomPlatformX(Random random, double platformWidth, double windowWidth) {
-        double minX = platformWidth / 2.0;
-        double maxX = windowWidth - minX;
-
-        return minX + (random.nextDouble() * (maxX - minX));
-    }
+    protected abstract int getRandomPlatformAmount(Random random);
+    protected abstract double getRandomPlatformDistance(Random random);
+    protected abstract double getRandomPlatformWidth(Random random);
+    protected abstract double getRandomPlatformX(Random random, double platformWidth, double windowWidth);
 }

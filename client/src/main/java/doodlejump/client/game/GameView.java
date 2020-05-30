@@ -1,37 +1,72 @@
 package doodlejump.client.game;
 
+import doodlejump.client.game.generators.LongJumpGenerator;
+import doodlejump.client.game.generators.SimpleGenerator;
+import doodlejump.client.game.generators.VariedJumpGenerator;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Affine;
+import org.jetbrains.annotations.Nullable;
 
-public class GameView extends AnchorPane {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkLoadListener, ChunkLoader.@Nullable ChunkUnloadListener {
+    private static final double WINDOW_WIDTH = 400.0;
+    private static final double WINDOW_HEIGHT = 800.0;
+
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
 
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
 
+    private final ChunkLoader chunkLoader;
+    private final List<Chunk> activeChunks = new ArrayList<>();
 
+    private double tempPlayerY;
 
-    public GameView() {
-        this.getChildren().add(this.canvas = new Canvas(getWidth(), getHeight()));
+    public GameView(long seed) {
+        this.getChildren().add(this.canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.graphicsContext = this.canvas.getGraphicsContext2D();
-
-        // Bind parent dimensions onto the canvas
-        this.canvas.widthProperty().bind(this.widthProperty());
-        this.canvas.heightProperty().bind(this.heightProperty());
+        this.chunkLoader = new ChunkLoader(seed, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Request focus for detecting keyboard input
-        this.canvas.requestFocus();
-        this.canvas.setOnMouseClicked(event -> this.canvas.requestFocus());
+        canvas.requestFocus();
+        canvas.setOnMouseClicked(event -> this.canvas.requestFocus());
 
         // Disable AA
-        this.graphicsContext.setImageSmoothing(false);
+        graphicsContext.setImageSmoothing(false);
 
+        setupInterface();
+        setupChunkLoading();
         setupAnimationLoop();
+    }
+
+    private void setupInterface() {
+        Label difficultyLabel = new Label("Difficulty: 0");
+        difficultyLabel.setFont(new Font(20));
+        difficultyLabel.setTextFill(Color.WHITE);
+        AnchorPane.setTopAnchor(difficultyLabel, 20.0);
+        AnchorPane.setRightAnchor(difficultyLabel, 20.0);
+
+        chunkLoader.chunkDifficultyProperty().addListener((observable, oldValue, newValue) -> {
+            difficultyLabel.setText("Difficulty: " + newValue);
+        });
+
+        getChildren().addAll(difficultyLabel);
+    }
+
+    private void setupChunkLoading() {
+        chunkLoader.addGenerator(new VariedJumpGenerator(0));
+        chunkLoader.addGenerator(new LongJumpGenerator(10));
+        chunkLoader.setOnChunkLoad(this);
+        chunkLoader.setOnChunkUnload(this);
     }
 
     /**
@@ -75,6 +110,10 @@ public class GameView extends AnchorPane {
      */
     public void fixedUpdate(double deltaTime) {
         // fixed update logic here
+
+        tempPlayerY += 100 * deltaTime;
+
+        chunkLoader.onPlayerMovement(0, tempPlayerY);
     }
 
     /**
@@ -85,9 +124,38 @@ public class GameView extends AnchorPane {
         final Affine preTransform = graphicsContext.getTransform();
         graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        graphicsContext.scale(1, -1);
+        graphicsContext.translate(0, -tempPlayerY - WINDOW_HEIGHT + 80);
 
         // draw logic here
 
+        graphicsContext.setStroke(Color.BLUE);
+        graphicsContext.strokeLine(0, tempPlayerY, WINDOW_WIDTH, tempPlayerY);
+
+        for (Chunk chunk : activeChunks) {
+            graphicsContext.setStroke(Color.GREEN);
+            graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
+
+            graphicsContext.setFill(Color.RED);
+            for (Platform platform : chunk.getPlatformList()) {
+                graphicsContext.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
+            }
+        }
+
         graphicsContext.setTransform(preTransform);
+    }
+
+    @Override
+    public void onChunkLoad(Chunk chunk) {
+        System.out.println("Chunk loaded");
+
+        activeChunks.add(chunk);
+    }
+
+    @Override
+    public void onChunkUnload(Chunk chunk) {
+        System.out.println("Chunk unloaded");
+
+        activeChunks.remove(chunk);
     }
 }

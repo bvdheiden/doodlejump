@@ -76,8 +76,7 @@ public class Client extends Application {
         this.roomLayout = new HBox(roomButton, roomPlayersLabel, readyButton, readyLabel, startedLabel);
         roomLayout.setVisible(false);
 
-        GameView gameView = new GameView();
-        gameView.setPrefSize(400, 800);
+        GameView gameView = new GameView(181783497276652981L);
 
         VBox mainLayout = new VBox(loginLayout, roomLayout, gameView);
 

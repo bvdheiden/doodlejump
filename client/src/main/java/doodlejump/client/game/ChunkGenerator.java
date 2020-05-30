@@ -5,17 +5,26 @@ import org.jetbrains.annotations.Contract;
 import java.util.Random;
 
 public abstract class ChunkGenerator {
-    private final long seed;
+    private long seed;
 
     protected final int difficulty;
-    protected final double windowWidth;
-    protected final double windowHeight;
+    protected double windowWidth;
+    protected double windowHeight;
 
     @Contract(pure = true)
-    public ChunkGenerator(long seed, int difficulty, double windowWidth, double windowHeight) {
-        this.seed = seed;
+    public ChunkGenerator(int difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public void setSeed(long seed) {
+        this.seed = seed;
+    }
+
+    public void setWindowWidth(double windowWidth) {
         this.windowWidth = windowWidth;
+    }
+
+    public void setWindowHeight(double windowHeight) {
         this.windowHeight = windowHeight;
     }
 
@@ -26,6 +35,6 @@ public abstract class ChunkGenerator {
     }
 
     protected Random getRandom(double y) {
-        return new Random(seed + (long) y);
+        return new Random(new Random(seed + (long) y).nextLong());
     }
 }
