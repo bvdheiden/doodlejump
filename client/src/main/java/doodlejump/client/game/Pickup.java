@@ -2,18 +2,16 @@ package doodlejump.client.game;
 
 import org.jetbrains.annotations.Contract;
 
-public class Platform {
-    private static final double HEIGHT = 10.0;
-
+public class Pickup {
     private final double x;
     private final double y;
-    private final double width;
+    private final double radius;
 
     @Contract(pure = true)
-    public Platform(double x, double y, double width) {
+    public Pickup(double x, double y, double radius) {
         this.x = x;
         this.y = y;
-        this.width = width;
+        this.radius = radius;
     }
 
     public double getX() {
@@ -24,11 +22,7 @@ public class Platform {
         return y;
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return HEIGHT;
+    public double getRadius() {
+        return radius;
     }
 }
