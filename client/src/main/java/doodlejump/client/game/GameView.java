@@ -1,8 +1,6 @@
 package doodlejump.client.game;
 
-import doodlejump.client.game.generators.LongJumpGenerator;
-import doodlejump.client.game.generators.SimpleGenerator;
-import doodlejump.client.game.generators.VariedJumpGenerator;
+import doodlejump.client.game.generators.*;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;

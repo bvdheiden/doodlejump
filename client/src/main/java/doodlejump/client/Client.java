@@ -76,9 +76,13 @@ public class Client extends Application {
         this.roomLayout = new HBox(roomButton, roomPlayersLabel, readyButton, readyLabel, startedLabel);
         roomLayout.setVisible(false);
 
-        GameView gameView = new GameView(181783497276652981L);
+        GameView gameView1 = new GameView(181783497276652981L);
+        GameView gameView2 = new GameView(181783497276652981L);
 
-        VBox mainLayout = new VBox(loginLayout, roomLayout, gameView);
+        HBox gameLayout = new HBox(gameView1, gameView2);
+        gameLayout.setSpacing(100);
+
+        VBox mainLayout = new VBox(loginLayout, roomLayout, gameLayout);
 
         primaryStage.setScene(new Scene(mainLayout));
 
