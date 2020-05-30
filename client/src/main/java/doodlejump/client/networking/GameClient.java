@@ -133,7 +133,7 @@ public enum GameClient {
             client.stop();
         }
 
-        if (socket != null) {
+        if (socket == null) {
             return;
         }
 
