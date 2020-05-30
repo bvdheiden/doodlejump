@@ -53,7 +53,7 @@ public class SimpleGenerator extends ChunkGenerator {
     }
 
     private double getRandomPlatformDistance(Random random) {
-        return MIN_PLATFORM_DISTANCE + (random.nextDouble() * MAX_PLATFORM_DISTANCE - MIN_PLATFORM_DISTANCE);
+        return MIN_PLATFORM_DISTANCE + (random.nextDouble() * (MAX_PLATFORM_DISTANCE - MIN_PLATFORM_DISTANCE));
     }
 
     private double getPlatformWidth() {
