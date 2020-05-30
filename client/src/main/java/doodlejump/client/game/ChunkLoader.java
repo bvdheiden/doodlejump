@@ -14,19 +14,29 @@ import java.util.stream.Collectors;
 public class ChunkLoader implements PlayerMovementListener {
     private final LinkedList<Chunk> chunkList = new LinkedList<>();
     private final List<ChunkGenerator> generatorList = new ArrayList<>();
-    private final long seed;
     private final double windowWidth;
     private final double windowHeight;
+    private long seed;
 
     private SimpleIntegerProperty chunkDifficulty = new SimpleIntegerProperty();
 
     private ChunkLoadListener chunkLoadListener;
     private ChunkUnloadListener chunkUnloadListener;
 
-    public ChunkLoader(long seed, double windowWidth, double windowHeight) {
-        this.seed = seed;
+    public ChunkLoader(double windowWidth, double windowHeight) {
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
+    }
+
+    public long getSeed() {
+        return seed;
+    }
+
+    public void setSeed(long seed) {
+        this.seed = seed;
+
+        for (ChunkGenerator generator : generatorList)
+            generator.setSeed(seed);
     }
 
     public void addGenerator(@NotNull ChunkGenerator generator) {
@@ -42,6 +52,13 @@ public class ChunkLoader implements PlayerMovementListener {
 
     public SimpleIntegerProperty chunkDifficultyProperty() {
         return chunkDifficulty;
+    }
+
+    public void reset() {
+        for (Chunk chunk : chunkList)
+            if (chunkUnloadListener != null)
+                chunkUnloadListener.onChunkUnload(chunk);
+        chunkList.clear();
     }
 
     @Override

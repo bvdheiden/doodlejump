@@ -1,6 +1,8 @@
 package doodlejump.client.game;
 
 import doodlejump.client.game.generators.*;
+import doodlejump.client.networking.GameClient;
+import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,21 +20,24 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     private static final double WINDOW_WIDTH = 400.0;
     private static final double WINDOW_HEIGHT = 800.0;
 
+    private boolean isHost;
+    private Player player;
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
 
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
+    private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
 
-    private final ChunkLoader chunkLoader;
     private final List<Chunk> activeChunks = new ArrayList<>();
 
-    private double tempPlayerY;
+    private final ChunkLoader chunkLoader;
+    private boolean playing;
 
-    public GameView(long seed) {
+    public GameView() {
         this.getChildren().add(this.canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.graphicsContext = this.canvas.getGraphicsContext2D();
-        this.chunkLoader = new ChunkLoader(seed, WINDOW_WIDTH, WINDOW_HEIGHT);
+        this.chunkLoader = new ChunkLoader(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Request focus for detecting keyboard input
         canvas.requestFocus();
@@ -44,6 +49,30 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         setupInterface();
         setupChunkLoading();
         setupAnimationLoop();
+    }
+
+    public void start(long seed, Player player, boolean isHost) {
+        this.playing = true;
+        this.player = player;
+        this.isHost = isHost;
+
+        player.setPosition(0, 0);
+        player.setVelocity(0, 0);
+
+        chunkLoader.setSeed(seed);
+    }
+
+    public void stop() {
+        this.playing = false;
+        this.player = null;
+        this.isHost = false;
+
+        if (player != null) {
+            player.setPosition(0, 0);
+            player.setVelocity(0, 0);
+        }
+
+        chunkLoader.reset();
     }
 
     private void setupInterface() {
@@ -76,6 +105,9 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
 
             @Override
             public void handle(long now) {
+                if (!playing)
+                    return;
+
                 if (last == -1) last = now;
                 double deltaTime = (now - last) / 1000000000.0;
 
@@ -88,6 +120,12 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
                 fixedUpdateTimer.update(deltaTime);
                 while (fixedUpdateTimer.timeout())
                     fixedUpdate(fixedUpdateTimer.getWait());
+
+                if (isHost) {
+                    uploadTimer.update(deltaTime);
+                    if (uploadTimer.timeout())
+                        GameClient.INSTANCE.sendPosition();
+                }
 
                 last = now;
             }
@@ -109,9 +147,11 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     public void fixedUpdate(double deltaTime) {
         // fixed update logic here
 
-        tempPlayerY += 100 * deltaTime;
+        if (isHost) {
+            player.setY(player.getY() + 100 * deltaTime);
+        }
 
-        chunkLoader.onPlayerMovement(0, tempPlayerY);
+        chunkLoader.onPlayerMovement(player.getX(), player.getY());
     }
 
     /**
@@ -123,12 +163,12 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         graphicsContext.scale(1, -1);
-        graphicsContext.translate(0, -tempPlayerY - WINDOW_HEIGHT + 80);
+        graphicsContext.translate(0, -player.getY() - WINDOW_HEIGHT + 80);
 
         // draw logic here
 
         graphicsContext.setStroke(Color.BLUE);
-        graphicsContext.strokeLine(0, tempPlayerY, WINDOW_WIDTH, tempPlayerY);
+        graphicsContext.strokeLine(0, player.getY(), WINDOW_WIDTH, player.getY());
 
         for (Chunk chunk : activeChunks) {
             graphicsContext.setStroke(Color.GREEN);

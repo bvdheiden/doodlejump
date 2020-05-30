@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,7 +53,13 @@ public class GameServer {
                                 case ROOM_CONNECT -> roomConnect(client);
                                 case ROOM_DISCONNECT -> roomDisconnect(client);
                                 case PLAYER_READY -> playerReady(client);
-                                default -> roomBroadcast(client, transaction);
+                                case PLAYER_POSITION -> {
+                                    Player player = (Player) transaction.getPayload();
+
+                                    System.out.printf("x: %f y: %f%n", player.getX(), player.getY());
+
+                                    client.getRoom().broadcast(client, transaction);
+                                }
                             }
                         });
 
@@ -125,7 +132,7 @@ public class GameServer {
 
         if (room.isReady()) {
             room.start();
-            room.broadcast(null, new Transaction(TransactionType.GAME_STARTED));
+            room.broadcast(null, new Transaction(TransactionType.GAME_STARTED, new Random().nextLong()));
         }
     }
 

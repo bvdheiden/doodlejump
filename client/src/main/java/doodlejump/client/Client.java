@@ -1,93 +1,42 @@
 package doodlejump.client;
 
-import doodlejump.client.game.GameView;
+import doodlejump.client.fx.LoginView;
+import doodlejump.client.fx.RoomView;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import doodlejump.core.networking.listeners.PlayerLoginListener;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
-
 public class Client extends Application {
     private final GameClient client = GameClient.INSTANCE;
-    private Label playerNameLabel;
-    private TextField playerNameField;
-    private Button loginButton;
-    private Button roomButton;
-    private Label roomPlayersLabel;
-    private Player currentPlayer;
-    private List<Player> players = new ArrayList<>();
-    private List<Player> readyPlayers = new ArrayList<>();
-    private boolean inRoom;
-    private Label startedLabel;
-    private Button readyButton;
-    private Label readyLabel;
-    private HBox loginLayout;
-    private HBox roomLayout;
+
+    private LoginView loginView;
+    private RoomView roomView;
+
+    private Player hostPlayer;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.playerNameLabel = new Label("Enter player name: ");
-        this.playerNameField = new TextField();
-        this.loginButton = new Button("Login");
-        loginButton.setDisable(true);
-        loginButton.setOnAction(event -> {
-            if (playerNameField.getText().length() == 0) {
-                return;
-            }
+        this.loginView = new LoginView();
+        this.roomView = new RoomView();
+        roomView.setVisible(false);
 
-            client.login(playerNameField.getText());
-        });
+        VBox mainLayout = new VBox(loginView, roomView);
+        mainLayout.setSpacing(20);
 
-        this.loginLayout = new HBox(playerNameLabel, playerNameField, loginButton);
-        loginLayout.setVisible(false);
+        BorderPane main = new BorderPane();
+        main.setCenter(mainLayout);
 
-        this.roomButton = new Button("Connect room");
-        roomButton.setDisable(true);
-        roomButton.setOnAction(event -> {
-            if (inRoom) {
-                client.disconnectRoom();
-            } else {
-                client.connectRoom();
-            }
-        });
-
-        this.roomPlayersLabel = new Label();
-        this.readyLabel = new Label();
-        this.readyButton = new Button("Ready");
-        readyButton.setDisable(true);
-        readyButton.setOnAction(event -> {
-            readyPlayers.add(currentPlayer);
-            client.ready();
-            updateReadyPlayersLabel();
-        });
-        this.startedLabel = new Label("Not started");
-
-        this.roomLayout = new HBox(roomButton, roomPlayersLabel, readyButton, readyLabel, startedLabel);
-        roomLayout.setVisible(false);
-
-        GameView gameView1 = new GameView(181783497276652981L);
-        GameView gameView2 = new GameView(181783497276652981L);
-
-        HBox gameLayout = new HBox(gameView1, gameView2);
-        gameLayout.setSpacing(100);
-
-        VBox mainLayout = new VBox(loginLayout, roomLayout, gameLayout);
-
-        primaryStage.setScene(new Scene(mainLayout));
 
         clientStuff();
 
+        primaryStage.setMaximized(true);
+        primaryStage.setScene(new Scene(main));
         primaryStage.setTitle("DoodleJump client");
         primaryStage.show();
     }
@@ -97,18 +46,15 @@ public class Client extends Application {
 
         client.setOnConnection(() -> {
            Platform.runLater(() -> {
-               loginLayout.setVisible(true);
-               loginButton.setDisable(false);
+               loginView.onConnection();
            });
         });
 
         client.setOnDisconnection(() -> {
             Platform.runLater(() -> {
-                loginLayout.setVisible(false);
-                roomLayout.setVisible(false);
-                loginButton.setDisable(true);
-                readyButton.setDisable(true);
-                roomButton.setDisable(true);
+                loginView.onDisconnection();
+                roomView.onDisconnection();
+                roomView.setVisible(true);
             });
         });
 
@@ -116,97 +62,61 @@ public class Client extends Application {
             @Override
             public void onPlayerLogin(Player player) {
                 Platform.runLater(() -> {
-                    playerNameField.setDisable(true);
-                    loginButton.setDisable(true);
-                    roomButton.setDisable(false);
-                    currentPlayer = player;
-                    playerNameLabel.setText("Logged in as: ");
-                    roomLayout.setVisible(true);
+                    loginView.onPlayerLogin();
+                    roomView.onPlayerLogin();
+                    player.setHost(true);
+                    hostPlayer = player;
+                    roomView.setVisible(true);
                 });
             }
 
             @Override
             public void onPlayerLoginNameInUse() {
                 Platform.runLater(() -> {
-                    playerNameLabel.setText("Enter player name (in use): ");
+                    loginView.onLoginInvalid();
                 });
             }
         });
 
         client.setOnRoomConnection(() -> {
             Platform.runLater(() -> {
-                roomButton.setText("Disconnect room");
-                this.inRoom = true;
-                players.clear();
-                players.add(currentPlayer);
-                updateRoomPlayersLabel();
-                readyButton.setDisable(false);
-                startedLabel.setText("Not started");
+                roomView.onRoomConnection(hostPlayer);
             });
         });
 
         client.setOnRoomDisconnection(() -> {
             Platform.runLater(() -> {
-                roomButton.setText("Connect room");
-                this.inRoom = false;
-                players.clear();
-                readyPlayers.clear();
-                updateRoomPlayersLabel();
-                updateReadyPlayersLabel();
-                readyButton.setDisable(true);
-                startedLabel.setText("Not started");
+                roomView.onRoomDisconnection();
             });
         });
 
         client.setOnPlayerConnection(player -> {
             Platform.runLater(() -> {
-                players.add(player);
-                updateRoomPlayersLabel();
+                roomView.onPlayerConnection(player);
             });
         });
 
         client.setOnPlayerDisconnection(player -> {
             Platform.runLater(() -> {
-                players.remove(player);
-                readyPlayers.remove(player);
-                updateRoomPlayersLabel();
-                updateReadyPlayersLabel();
-                startedLabel.setText("Not started");
+                roomView.onPlayerDisconnection(player.getName());
             });
         });
 
         client.setOnPlayerReady(player -> {
             Platform.runLater(() -> {
-                readyPlayers.add(player);
-                updateReadyPlayersLabel();
+                roomView.onPlayerReady(player.getName());
             });
         });
 
-        client.setOnGameStart(() -> {
+        client.setOnGameStart((seed) -> {
             Platform.runLater(() -> {
-                readyPlayers.clear();
-                updateReadyPlayersLabel();
-                startedLabel.setText("Started!");
+                roomView.onGameStart(seed);
             });
         });
-    }
 
-    private void updateRoomPlayersLabel() {
-        StringJoiner joiner = new StringJoiner(", ");
-        for (Player player : players) {
-            joiner.add(player.getName());
-        }
-
-        roomPlayersLabel.setText(joiner.toString());
-    }
-
-    private void updateReadyPlayersLabel() {
-        StringJoiner joiner = new StringJoiner(", ");
-        for (Player player : readyPlayers) {
-            joiner.add(player.getName());
-        }
-
-        readyLabel.setText(joiner.toString());
+        client.setOnNewPlayerPosition(player -> {
+            roomView.onNewPlayerPosition(player.getName(), player.getX(), player.getY(), player.getVelocityX(), player.getVelocityY());
+        });
     }
 
     @Override
@@ -214,4 +124,6 @@ public class Client extends Application {
         super.stop();
         client.stop();
     }
+
+
 }

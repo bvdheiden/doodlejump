@@ -49,6 +49,7 @@ public class SocketClient {
         }
 
         try {
+            out.reset();
             out.writeObject(transaction);
 
             Log.printf("send transaction %s with payload: %s to client: %s.", transaction.getType(), transaction.getPayload(), hashCode());
