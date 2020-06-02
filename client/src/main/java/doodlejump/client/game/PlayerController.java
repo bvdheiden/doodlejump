@@ -67,7 +67,7 @@ public class PlayerController implements Updateable
     {
         if(other.getColliderTag() == ColliderTag.PLATFORM)
         {
-            if(this.pos.y <other.getPos().y-(50+halfHeight))
+            if(this.pos.y <other.getPos().y-(50+halfHeight)&&velocity.y > 0)
             {
                 velocity.y = 0;
                 this.pos.y = other.getPos().y-(50+(halfHeight));
@@ -82,12 +82,18 @@ public class PlayerController implements Updateable
         lastPos = pos;
 
         this.pos.x += velocity.x*deltaTime;
-        this.pos.y += velocity.y*weightVal*deltaTime;
+        this.pos.y += velocity.y*deltaTime;
         collider.setPos(pos);
+        rectangle.getSquare2D().setPosition(new Point2D.Double(pos.x,pos.y));
 
         if(!grounded)
         {
-            velocity.y += gravityVal*deltaTime;
+            velocity.y += gravityVal*weightVal*deltaTime;
+            friction = 1;
+        }
+        else
+        {
+            friction = 5;
         }
         grounded = false;
     }
