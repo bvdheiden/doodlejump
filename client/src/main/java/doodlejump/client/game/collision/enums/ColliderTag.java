@@ -1,4 +1,4 @@
-package doodlejump.client.game.Collision2D.Enums;
+package doodlejump.client.game.collision.enums;
 
 public enum ColliderTag
 {
@@ -6,10 +6,8 @@ public enum ColliderTag
     ENEMY_UNIT,
     PLATFORM,
     BUTTON,
-    TARGET,
     MOUSE,
     WALL,
-    TRAP,
     TEST,
     DEFAULT;
 }

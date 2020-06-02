@@ -1,6 +1,7 @@
 package doodlejump.client.game;
 
-import doodlejump.client.game.Collision2D.CollisionSystem;
+import doodlejump.client.game.collision.CollisionSystem;
+import doodlejump.client.game.drawing.Circle;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
@@ -96,6 +97,9 @@ public class GameView extends AnchorPane {
         final Affine preTransform = graphicsContext.getTransform();
         graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        Circle c = new Circle(100,100,50,0);
+        c.Draw(graphicsContext);
 
         // draw logic here
 

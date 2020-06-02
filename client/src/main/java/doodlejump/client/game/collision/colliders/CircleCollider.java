@@ -1,8 +1,8 @@
-package doodlejump.client.game.Collision2D.Colliders;
+package doodlejump.client.game.collision.colliders;
 
-import doodlejump.client.game.Collision2D.CollisionSystem;
-import doodlejump.client.game.Collision2D.Enums.ColliderType;
-import doodlejump.client.game.Collision2D.Vector2;
+import doodlejump.client.game.collision.CollisionSystem;
+import doodlejump.client.game.collision.enums.ColliderType;
+import doodlejump.client.game.collision.Vector2;
 
 public class CircleCollider extends Collider2D
 {

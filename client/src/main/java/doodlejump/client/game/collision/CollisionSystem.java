@@ -1,7 +1,6 @@
-package doodlejump.client.game.Collision2D;
+package doodlejump.client.game.collision;
 
-import doodlejump.client.game.Collision2D.Colliders.Collider2D;
-import doodlejump.client.game.Collision2D.CollisionCallback;
+import doodlejump.client.game.collision.colliders.Collider2D;
 
 import java.util.ArrayList;
 

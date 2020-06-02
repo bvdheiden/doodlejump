@@ -1,4 +1,4 @@
-package doodlejump.client.game.Collision2D;
+package doodlejump.client.game.collision;
 
 public final class Vector2
 {
