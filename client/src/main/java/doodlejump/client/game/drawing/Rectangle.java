@@ -1,5 +1,8 @@
 package doodlejump.client.game.drawing;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -35,17 +38,24 @@ public class Rectangle
         }
     }
 
-    public void Draw(Graphics2D graphics2D)
+    public void Draw(GraphicsContext graphicsContext)
     {
-        graphics2D.setColor(rectangleColor);
-        graphics2D.draw(square2D.getTransformedShape());
+        graphicsContext.setStroke(rectangleColor);
+        //graphicsContext.draw(square2D.getTransformedShape());
     }
+
+
+
+
+
+
+
 
     public void FilledDraw(Graphics2D graphics2D)
     {
-        graphics2D.setColor(rectangleColor);
-        graphics2D.fill(square2D.getTransformedShape());
-        graphics2D.draw(square2D.getTransformedShape());
+        //graphics2D.setColor(rectangleColor);
+        //graphics2D.fill(square2D.getTransformedShape());
+        //graphics2D.draw(square2D.getTransformedShape());
     }
 
     public void ImageDraw(Graphics2D graphics2D)

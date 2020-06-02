@@ -99,7 +99,7 @@ public class GameView extends AnchorPane {
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         Circle c = new Circle(100,100,50,0);
-        c.Draw(graphicsContext);
+        //c.Draw(graphicsContext);
 
         // draw logic here
 

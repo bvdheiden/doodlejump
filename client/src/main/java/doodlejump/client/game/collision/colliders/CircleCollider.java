@@ -10,12 +10,12 @@ public class CircleCollider extends Collider2D
 
     public CircleCollider(Vector2 pos, double radius)
     {
+        super();
         this.radius = radius;
         this.pos = pos;
         this.colliderType = ColliderType.CIRCLE_COLLIDER;
 
         collisionCallback = this::UpdateCollisons;
-        CollisionSystem.INSTANCE.allColliders.add(this);
     }
 
 

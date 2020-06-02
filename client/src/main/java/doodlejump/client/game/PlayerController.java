@@ -60,7 +60,7 @@ public class PlayerController implements Updateable
 
         this.rectangle = new Rectangle((int)pos.x, (int)pos.y, (int)width,(int)height,0);
         rectangle.getSquare2D().setPosition(new Point2D.Double(pos.x,pos.y));
-        rectangle.setRectangleColor(Color.blue);
+        //rectangle.setRectangleColor(Color.blue);
     }
 
     private void OnCollision(Collider2D other)

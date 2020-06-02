@@ -8,11 +8,18 @@ public enum CollisionSystem
 {
     INSTANCE;
 
-    public ArrayList<Collider2D> allColliders;
+    private ArrayList<Collider2D> allColliders;
+    private ArrayList<Collider2D> collidersToBeAdded;
+    private ArrayList<Collider2D> collidersToBeRemoved;
+
+    private boolean shouldAddToColliders = false;
+    private boolean shouldRemoveFromColliders = false;
 
     CollisionSystem()
     {
         allColliders = new ArrayList<Collider2D>();
+        collidersToBeAdded = new ArrayList<Collider2D>();
+        collidersToBeRemoved = new ArrayList<Collider2D>();
     }
 
     public void CheckCollosions()
@@ -33,6 +40,61 @@ public enum CollisionSystem
             }
             allColliders.get(i).setIsColliding(hasCollided);
         }
-        //DebugDrawer.DebugCollision(allColliders);
+
+        if(shouldAddToColliders) {
+            for(Collider2D c : collidersToBeAdded) {
+                allColliders.add(c);
+            }
+            collidersToBeAdded.clear();
+            shouldAddToColliders = false;
+        }
+
+        if(shouldRemoveFromColliders) {
+            for(Collider2D c : collidersToBeRemoved) {
+                allColliders.remove(c);
+            }
+            collidersToBeRemoved.clear();
+            shouldRemoveFromColliders = false;
+        }
+    }
+
+    public ArrayList<Collider2D> getAllColliders() {
+        return allColliders;
+    }
+
+    public void setAllColliders(ArrayList<Collider2D> allColliders) {
+        this.allColliders = allColliders;
+    }
+
+    public ArrayList<Collider2D> getCollidersToBeAdded() {
+        return collidersToBeAdded;
+    }
+
+    public void setCollidersToBeAdded(ArrayList<Collider2D> collidersToBeAdded) {
+        this.collidersToBeAdded = collidersToBeAdded;
+    }
+
+    public ArrayList<Collider2D> getCollidersToBeRemoved() {
+        return collidersToBeRemoved;
+    }
+
+    public void setCollidersToBeRemoved(ArrayList<Collider2D> collidersToBeRemoved) {
+        this.collidersToBeRemoved = collidersToBeRemoved;
+    }
+
+    public boolean isShouldAddToColliders() {
+        return shouldAddToColliders;
+    }
+
+    public void setShouldAddToColliders(boolean shouldAddToColliders) {
+        this.shouldAddToColliders = shouldAddToColliders;
+    }
+
+    public boolean isShouldRemoveFromColliders() {
+        return shouldRemoveFromColliders;
+    }
+
+    public void setShouldRemoveFromColliders(boolean shouldRemoveFromColliders) {
+        this.shouldRemoveFromColliders = shouldRemoveFromColliders;
     }
 }

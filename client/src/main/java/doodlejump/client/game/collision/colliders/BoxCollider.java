@@ -11,6 +11,7 @@ public class BoxCollider extends Collider2D
 
     public BoxCollider(Vector2 pos, double width, double height)
     {
+        super();
         this.pos = pos;
         this.width = width;
         this.height = height;
@@ -18,7 +19,6 @@ public class BoxCollider extends Collider2D
         this.colliderType = ColliderType.BOX_COLLIDER;
 
         collisionCallback = this::UpdateCollisons;
-        CollisionSystem.INSTANCE.allColliders.add(this);
     }
 
     @Override

@@ -17,6 +17,12 @@ public abstract class Collider2D
 
     protected Vector2 pos;
 
+    protected Collider2D()
+    {
+        CollisionSystem.INSTANCE.setShouldAddToColliders(true);
+        CollisionSystem.INSTANCE.getCollidersToBeAdded().add(this);
+    }
+
     //check for collision
     public boolean Collide(ColliderType collideWith, Collider2D other)
     {
@@ -45,7 +51,8 @@ public abstract class Collider2D
 
     public void OnDestroy()
     {
-        CollisionSystem.INSTANCE.allColliders.remove(this);
+        CollisionSystem.INSTANCE.setShouldRemoveFromColliders(true);
+        CollisionSystem.INSTANCE.getCollidersToBeRemoved().add(this);
     }
 
     public void UpdateCollisons(Collider2D other)
