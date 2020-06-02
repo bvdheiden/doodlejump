@@ -18,8 +18,11 @@ plugins {
 }
 
 dependencies {
+    compile 'org.jetbrains:annotations:16.0.2'
+
     // Use JUnit test framework
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+    testCompile 'org.mockito:mockito-core:3.+'
 
     compile project(':core')
 }

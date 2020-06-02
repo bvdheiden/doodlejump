@@ -94,7 +94,7 @@ public enum GameClient {
 
                             case GAME_STARTED -> {
                                 if (gameStartListener != null)
-                                    gameStartListener.onGameStart();
+                                    gameStartListener.onGameStart((long) transaction.getPayload());
                             }
 
                             case PLAYER_POSITION -> {
@@ -133,7 +133,7 @@ public enum GameClient {
             client.stop();
         }
 
-        if (socket != null) {
+        if (socket == null) {
             return;
         }
 
@@ -204,6 +204,8 @@ public enum GameClient {
         if (!isRunning() || client == null || player == null) {
             return;
         }
+
+        System.out.printf("x: %f y: %f%n", player.getX(), player.getY());
 
         client.send(new Transaction(TransactionType.PLAYER_POSITION, player));
     }

@@ -1,49 +1,99 @@
 package doodlejump.client.game;
 
-import doodlejump.client.game.collision.CollisionSystem;
-import doodlejump.client.game.drawing.Circle;
+import doodlejump.client.game.generators.*;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Affine;
+import org.jetbrains.annotations.Nullable;
 
-public class GameView extends AnchorPane {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkLoadListener, ChunkLoader.@Nullable ChunkUnloadListener {
+    private static final double WINDOW_WIDTH = 400.0;
+    private static final double WINDOW_HEIGHT = 800.0;
+
+    private boolean isHost;
+    private Player player;
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
-    private final GameClient gameClient;
-    private final CollisionSystem collisionSystem;
 
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
+    private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
 
-    private Player playerData;
+    private final List<Chunk> activeChunks = new ArrayList<>();
 
-
+    private final ChunkLoader chunkLoader;
+    private boolean playing;
 
     public GameView() {
-        this.getChildren().add(this.canvas = new Canvas(getWidth(), getHeight()));
+        this.getChildren().add(this.canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.graphicsContext = this.canvas.getGraphicsContext2D();
-
-        // Bind parent dimensions onto the canvas
-        this.canvas.widthProperty().bind(this.widthProperty());
-        this.canvas.heightProperty().bind(this.heightProperty());
+        this.chunkLoader = new ChunkLoader(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Request focus for detecting keyboard input
-        this.canvas.requestFocus();
-        this.canvas.setOnMouseClicked(event -> this.canvas.requestFocus());
+        canvas.requestFocus();
+        canvas.setOnMouseClicked(event -> this.canvas.requestFocus());
 
         // Disable AA
-        this.graphicsContext.setImageSmoothing(false);
+        graphicsContext.setImageSmoothing(false);
 
-        this.gameClient = GameClient.INSTANCE;
-        this.playerData = new Player("testPlayer");
-        this.collisionSystem = CollisionSystem.INSTANCE;
-
+        setupInterface();
+        setupChunkLoading();
         setupAnimationLoop();
+    }
+
+    public void start(long seed, Player player, boolean isHost) {
+        this.playing = true;
+        this.player = player;
+        this.isHost = isHost;
+
+        player.setPosition(0, 0);
+        player.setVelocity(0, 0);
+
+        chunkLoader.setSeed(seed);
+    }
+
+    public void stop() {
+        this.playing = false;
+        this.player = null;
+        this.isHost = false;
+
+        if (player != null) {
+            player.setPosition(0, 0);
+            player.setVelocity(0, 0);
+        }
+
+        chunkLoader.reset();
+    }
+
+    private void setupInterface() {
+        Label difficultyLabel = new Label("Difficulty: 0");
+        difficultyLabel.setFont(new Font(20));
+        difficultyLabel.setTextFill(Color.WHITE);
+        AnchorPane.setTopAnchor(difficultyLabel, 20.0);
+        AnchorPane.setRightAnchor(difficultyLabel, 20.0);
+
+        chunkLoader.chunkDifficultyProperty().addListener((observable, oldValue, newValue) -> {
+            difficultyLabel.setText("Difficulty: " + newValue);
+        });
+
+        getChildren().addAll(difficultyLabel);
+    }
+
+    private void setupChunkLoading() {
+        chunkLoader.addGenerator(new VariedJumpGenerator(0));
+        chunkLoader.addGenerator(new LongJumpGenerator(10));
+        chunkLoader.setOnChunkLoad(this);
+        chunkLoader.setOnChunkUnload(this);
     }
 
     /**
@@ -55,6 +105,9 @@ public class GameView extends AnchorPane {
 
             @Override
             public void handle(long now) {
+                if (!playing)
+                    return;
+
                 if (last == -1) last = now;
                 double deltaTime = (now - last) / 1000000000.0;
 
@@ -67,6 +120,12 @@ public class GameView extends AnchorPane {
                 fixedUpdateTimer.update(deltaTime);
                 while (fixedUpdateTimer.timeout())
                     fixedUpdate(fixedUpdateTimer.getWait());
+
+                if (isHost) {
+                    uploadTimer.update(deltaTime);
+                    if (uploadTimer.timeout())
+                        GameClient.INSTANCE.sendPosition();
+                }
 
                 last = now;
             }
@@ -87,6 +146,12 @@ public class GameView extends AnchorPane {
      */
     public void fixedUpdate(double deltaTime) {
         // fixed update logic here
+
+        if (isHost) {
+            player.setY(player.getY() + 100 * deltaTime);
+        }
+
+        chunkLoader.onPlayerMovement(player.getX(), player.getY());
     }
 
     /**
@@ -97,12 +162,38 @@ public class GameView extends AnchorPane {
         final Affine preTransform = graphicsContext.getTransform();
         graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        Circle c = new Circle(100,100,50,0);
-        //c.Draw(graphicsContext);
+        graphicsContext.scale(1, -1);
+        graphicsContext.translate(0, -player.getY() - WINDOW_HEIGHT + 80);
 
         // draw logic here
 
+        graphicsContext.setStroke(Color.BLUE);
+        graphicsContext.strokeLine(0, player.getY(), WINDOW_WIDTH, player.getY());
+
+        for (Chunk chunk : activeChunks) {
+            graphicsContext.setStroke(Color.GREEN);
+            graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
+
+            graphicsContext.setFill(Color.RED);
+            for (Platform platform : chunk.getPlatformList()) {
+                graphicsContext.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
+            }
+        }
+
         graphicsContext.setTransform(preTransform);
+    }
+
+    @Override
+    public void onChunkLoad(Chunk chunk) {
+        System.out.println("Chunk loaded");
+
+        activeChunks.add(chunk);
+    }
+
+    @Override
+    public void onChunkUnload(Chunk chunk) {
+        System.out.println("Chunk unloaded");
+
+        activeChunks.remove(chunk);
     }
 }
