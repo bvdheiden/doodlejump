@@ -1,5 +1,8 @@
 package doodlejump.client.game;
 
+import doodlejump.client.game.Collision2D.CollisionSystem;
+import doodlejump.client.networking.GameClient;
+import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,9 +13,13 @@ import javafx.scene.transform.Affine;
 public class GameView extends AnchorPane {
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
+    private final GameClient gameClient;
+    private final CollisionSystem collisionSystem;
 
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
+
+    private Player playerData;
 
 
 
@@ -30,6 +37,10 @@ public class GameView extends AnchorPane {
 
         // Disable AA
         this.graphicsContext.setImageSmoothing(false);
+
+        this.gameClient = GameClient.INSTANCE;
+        this.playerData = new Player("testPlayer");
+        this.collisionSystem = CollisionSystem.INSTANCE;
 
         setupAnimationLoop();
     }
