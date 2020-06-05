@@ -67,10 +67,10 @@ public class BoxCollider extends Collider2D {
 
     @Override
     public boolean BoxCollision(BoxCollider other) {
-        return (this.getRight() >= other.getLeft() &&    // r1 right edge past r2 left
-                this.getLeft() <= other.getRight() &&    // r1 left edge past r2 right
-                this.getTop() >= other.getBottom() &&    // r1 top edge past r2 bottom
-                this.getBottom() <= other.getTop())    // r1 bottom edge past r2 top
+        return (this.getRight() >= other.getLeft() &&    // right edge past left
+                this.getLeft() <= other.getRight() &&    // left edge past right
+                this.getTop() >= other.getBottom() &&    // top edge past bottom
+                this.getBottom() <= other.getTop())      // bottom edge past top
         ;
     }
 
