@@ -8,21 +8,16 @@ import doodlejump.client.game.collision.enums.ColliderTag;
 import doodlejump.client.game.drawing.Rectangle;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
-import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
 
-
-public class PlayerController
-{
-    private Player playerData;
+public class PlayerController {
     private final GameClient gameClient;
     private final CollisionSystem collisionSystem;
-
+    private Player playerData;
     private Vector2 pos;
     private Vector2 lastPos;
     private Vector2 velocity;
@@ -45,88 +40,73 @@ public class PlayerController
     private BoxCollider collider;
     private Rectangle rectangle;
 
-    public PlayerController(double xPos, double yPos)
-    {
+    public PlayerController(double xPos, double yPos) {
         //this.playerData = getPlayerData;
         this.gameClient = GameClient.INSTANCE;
         this.collisionSystem = CollisionSystem.INSTANCE;
 
         //movement stuff
-        this.pos = new Vector2(xPos,yPos);
+        this.pos = new Vector2(xPos, yPos);
         this.lastPos = new Vector2();
         this.velocity = new Vector2();
         this.addVelocity = new Vector2();
         this.width = 100;
-        this.halfWidth = width*0.5;
+        this.halfWidth = width * 0.5;
         this.height = 100;
-        this.halfHeight = height*0.5;
+        this.halfHeight = height * 0.5;
 
         //collision stuff
-        this.collider = new BoxCollider(pos, width,height);
+        this.collider = new BoxCollider(pos, width, height);
         this.collider.collisionCallback = this::OnCollision;
         this.collider.setColliderTag(ColliderTag.PLAYER_UNIT);
         this.collider.setOwnerObject(this);
 
-        this.rectangle = new Rectangle((int)pos.x, (int)pos.y, (int)width,(int)height);
+        this.rectangle = new Rectangle((int) pos.x, (int) pos.y, (int) width, (int) height);
         this.rectangle.setRectangleColor(Color.BLUE);
         //rectangle.setRectangleColor(Color.blue);
     }
 
-    private void OnCollision(Collider2D other)
-    {
-        if(other.getColliderTag() == ColliderTag.PLATFORM)
-        {
-            if(this.pos.y <other.getPos().y-(10+halfHeight)&&velocity.y > 0)
-            {
+    private void OnCollision(Collider2D other) {
+        if (other.getColliderTag() == ColliderTag.PLATFORM) {
+            if (this.pos.y < other.getPos().y - (10 + halfHeight) && velocity.y > 0) {
                 velocity.y = 800;
-                this.pos.y = other.getPos().y-(10+(halfHeight));
+                this.pos.y = other.getPos().y - (10 + (halfHeight));
                 grounded = true;
             }
         }
     }
 
-    public void OnKeyPress(KeyEvent e)
-    {
-        if(e.getCode() == KeyCode.D)
-        {
-            if(velocity.x < maxMovSpeed)
-            {
+    public void OnKeyPress(KeyEvent e) {
+        if (e.getCode() == KeyCode.D) {
+            if (velocity.x < maxMovSpeed) {
                 addVelocity.x += 10;
             }
-        }
-        else if(e.getCode() == KeyCode.A)
-        {
-            if(velocity.x > maxMovSpeed)
-            {
+        } else if (e.getCode() == KeyCode.A) {
+            if (velocity.x > maxMovSpeed) {
                 addVelocity.x -= 10;
             }
         }
     }
 
 
-    public void update(double deltaTime)
-    {
+    public void update(double deltaTime) {
         lastPos = pos;
 
-        if(!grounded)
-        {
-            addVelocity.y += velocity.y+gravityVal*weightVal*deltaTime;
+        if (!grounded) {
+            addVelocity.y += velocity.y + gravityVal * weightVal * deltaTime;
             friction = 1;
-        }
-        else
-        {
+        } else {
             friction = 5;
         }
 
         velocity.Add(addVelocity);
 
-        if(velocity.GetMagnitude() > maxSpeed)
-        {
+        if (velocity.GetMagnitude() > maxSpeed) {
             velocity = velocity.Normalize().MultiplyByDouble(maxSpeed);
         }
 
-        this.pos.x += velocity.x*deltaTime;
-        this.pos.y += velocity.y*deltaTime;
+        this.pos.x += velocity.x * deltaTime;
+        this.pos.y += velocity.y * deltaTime;
         collider.setPos(pos);
         rectangle.ChangePos(pos);
 
@@ -134,8 +114,7 @@ public class PlayerController
         grounded = false;
     }
 
-    public void Draw(GraphicsContext graphicsContext)
-    {
+    public void Draw(GraphicsContext graphicsContext) {
         System.out.println("hello");
         rectangle.FilledDraw(graphicsContext);
     }

@@ -8,8 +8,7 @@ import javafx.scene.paint.Color;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class Circle
-{
+public class Circle {
     private Color circleColor;
     private Image art;
     private Vector2 pos;
@@ -18,18 +17,16 @@ public class Circle
     private int xPos;
     private int yPos;
 
-    public Circle(int xPos,int yPos,int radius, float rotation)
-    {
-        this.pos = new Vector2(xPos,yPos);
+    public Circle(int xPos, int yPos, int radius, float rotation) {
+        this.pos = new Vector2(xPos, yPos);
         this.radius = radius;
-        this.halfRadius = radius/2;
+        this.halfRadius = radius / 2;
         this.xPos = xPos;
         this.yPos = yPos;
         //SetImageByFilePath("assets/Default.png");
     }
 
-    public void SetImageByFilePath(String filePath)
-    {
+    public void SetImageByFilePath(String filePath) {
         try {
             this.art = new Image(new FileInputStream(filePath));
         } catch (FileNotFoundException e) {
@@ -37,59 +34,50 @@ public class Circle
         }
     }
 
-    public void Draw(GraphicsContext graphicsContext)
-    {
+    public void Draw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(circleColor);
-        graphicsContext.strokeOval(xPos,yPos,radius,radius);
+        graphicsContext.strokeOval(xPos, yPos, radius, radius);
     }
 
-    public void FilledDraw(GraphicsContext graphicsContext)
-    {
+    public void FilledDraw(GraphicsContext graphicsContext) {
         graphicsContext.setFill(circleColor);
-        graphicsContext.fillOval(xPos,yPos,radius,radius);
+        graphicsContext.fillOval(xPos, yPos, radius, radius);
     }
 
-    public void FilledDrawWithLine(GraphicsContext graphicsContext, Color lineColor)
-    {
+    public void FilledDrawWithLine(GraphicsContext graphicsContext, Color lineColor) {
         graphicsContext.setStroke(circleColor);
-        graphicsContext.fillOval(xPos,yPos,radius,radius);
+        graphicsContext.fillOval(xPos, yPos, radius, radius);
         graphicsContext.setStroke(lineColor);
-        graphicsContext.strokeOval(xPos,yPos,radius,radius);
+        graphicsContext.strokeOval(xPos, yPos, radius, radius);
     }
 
-    public void ChangePos(int newXPos, int newYPos)
-    {
+    public void ChangePos(int newXPos, int newYPos) {
         pos.x = newXPos;
         pos.y = newYPos;
         xPos = newXPos;
         yPos = newYPos;
     }
 
-    public void ChangePos(Vector2 newPos)
-    {
+    public void ChangePos(Vector2 newPos) {
         pos = newPos;
-        xPos = (int)newPos.x;
-        yPos = (int)newPos.y;
+        xPos = (int) newPos.x;
+        yPos = (int) newPos.y;
     }
 
     //getters and setters from here
-    public Color getCircleColor()
-    {
+    public Color getCircleColor() {
         return circleColor;
     }
 
-    public void setCircleColor(Color circleColor)
-    {
+    public void setCircleColor(Color circleColor) {
         this.circleColor = circleColor;
     }
 
-    public Image getArt()
-    {
+    public Image getArt() {
         return art;
     }
 
-    public void setArt(Image art)
-    {
+    public void setArt(Image art) {
         this.art = art;
     }
 }

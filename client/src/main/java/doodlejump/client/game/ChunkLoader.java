@@ -86,16 +86,6 @@ public class ChunkLoader implements PlayerMovementListener {
         this.chunkUnloadListener = listener;
     }
 
-    @FunctionalInterface
-    public interface ChunkLoadListener {
-        void onChunkLoad(Chunk chunk);
-    }
-
-    @FunctionalInterface
-    public interface ChunkUnloadListener {
-        void onChunkUnload(Chunk chunk);
-    }
-
     private void initialize() {
         double lastEndY = 0.0;
         while (lastEndY < windowHeight) {
@@ -147,5 +137,15 @@ public class ChunkLoader implements PlayerMovementListener {
             return 0;
 
         return (int) (startY / 100.0);
+    }
+
+    @FunctionalInterface
+    public interface ChunkLoadListener {
+        void onChunkLoad(Chunk chunk);
+    }
+
+    @FunctionalInterface
+    public interface ChunkUnloadListener {
+        void onChunkUnload(Chunk chunk);
     }
 }

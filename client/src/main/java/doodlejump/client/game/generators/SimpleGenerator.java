@@ -46,7 +46,10 @@ public abstract class SimpleGenerator extends ChunkGenerator {
     }
 
     protected abstract int getRandomPlatformAmount(Random random);
+
     protected abstract double getRandomPlatformDistance(Random random);
+
     protected abstract double getRandomPlatformWidth(Random random);
+
     protected abstract double getRandomPlatformX(Random random, double platformWidth, double windowWidth);
 }

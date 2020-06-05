@@ -20,11 +20,9 @@ public class RoomView extends BorderPane {
     private final ListView<Player> listView;
 
     private final HBox gameLayout;
-
-    private boolean connected;
-
     private final GameView gameView1;
     private final GameView gameView2;
+    private boolean connected;
 
     public RoomView() {
         this.findRoomButton = new Button("Find room");
@@ -131,9 +129,9 @@ public class RoomView extends BorderPane {
 
     private Player getHostPlayer() {
         return playerList.stream()
-            .filter(Player::isHost)
-            .findFirst()
-            .get();
+                .filter(Player::isHost)
+                .findFirst()
+                .get();
     }
 
     private Player getServerPlayer() {

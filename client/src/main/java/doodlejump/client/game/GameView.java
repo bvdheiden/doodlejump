@@ -1,8 +1,8 @@
 package doodlejump.client.game;
 
 import doodlejump.client.game.collision.CollisionSystem;
-import doodlejump.client.game.drawing.Rectangle;
-import doodlejump.client.game.generators.*;
+import doodlejump.client.game.generators.LongJumpGenerator;
+import doodlejump.client.game.generators.VariedJumpGenerator;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
@@ -11,7 +11,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -24,20 +23,15 @@ import java.util.List;
 public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkLoadListener, ChunkLoader.@Nullable ChunkUnloadListener {
     private static final double WINDOW_WIDTH = 400.0;
     private static final double WINDOW_HEIGHT = 800.0;
-
-    private boolean isHost;
-    private Player player;
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
-
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
     private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
-
     private final List<Chunk> activeChunks = new ArrayList<>();
-
     private final ChunkLoader chunkLoader;
-
+    private boolean isHost;
+    private Player player;
     private CollisionSystem collisionSystem;
     private PlayerController playerController;
     private boolean playing;
@@ -74,7 +68,9 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
                 new EventHandler<KeyEvent>() {
                     public void handle(KeyEvent e) {
                         playerController.OnKeyPress(e);
-                    };
+                    }
+
+                    ;
                 });
 
         player.setPosition(0, 0);
@@ -155,6 +151,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
 
     /**
      * Run the update loop
+     *
      * @param deltaTime time difference in nano seconds
      */
     public void update(double deltaTime) {
@@ -165,6 +162,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
 
     /**
      * Run the fixed update loop
+     *
      * @param deltaTime time difference in nano seconds
      */
     public void fixedUpdate(double deltaTime) {
@@ -179,6 +177,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
 
     /**
      * Draw the graphics
+     *
      * @param graphicsContext graphics context
      */
     public void draw(GraphicsContext graphicsContext) {
@@ -189,7 +188,8 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         graphicsContext.translate(0, -player.getY() - WINDOW_HEIGHT + 80);
 
         // draw logic here
-        playerController.Draw(graphicsContext);;
+        playerController.Draw(graphicsContext);
+        ;
 
         graphicsContext.setStroke(Color.BLUE);
         graphicsContext.strokeLine(0, player.getY(), WINDOW_WIDTH, player.getY());

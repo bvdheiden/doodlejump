@@ -8,8 +8,7 @@ import javafx.scene.paint.Color;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class Rectangle
-{
+public class Rectangle {
     private Color rectangleColor;
     private Image art;
     private Vector2 pos;
@@ -20,11 +19,10 @@ public class Rectangle
     private int xSizeOffset;
     private int ySizeOffset;
 
-    public Rectangle(int xPos,int yPos,int xSize, int ySize)
-    {
-        this.pos = new Vector2(xPos,yPos);
-        this.xSizeOffset = xSize/2;
-        this.ySizeOffset = ySize/2;
+    public Rectangle(int xPos, int yPos, int xSize, int ySize) {
+        this.pos = new Vector2(xPos, yPos);
+        this.xSizeOffset = xSize / 2;
+        this.ySizeOffset = ySize / 2;
         this.xSize = xSize;
         this.ySize = ySize;
         this.xPos = xPos;
@@ -33,8 +31,7 @@ public class Rectangle
         //SetImageByFilePath("assets/Default.png");
     }
 
-    public void SetImageByFilePath(String filePath)
-    {
+    public void SetImageByFilePath(String filePath) {
         try {
             this.art = new Image(new FileInputStream(filePath));
         } catch (FileNotFoundException e) {
@@ -42,56 +39,47 @@ public class Rectangle
         }
     }
 
-    public void Draw(GraphicsContext graphicsContext)
-    {
+    public void Draw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(rectangleColor);
-        graphicsContext.strokeRect(xPos,yPos,xSize,ySize);
+        graphicsContext.strokeRect(xPos, yPos, xSize, ySize);
     }
 
-    public void FilledDraw(GraphicsContext graphicsContext)
-    {
+    public void FilledDraw(GraphicsContext graphicsContext) {
         graphicsContext.setFill(rectangleColor);
-        graphicsContext.fillRect(xPos,yPos,xSize,ySize);
+        graphicsContext.fillRect(xPos, yPos, xSize, ySize);
     }
 
-    public void ImageDraw(GraphicsContext graphicsContext)
-    {
-        graphicsContext.drawImage(art, xPos,yPos,xSize,ySize);
+    public void ImageDraw(GraphicsContext graphicsContext) {
+        graphicsContext.drawImage(art, xPos, yPos, xSize, ySize);
     }
 
-    public void ChangePos(int newXPos, int newYPos)
-    {
+    public void ChangePos(int newXPos, int newYPos) {
         pos.x = newXPos;
         pos.y = newYPos;
         xPos = newXPos;
         yPos = newYPos;
     }
 
-    public void ChangePos(Vector2 newPos)
-    {
+    public void ChangePos(Vector2 newPos) {
         pos = newPos;
-        xPos = (int)newPos.x;
-        yPos = (int)newPos.y;
+        xPos = (int) newPos.x;
+        yPos = (int) newPos.y;
     }
 
     //getters and setters from here
-    public Color getRectangleColor()
-    {
+    public Color getRectangleColor() {
         return rectangleColor;
     }
 
-    public void setRectangleColor(Color rectangleColor)
-    {
+    public void setRectangleColor(Color rectangleColor) {
         this.rectangleColor = rectangleColor;
     }
 
-    public Image getArt()
-    {
+    public Image getArt() {
         return art;
     }
 
-    public void setArt(Image art)
-    {
+    public void setArt(Image art) {
         this.art = art;
     }
 }

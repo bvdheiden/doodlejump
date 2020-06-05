@@ -8,8 +8,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public enum CollisionSystem
-{
+public enum CollisionSystem {
     INSTANCE;
 
     private ArrayList<Collider2D> allColliders;
@@ -19,23 +18,19 @@ public enum CollisionSystem
     private boolean shouldAddToColliders = false;
     private boolean shouldRemoveFromColliders = false;
 
-    CollisionSystem()
-    {
+    CollisionSystem() {
         allColliders = new ArrayList<Collider2D>();
         collidersToBeAdded = new ArrayList<Collider2D>();
         collidersToBeRemoved = new ArrayList<Collider2D>();
     }
 
-    public void CheckCollosions()
-    {
+    public void CheckCollosions() {
         boolean hasCollided;
         for (int i = 0; i < allColliders.size(); i++) {
             hasCollided = false;
             for (int j = 0; j < allColliders.size(); j++) {
-                if(i != j)
-                {
-                    if(allColliders.get(i).Collide(allColliders.get(j).getColliderType(), allColliders.get(j)))
-                    {
+                if (i != j) {
+                    if (allColliders.get(i).Collide(allColliders.get(j).getColliderType(), allColliders.get(j))) {
                         hasCollided = true;
                         allColliders.get(i).getCollisionCallback().collide(allColliders.get(j));
                         allColliders.get(j).getCollisionCallback().collide(allColliders.get(i));
@@ -45,16 +40,16 @@ public enum CollisionSystem
             allColliders.get(i).setIsColliding(hasCollided);
         }
 
-        if(shouldAddToColliders) {
-            for(Collider2D c : collidersToBeAdded) {
+        if (shouldAddToColliders) {
+            for (Collider2D c : collidersToBeAdded) {
                 allColliders.add(c);
             }
             collidersToBeAdded.clear();
             shouldAddToColliders = false;
         }
 
-        if(shouldRemoveFromColliders) {
-            for(Collider2D c : collidersToBeRemoved) {
+        if (shouldRemoveFromColliders) {
+            for (Collider2D c : collidersToBeRemoved) {
                 allColliders.remove(c);
             }
             collidersToBeRemoved.clear();
@@ -62,14 +57,11 @@ public enum CollisionSystem
         }
     }
 
-    public void DebugDraw(GraphicsContext graphicsContext)
-    {
+    public void DebugDraw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(Color.YELLOW);
-        for(Collider2D col : allColliders)
-        {
-            if(col.getColliderType() == ColliderType.BOX_COLLIDER)
-            {
-                BoxCollider box = (BoxCollider)col;
+        for (Collider2D col : allColliders) {
+            if (col.getColliderType() == ColliderType.BOX_COLLIDER) {
+                BoxCollider box = (BoxCollider) col;
                 graphicsContext.strokeRect(box.getPos().x, box.getPos().x, box.width, box.height);
             }
         }

@@ -153,6 +153,7 @@ public enum GameClient {
 
     /**
      * Log in with username.
+     *
      * @param name username
      */
     public void login(String name) {
@@ -212,6 +213,7 @@ public enum GameClient {
 
     /**
      * On server connection callback.
+     *
      * @param listener callback
      */
     public void setOnConnection(ConnectionListener listener) {
@@ -220,6 +222,7 @@ public enum GameClient {
 
     /**
      * On server disconnection callback.
+     *
      * @param listener callback
      */
     public void setOnDisconnection(DisconnectionListener listener) {
@@ -228,6 +231,7 @@ public enum GameClient {
 
     /**
      * On player login callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerLogin(PlayerLoginListener listener) {
@@ -236,6 +240,7 @@ public enum GameClient {
 
     /**
      * On room connection callback.
+     *
      * @param listener callback
      */
     public void setOnRoomConnection(ConnectionListener listener) {
@@ -244,6 +249,7 @@ public enum GameClient {
 
     /**
      * On room disconnection callback.
+     *
      * @param listener callback
      */
     public void setOnRoomDisconnection(DisconnectionListener listener) {
@@ -252,6 +258,7 @@ public enum GameClient {
 
     /**
      * On player in room connection callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerConnection(PlayerConnectionListener listener) {
@@ -260,6 +267,7 @@ public enum GameClient {
 
     /**
      * On player in room disconnection callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerDisconnection(PlayerDisconnectionListener listener) {
@@ -268,6 +276,7 @@ public enum GameClient {
 
     /**
      * On player in room ready callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerReady(PlayerReadyListener listener) {
@@ -276,6 +285,7 @@ public enum GameClient {
 
     /**
      * On player in room new position callback.
+     *
      * @param listener callback
      */
     public void setOnNewPlayerPosition(PlayerPositionListener listener) {
@@ -284,6 +294,7 @@ public enum GameClient {
 
     /**
      * On game in room start callback.
+     *
      * @param listener callback
      */
     public void setOnGameStart(GameStartListener listener) {

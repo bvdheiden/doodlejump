@@ -5,11 +5,10 @@ import org.jetbrains.annotations.Contract;
 import java.util.Random;
 
 public abstract class ChunkGenerator {
-    private long seed;
-
     protected final int difficulty;
     protected double windowWidth;
     protected double windowHeight;
+    private long seed;
 
     @Contract(pure = true)
     public ChunkGenerator(int difficulty) {

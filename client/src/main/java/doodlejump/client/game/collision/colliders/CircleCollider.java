@@ -1,15 +1,12 @@
 package doodlejump.client.game.collision.colliders;
 
-import doodlejump.client.game.collision.CollisionSystem;
-import doodlejump.client.game.collision.enums.ColliderType;
 import doodlejump.client.game.collision.Vector2;
+import doodlejump.client.game.collision.enums.ColliderType;
 
-public class CircleCollider extends Collider2D
-{
-    public double  radius;
+public class CircleCollider extends Collider2D {
+    public double radius;
 
-    public CircleCollider(Vector2 pos, double radius)
-    {
+    public CircleCollider(Vector2 pos, double radius) {
         super();
         this.radius = radius;
         this.pos = pos;
@@ -21,14 +18,12 @@ public class CircleCollider extends Collider2D
 
     //the check for collision call
     @Override
-    public boolean Collide(ColliderType collideWith, Collider2D other)
-    {
-        switch (collideWith)
-        {
+    public boolean Collide(ColliderType collideWith, Collider2D other) {
+        switch (collideWith) {
             case CIRCLE_COLLIDER:
-                return CircleCollision((CircleCollider)other);
+                return CircleCollision((CircleCollider) other);
             case BOX_COLLIDER:
-                return BoxCollision((BoxCollider)other);
+                return BoxCollision((BoxCollider) other);
             case DEFAULT:
                 return false;
             default:
@@ -36,40 +31,44 @@ public class CircleCollider extends Collider2D
         }
     }
 
-    
+
     @Override
-    public boolean CircleCollision(CircleCollider other)
-    {
+    public boolean CircleCollision(CircleCollider other) {
         return ((this.radius + other.radius) > this.pos.Distance(other.pos));
     }
 
     @Override
-    public boolean BoxCollision(BoxCollider other)
-    {
+    public boolean BoxCollision(BoxCollider other) {
         double circleDistanceX = Math.abs(this.pos.x - other.pos.x);
         double circleDistanceY = Math.abs(this.pos.y - other.pos.y);
 
-        if (circleDistanceX > (other.width/2 + this.radius)) { return false; }
-        if (circleDistanceY > (other.height/2 + this.radius)) { return false; }
+        if (circleDistanceX > (other.width / 2 + this.radius)) {
+            return false;
+        }
+        if (circleDistanceY > (other.height / 2 + this.radius)) {
+            return false;
+        }
 
-        if (circleDistanceX <= (other.width/2)) { return true; }
-        if (circleDistanceY <= (other.height/2)) { return true; }
+        if (circleDistanceX <= (other.width / 2)) {
+            return true;
+        }
+        if (circleDistanceY <= (other.height / 2)) {
+            return true;
+        }
 
-        double cornerDistance_sq = Math.pow((circleDistanceX - other.width/2),2) +
-                Math.pow((circleDistanceY - other.height/2),2);
+        double cornerDistance_sq = Math.pow((circleDistanceX - other.width / 2), 2) +
+                Math.pow((circleDistanceY - other.height / 2), 2);
 
-        return (cornerDistance_sq <= (this.radius*this.radius));
+        return (cornerDistance_sq <= (this.radius * this.radius));
     }
 
     @Override
-    public boolean ContainsPoint(Vector2 point)
-    {
-        return (this.pos.Distance(point)<this.radius);
+    public boolean ContainsPoint(Vector2 point) {
+        return (this.pos.Distance(point) < this.radius);
     }
 
     @Override
-    public void UpdateCollisons(Collider2D other)
-    {
+    public void UpdateCollisons(Collider2D other) {
 
     }
 }
