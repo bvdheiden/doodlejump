@@ -1,70 +1,76 @@
 package doodlejump.client.game.drawing;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.IOException;
+import doodlejump.client.game.collision.Vector2;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class Circle
 {
-    private Renderable circle2D;
     private Color circleColor;
     private Image art;
+    private Vector2 pos;
     private int radius;
+    private int halfRadius;
     private int xPos;
     private int yPos;
 
     public Circle(int xPos,int yPos,int radius, float rotation)
     {
-        this.circle2D = new Renderable(new Ellipse2D.Double(-radius,-radius, radius+radius,radius+radius), new Point2D.Double(xPos,yPos), rotation, 1);
+        this.pos = new Vector2(xPos,yPos);
         this.radius = radius;
+        this.halfRadius = radius/2;
         this.xPos = xPos;
         this.yPos = yPos;
-        SetImageByFilePath("assets/Default.png");
+        //SetImageByFilePath("assets/Default.png");
     }
 
     public void SetImageByFilePath(String filePath)
     {
-        File file = new File(filePath);
-
         try {
-            art = ImageIO.read(file);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            this.art = new Image(new FileInputStream(filePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    public void Draw(Graphics2D graphics2D)
+    public void Draw(GraphicsContext graphicsContext)
     {
-        graphics2D.setColor(circleColor);
-        graphics2D.draw(circle2D.getTransformedShape());
+        graphicsContext.setStroke(circleColor);
+        graphicsContext.strokeOval(xPos,yPos,radius,radius);
     }
 
-    public void FilledDraw(Graphics2D graphics2D)
+    public void FilledDraw(GraphicsContext graphicsContext)
     {
-        Shape shape = circle2D.getTransformedShape();
-        graphics2D.setColor(circleColor);
-        graphics2D.fill(shape);
-        graphics2D.draw(shape);
+        graphicsContext.setFill(circleColor);
+        graphicsContext.fillOval(xPos,yPos,radius,radius);
     }
 
-    public void FilledDrawWithLine(Graphics2D graphics2D, Color lineColor)
+    public void FilledDrawWithLine(GraphicsContext graphicsContext, Color lineColor)
     {
-        Shape shape = circle2D.getTransformedShape();
-        graphics2D.setColor(circleColor);
-        graphics2D.fill(shape);
-        graphics2D.setColor(lineColor);
-        graphics2D.draw(shape);
+        graphicsContext.setStroke(circleColor);
+        graphicsContext.fillOval(xPos,yPos,radius,radius);
+        graphicsContext.setStroke(lineColor);
+        graphicsContext.strokeOval(xPos,yPos,radius,radius);
     }
 
-    public void ImageDraw(Graphics2D graphics2D)
+    public void ChangePos(int newXPos, int newYPos)
     {
-        graphics2D.drawImage(art, circle2D.getTransform(),null);
+        pos.x = newXPos;
+        pos.y = newYPos;
+        xPos = newXPos;
+        yPos = newYPos;
     }
 
+    public void ChangePos(Vector2 newPos)
+    {
+        pos = newPos;
+        xPos = (int)newPos.x;
+        yPos = (int)newPos.y;
+    }
 
     //getters and setters from here
     public Color getCircleColor()
@@ -75,16 +81,6 @@ public class Circle
     public void setCircleColor(Color circleColor)
     {
         this.circleColor = circleColor;
-    }
-
-    public Renderable getCircle2D()
-    {
-        return circle2D;
-    }
-
-    public void setCircle2D(Renderable circle2D)
-    {
-        this.circle2D = circle2D;
     }
 
     public Image getArt()

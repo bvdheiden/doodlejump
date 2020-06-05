@@ -1,6 +1,10 @@
 package doodlejump.client.game.collision;
 
+import doodlejump.client.game.collision.colliders.BoxCollider;
 import doodlejump.client.game.collision.colliders.Collider2D;
+import doodlejump.client.game.collision.enums.ColliderType;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -55,6 +59,19 @@ public enum CollisionSystem
             }
             collidersToBeRemoved.clear();
             shouldRemoveFromColliders = false;
+        }
+    }
+
+    public void DebugDraw(GraphicsContext graphicsContext)
+    {
+        graphicsContext.setStroke(Color.YELLOW);
+        for(Collider2D col : allColliders)
+        {
+            if(col.getColliderType() == ColliderType.BOX_COLLIDER)
+            {
+                BoxCollider box = (BoxCollider)col;
+                graphicsContext.strokeRect(box.getPos().x, box.getPos().x, box.width, box.height);
+            }
         }
     }
 
