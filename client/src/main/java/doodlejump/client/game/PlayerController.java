@@ -40,13 +40,15 @@ public class PlayerController {
     private BoxCollider collider;
     private Rectangle rectangle;
 
-    public PlayerController(double xPos, double yPos) {
-        //this.playerData = getPlayerData;
+
+    public PlayerController(Player getPlayerData)
+    {
+        this.playerData = getPlayerData;
         this.gameClient = GameClient.INSTANCE;
         this.collisionSystem = CollisionSystem.INSTANCE;
 
         //movement stuff
-        this.pos = new Vector2(xPos, yPos);
+        this.pos = new Vector2(playerData.getX(),playerData.getY());
         this.lastPos = new Vector2();
         this.velocity = new Vector2();
         this.addVelocity = new Vector2();

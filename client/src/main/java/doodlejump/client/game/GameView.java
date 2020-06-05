@@ -62,7 +62,10 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         this.isHost = isHost;
 
         collisionSystem = CollisionSystem.INSTANCE;
-        playerController = new PlayerController(100, 500);
+        if(isHost)
+        {
+            playerController = new PlayerController(player);
+        }
 
         addEventFilter(KeyEvent.KEY_PRESSED,
                 new EventHandler<KeyEvent>() {
@@ -157,7 +160,9 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     public void update(double deltaTime) {
         // update logic here
         collisionSystem.CheckCollosions();
-        playerController.update(deltaTime);
+        if(isHost) {
+            playerController.update(deltaTime);
+        }
     }
 
     /**
@@ -188,8 +193,10 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         graphicsContext.translate(0, -player.getY() - WINDOW_HEIGHT + 80);
 
         // draw logic here
-        playerController.Draw(graphicsContext);
-        ;
+        if(isHost)
+        {
+            playerController.Draw(graphicsContext);
+        };
 
         graphicsContext.setStroke(Color.BLUE);
         graphicsContext.strokeLine(0, player.getY(), WINDOW_WIDTH, player.getY());

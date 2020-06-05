@@ -59,10 +59,12 @@ public enum CollisionSystem {
 
     public void DebugDraw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(Color.YELLOW);
-        for (Collider2D col : allColliders) {
-            if (col.getColliderType() == ColliderType.BOX_COLLIDER) {
-                BoxCollider box = (BoxCollider) col;
-                graphicsContext.strokeRect(box.getPos().x, box.getPos().x, box.width, box.height);
+        for(Collider2D col : allColliders)
+        {
+            if(col.getColliderType() == ColliderType.BOX_COLLIDER)
+            {
+                BoxCollider box = (BoxCollider)col;
+                graphicsContext.strokeRect(box.getPos().x, box.getPos().y, box.width, box.height);
             }
         }
     }
