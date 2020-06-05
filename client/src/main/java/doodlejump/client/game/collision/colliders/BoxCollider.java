@@ -15,6 +15,7 @@ public class BoxCollider extends Collider2D {
 
         this.colliderType = ColliderType.BOX_COLLIDER;
 
+        preCollisionCallback = this::PreCollisons;
         collisionCallback = this::UpdateCollisons;
     }
 
@@ -66,10 +67,11 @@ public class BoxCollider extends Collider2D {
 
     @Override
     public boolean BoxCollision(BoxCollider other) {
-        return !(other.getLeft() > this.getRight()
-                || other.getRight() < this.getLeft()
-                || other.getTop() > this.getBottom()
-                || other.getBottom() < this.getTop());
+        return (this.getRight() >= other.getLeft() &&    // r1 right edge past r2 left
+                this.getLeft() <= other.getRight() &&    // r1 left edge past r2 right
+                this.getTop() >= other.getBottom() &&    // r1 top edge past r2 bottom
+                this.getBottom() <= other.getTop())    // r1 bottom edge past r2 top
+        ;
     }
 
     @Override
@@ -78,6 +80,12 @@ public class BoxCollider extends Collider2D {
                 point.x <= this.getRight() &&
                 point.y >= this.getTop() &&
                 point.y <= this.getBottom());
+    }
+
+    @Override
+    public void PreCollisons()
+    {
+
     }
 
     @Override
@@ -94,10 +102,10 @@ public class BoxCollider extends Collider2D {
     }
 
     public double getTop() {
-        return this.pos.y - this.height * 0.5;
+        return this.pos.y + this.height * 0.5;
     }
 
     public double getBottom() {
-        return this.pos.y + this.height * 0.5;
+        return this.pos.y - this.height * 0.5;
     }
 }

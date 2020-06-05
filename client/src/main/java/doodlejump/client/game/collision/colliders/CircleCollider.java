@@ -12,6 +12,7 @@ public class CircleCollider extends Collider2D {
         this.pos = pos;
         this.colliderType = ColliderType.CIRCLE_COLLIDER;
 
+        preCollisionCallback = this::PreCollisons;
         collisionCallback = this::UpdateCollisons;
     }
 
@@ -65,6 +66,12 @@ public class CircleCollider extends Collider2D {
     @Override
     public boolean ContainsPoint(Vector2 point) {
         return (this.pos.Distance(point) < this.radius);
+    }
+
+    @Override
+    public void PreCollisons()
+    {
+
     }
 
     @Override

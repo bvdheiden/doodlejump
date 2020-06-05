@@ -5,6 +5,7 @@ public enum ColliderTag {
     ENEMY_UNIT,
     PLATFORM,
     BUTTON,
+    GROUND,
     MOUSE,
     WALL,
     TEST,

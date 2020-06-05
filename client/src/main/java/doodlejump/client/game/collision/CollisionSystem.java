@@ -26,6 +26,11 @@ public enum CollisionSystem {
 
     public void CheckCollosions() {
         boolean hasCollided;
+
+        for (int i = 0; i < allColliders.size(); i++) {
+            allColliders.get(i).getPreCollisionCallback().run();
+        }
+
         for (int i = 0; i < allColliders.size(); i++) {
             hasCollided = false;
             for (int j = 0; j < allColliders.size(); j++) {
@@ -64,7 +69,7 @@ public enum CollisionSystem {
             if(col.getColliderType() == ColliderType.BOX_COLLIDER)
             {
                 BoxCollider box = (BoxCollider)col;
-                graphicsContext.strokeRect(box.getPos().x, box.getPos().y, box.width, box.height);
+                graphicsContext.strokeRect(box.getPos().x-box.width*0.5, box.getPos().y-box.height*0.5, box.width, box.height);
             }
         }
     }

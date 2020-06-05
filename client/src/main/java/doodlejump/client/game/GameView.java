@@ -159,10 +159,10 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     public void update(double deltaTime) {
         // update logic here
-        collisionSystem.CheckCollosions();
         if(isHost) {
             playerController.update(deltaTime);
         }
+        collisionSystem.CheckCollosions();
     }
 
     /**
@@ -172,10 +172,6 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     public void fixedUpdate(double deltaTime) {
         // fixed update logic here
-
-        if (isHost) {
-            //player.setY(player.getY() + 100 * deltaTime);
-        }
 
         chunkLoader.onPlayerMovement(player.getX(), player.getY());
     }
@@ -187,10 +183,10 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     public void draw(GraphicsContext graphicsContext) {
         final Affine preTransform = graphicsContext.getTransform();
-        graphicsContext.setFill(Color.BLACK);
+        graphicsContext.setFill(Color.rgb(210,255,254));
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         graphicsContext.scale(1, -1);
-        graphicsContext.translate(0, -player.getY() - WINDOW_HEIGHT + 80);
+        graphicsContext.translate(0, -(player.getY()-100) - WINDOW_HEIGHT + 80);
 
         // draw logic here
         if(isHost)
@@ -205,12 +201,13 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
             graphicsContext.setStroke(Color.GREEN);
             graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
 
-            graphicsContext.setFill(Color.RED);
+            graphicsContext.setFill(Color.rgb(255,239,208));
             for (Platform platform : chunk.getPlatformList()) {
                 graphicsContext.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
             }
         }
-        collisionSystem.DebugDraw(graphicsContext);
+        //uncomment to see colliders
+        //collisionSystem.DebugDraw(graphicsContext);
 
         graphicsContext.setTransform(preTransform);
     }
