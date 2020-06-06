@@ -1,5 +1,7 @@
 package doodlejump.client.game;
 
+import doodlejump.client.game.pickups.Pickup;
+
 import java.util.Collections;
 import java.util.List;
 

@@ -207,7 +207,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
             }
         }
         //uncomment to see colliders
-        //collisionSystem.DebugDraw(graphicsContext);
+        collisionSystem.DebugDraw(graphicsContext);
 
         graphicsContext.setTransform(preTransform);
     }

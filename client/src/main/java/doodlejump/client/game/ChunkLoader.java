@@ -67,7 +67,7 @@ public class ChunkLoader implements PlayerMovementListener {
             initialize();
 
         // check if player is well passed a chunk
-        if (newY - 200 > chunkList.getFirst().getEndY()) {
+        if (newY - 800 > chunkList.getFirst().getEndY()) {
             unloadChunk();
         }
 

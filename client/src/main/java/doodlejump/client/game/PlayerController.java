@@ -2,6 +2,7 @@ package doodlejump.client.game;
 
 import doodlejump.client.game.collision.Vector2;
 import doodlejump.client.game.collision.colliders.BoxCollider;
+import doodlejump.client.game.collision.colliders.CircleCollider;
 import doodlejump.client.game.collision.colliders.Collider2D;
 import doodlejump.client.game.collision.enums.ColliderTag;
 import doodlejump.client.game.drawing.Rectangle;
@@ -39,6 +40,8 @@ public class PlayerController
     private boolean isCollidingWithGround = false;
     private final boolean canJump = true;
     private final boolean canDoubleJump = false;
+    private double windDuration = 3;
+    private double windCounter = 0;
 
     private BoxCollider collider;
     private BoxCollider ground;
@@ -64,8 +67,8 @@ public class PlayerController
         this.collider.setColliderTag(ColliderTag.PLAYER_UNIT);
         this.collider.setOwnerObject(this);
 
-        this.ground = new BoxCollider(new Vector2(0,-60), 40000, 60);
-        this.ground.setColliderTag(ColliderTag.PLATFORM);
+        this.ground = new BoxCollider(new Vector2(0,-100), 40000, 100);
+        this.ground.setColliderTag(ColliderTag.GROUND);
 
         this.rectangle = new Rectangle((int)(pos.x-halfWidth), (int)(pos.y-halfHeight), (int) width, (int) height);
         this.rectangle.setRectangleColor(Color.rgb(251,207,207));
@@ -88,18 +91,36 @@ public class PlayerController
                 grounded = true;
             }
         }
-        if (other.getColliderTag() == ColliderTag.GROUND) {
+        else if (other.getColliderTag() == ColliderTag.GROUND) {
             isCollidingWithGround = true;
-            if(this.pos.y-halfHeight < other.getPos().y+30 && this.lastPos.y-halfHeight > other.getPos().y+30 )
+            this.pos.y = other.getPos().y+halfHeight+50;
+            velocity.y = 0;
+            velocity.y += jumpPower;
+            grounded = true;
+        }
+        else if (other.getColliderTag() == ColliderTag.JUMP_PLATFORM) {
+            isCollidingWithGround = true;
+            if(this.pos.y-halfHeight < other.getPos().y+10 && this.lastPos.y-halfHeight > other.getPos().y+10 )
             {
-                this.pos.y = other.getPos().y+halfHeight+30;
+                this.pos.y = other.getPos().y+halfHeight+10;
                 velocity.y = 0;
-                velocity.y += jumpPower;
+                velocity.y += jumpPower*15;
                 grounded = true;
             }
         }
+        else if (other.getColliderTag() == ColliderTag.BOMB) {
+            Vector2 blastDirection = new Vector2();
+            blastDirection = this.pos.subtract(other.getPos());
+            blastDirection.NormalizeThis();
+            blastDirection.MultiplyThisByDouble(jumpPower);
+            velocity.AddToThis(blastDirection);
+        }
     }
 
+    //for testing
+    Collider2D bombCol;
+    boolean bombPressed = false;
+    //
     public void OnKeyPress(KeyEvent e) {
         if (e.getCode() == KeyCode.D|| e.getCode() == KeyCode.RIGHT) {
             if(velocity.x < maxMovSpeed)
@@ -107,16 +128,31 @@ public class PlayerController
                 velocity.x += accelaration;
             }
         }
-        if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+        else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
             if(velocity.x > -maxMovSpeed)
             {
                 velocity.x -= accelaration;
             }
         }
-        if(e.getCode() == KeyCode.SPACE)
+        else if(e.getCode() == KeyCode.SPACE)
         {
+            playerData.setCurrentlyBlownByWind(true);
             if (grounded) {
                 //velocity.y += jumpPower;
+            }
+        }
+        else if(e.getCode() == KeyCode.B)
+        {
+            if(!bombPressed)
+            {
+                bombCol = new CircleCollider(new Vector2(pos.x,pos.y+550),100);
+                bombCol.setColliderTag(ColliderTag.BOMB);
+                bombPressed = true;
+            }
+            else
+            {
+                bombCol.OnDestroy();
+                bombPressed = false;
             }
         }
     }
@@ -126,6 +162,18 @@ public class PlayerController
 
         lastPos.x = pos.x;
         lastPos.y = pos.y;
+
+        if(playerData.isCurrentlyBlownByWind())
+        {
+            velocity.x -= accelaration/10;
+            velocity.y -= jumpPower/100;
+            windCounter += deltaTime;
+            if(windCounter > windDuration)
+            {
+                playerData.setCurrentlyBlownByWind(false);
+                windCounter = 0;
+            }
+        }
 
         if(!grounded)
         {

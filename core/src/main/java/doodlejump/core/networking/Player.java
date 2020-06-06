@@ -9,12 +9,14 @@ public class Player implements Serializable {
     private double velocityX;
     private double velocityY;
     private boolean isReady;
+    private boolean currentlyBlownByWind;
     private volatile boolean isHost;
 
     public Player(String name) {
         this.name = name;
         this.x = 0.0;
         this.y = 0.0;
+        currentlyBlownByWind = false;
     }
 
     public String getName() {
@@ -87,5 +89,13 @@ public class Player implements Serializable {
     @Override
     public String toString() {
         return name + ": " + (isReady ? "ready" : "not ready");
+    }
+
+    public boolean isCurrentlyBlownByWind() {
+        return currentlyBlownByWind;
+    }
+
+    public void setCurrentlyBlownByWind(boolean currentlyBlownByWind) {
+        this.currentlyBlownByWind = currentlyBlownByWind;
     }
 }

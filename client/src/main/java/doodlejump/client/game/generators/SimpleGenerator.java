@@ -2,7 +2,7 @@ package doodlejump.client.game.generators;
 
 import doodlejump.client.game.Chunk;
 import doodlejump.client.game.ChunkGenerator;
-import doodlejump.client.game.Pickup;
+import doodlejump.client.game.pickups.Pickup;
 import doodlejump.client.game.Platform;
 import org.jetbrains.annotations.NotNull;
 

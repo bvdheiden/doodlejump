@@ -1,4 +1,4 @@
-package doodlejump.client.game;
+package doodlejump.client.game.pickups;
 
 import org.jetbrains.annotations.Contract;
 

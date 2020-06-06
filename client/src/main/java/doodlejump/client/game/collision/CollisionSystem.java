@@ -1,6 +1,7 @@
 package doodlejump.client.game.collision;
 
 import doodlejump.client.game.collision.colliders.BoxCollider;
+import doodlejump.client.game.collision.colliders.CircleCollider;
 import doodlejump.client.game.collision.colliders.Collider2D;
 import doodlejump.client.game.collision.enums.ColliderType;
 import javafx.scene.canvas.GraphicsContext;
@@ -70,6 +71,11 @@ public enum CollisionSystem {
             {
                 BoxCollider box = (BoxCollider)col;
                 graphicsContext.strokeRect(box.getPos().x-box.width*0.5, box.getPos().y-box.height*0.5, box.width, box.height);
+            }
+            else if(col.getColliderType() == ColliderType.CIRCLE_COLLIDER)
+            {
+                CircleCollider circle = (CircleCollider)col;
+                graphicsContext.strokeOval(circle.getPos().x-circle.radius, circle.getPos().y-circle.radius, circle.radius*2, circle.radius*2);
             }
         }
     }
