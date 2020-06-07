@@ -88,10 +88,6 @@ public final class Vector2 {
         return Math.sqrt(xDist * xDist + yDist * yDist);
     }
 
-    public final static Vector2 normalize(Vector2 v) {
-        return v.normalize();
-    }
-
     ///divide
     public final Vector2 divideByDouble(double divideBy) {
         if (divideBy == 0) {
@@ -137,13 +133,16 @@ public final class Vector2 {
         return new Vector2(this.x /= m, this.y /= m);
     }
 
+    public final static Vector2 normalize(Vector2 v) {
+        return v.normalize();
+    }
+
     public final void normalizeThis() {
         double m = this.getMagnitude();
         this.x /= m;
         this.y /= m;
     }
     //////
-
 
     ///magnitude
     public final double getMagnitude() {

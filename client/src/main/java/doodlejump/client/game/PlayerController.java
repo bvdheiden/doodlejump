@@ -21,6 +21,9 @@ public class PlayerController {
     private static final double FRICTION = 1000;
     private static final double WIND_DURATION = 3;
     private static final double WINDOW_PADDING = 10;
+    private static final double WIND_DEBUF_X_AXIS = ACCELERATION/10;
+    private static final double WIND_DEBUF_Y_AXIS = JUMP_POWER/100;
+
     private final Player playerData;
     private final Vector2 pos;
     private final Vector2 lastPos;
@@ -96,20 +99,35 @@ public class PlayerController {
 
     //
     public void onKeyPress(KeyEvent e) {
-        if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+        if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT)
+        {
             if (velocity.x < MAX_MOVE_SPEED) {
-                velocity.x += ACCELERATION;
+                if (velocity.x < 0) {
+                    velocity.x += ACCELERATION * 2;
+                } else {
+                    velocity.x += ACCELERATION;
+                }
             }
-        } else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+        }
+        else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT)
+        {
             if (velocity.x > -MAX_MOVE_SPEED) {
-                velocity.x -= ACCELERATION;
+                if (velocity.x > 0) {
+                    velocity.x -= ACCELERATION * 2;
+                } else {
+                    velocity.x -= ACCELERATION;
+                }
             }
-        } else if (e.getCode() == KeyCode.SPACE) {
+        }
+        else if (e.getCode() == KeyCode.SPACE)
+        {
             playerData.setCurrentlyBlownByWind(true);
             if (grounded) {
                 //velocity.y += jumpPower;
             }
-        } else if (e.getCode() == KeyCode.B) {
+        }
+        else if (e.getCode() == KeyCode.B)
+        {
             if (!bombPressed) {
                 bombCol = new CircleCollider(new Vector2(pos.x, pos.y + 550), 100); // @todo remove magic number
                 bombCol.setColliderTag(ColliderTag.BOMB);
@@ -127,8 +145,8 @@ public class PlayerController {
         lastPos.y = pos.y;
 
         if (playerData.isCurrentlyBlownByWind()) {
-            velocity.x -= ACCELERATION / 10; // @todo remove magic number
-            velocity.y -= JUMP_POWER / 100; // @todo remove magic number
+            velocity.x -= WIND_DEBUF_X_AXIS;
+            velocity.y -= WIND_DEBUF_Y_AXIS;
             windCounter += deltaTime;
             if (windCounter > WIND_DURATION) {
                 playerData.setCurrentlyBlownByWind(false);
