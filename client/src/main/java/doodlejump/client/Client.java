@@ -157,6 +157,4 @@ public class Client extends Application {
         super.stop();
         client.stop();
     }
-
-
 }

@@ -10,8 +10,7 @@ public class SoundPlayer {
 
     private static final List<Clip> clipList = new CopyOnWriteArrayList<>();
 
-    public static synchronized void play(final String fileName)
-    {
+    public static synchronized void play(final String fileName) {
         // Note: use .wav files
         new Thread(() -> {
             try {
@@ -24,8 +23,7 @@ public class SoundPlayer {
         }).start();
     }
 
-    public static synchronized void loop(final String fileName)
-    {
+    public static synchronized void loop(final String fileName) {
         // Note: use .wav files
         new Thread(() -> {
             try {

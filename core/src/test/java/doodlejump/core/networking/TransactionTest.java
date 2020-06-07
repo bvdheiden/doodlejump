@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.Serializable;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class TransactionTest {
     @Test

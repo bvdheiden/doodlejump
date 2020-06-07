@@ -1,10 +1,8 @@
 package doodlejump.client.game.pickups;
 
-import doodlejump.client.Client;
 import doodlejump.client.game.collision.colliders.Collider2D;
 import doodlejump.client.game.collision.enums.ColliderTag;
 import doodlejump.client.networking.GameClient;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Bomb extends Pickup {

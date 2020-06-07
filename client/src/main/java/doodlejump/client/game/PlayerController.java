@@ -22,8 +22,8 @@ public class PlayerController {
     private static final double FRICTION = 1000;
     private static final double WIND_DURATION = 3;
     private static final double WINDOW_PADDING = 10;
-    private static final double WIND_DEBUF_X_AXIS = ACCELERATION/10;
-    private static final double WIND_DEBUF_Y_AXIS = JUMP_POWER/100;
+    private static final double WIND_DEBUF_X_AXIS = ACCELERATION / 10;
+    private static final double WIND_DEBUF_Y_AXIS = JUMP_POWER / 100;
     private static final String JUMP_SOUND_PATH_ONE = "Jump.wav";
     private static final String JUMP_SOUND_PATH_TWO = "Powerup2.wav";
     private static final String EXPLOSION_SOUND_PATH = "Explosion39.wav";
@@ -105,27 +105,22 @@ public class PlayerController {
         }
     }
 
-    private void jump()
-    {
+    private void jump() {
         jump(1);
     }
 
-    private void jump(double jumpPowerMultiplier)
-    {
+    private void jump(double jumpPowerMultiplier) {
         velocity.y += JUMP_POWER * jumpPowerMultiplier;
-        if(Math.random() < 0.5) {
+        if (Math.random() < 0.5) {
             SoundPlayer.play(JUMP_SOUND_PATH_ONE);
-        }
-        else
-        {
+        } else {
             SoundPlayer.play(JUMP_SOUND_PATH_TWO);
         }
     }
 
 
     public void onKeyPress(KeyEvent e) {
-        if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT)
-        {
+        if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
             if (velocity.x < MAX_MOVE_SPEED) {
                 if (velocity.x < 0) {
                     velocity.x += ACCELERATION * 2;
@@ -133,9 +128,7 @@ public class PlayerController {
                     velocity.x += ACCELERATION;
                 }
             }
-        }
-        else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT)
-        {
+        } else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
             if (velocity.x > -MAX_MOVE_SPEED) {
                 if (velocity.x > 0) {
                     velocity.x -= ACCELERATION * 2;
@@ -143,17 +136,13 @@ public class PlayerController {
                     velocity.x -= ACCELERATION;
                 }
             }
-        }
-        else if (e.getCode() == KeyCode.SPACE)
-        {
+        } else if (e.getCode() == KeyCode.SPACE) {
             //velocity.y += JUMP_POWER;
             //shouldBeMovedByWind = true;
             if (grounded) {
                 //velocity.y += jumpPower;
             }
-        }
-        else if (e.getCode() == KeyCode.B)
-        {
+        } else if (e.getCode() == KeyCode.B) {
             if (!bombPressed) {
                 bombCol = new CircleCollider(new Vector2(pos.x, pos.y + 550), 100); // @todo remove magic number
                 bombCol.setColliderTag(ColliderTag.BOMB);
@@ -212,13 +201,11 @@ public class PlayerController {
         }
     }
 
-    public boolean getShouldBeMovedByWind()
-    {
+    public boolean getShouldBeMovedByWind() {
         return shouldBeMovedByWind;
     }
 
-    public void setShouldBeMovedByWind(boolean shouldBeMovedByWind)
-    {
+    public void setShouldBeMovedByWind(boolean shouldBeMovedByWind) {
         this.shouldBeMovedByWind = shouldBeMovedByWind;
     }
 }

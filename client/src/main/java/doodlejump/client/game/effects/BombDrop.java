@@ -7,9 +7,9 @@ import doodlejump.client.sound.SoundPlayer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class BombDrop extends Effect
-{
-    private static final double RADIUS = 150;;
+public class BombDrop extends Effect {
+    private static final double RADIUS = 150;
+    ;
     private static final double GRAVITY = 9.8;
     private static final double WEIGHT = 1.5;
     private static final String EXPLOSION_SOUND_PATH = "Explosion39.wav";
@@ -26,16 +26,14 @@ public class BombDrop extends Effect
 
     private CircleCollider collider;
 
-    public BombDrop(double x, double y)
-    {
+    public BombDrop(double x, double y) {
         velocity = new Vector2();
         this.x = x;
         this.y = y;
     }
 
     @Override
-    public void activate()
-    {
+    public void activate() {
         super.activate();
         this.collider = new CircleCollider(new Vector2(x, y), RADIUS);
         collider.setColliderTag(ColliderTag.BOMB);
@@ -45,39 +43,30 @@ public class BombDrop extends Effect
     }
 
     @Override
-    public void update(double deltaTime)
-    {
+    public void update(double deltaTime) {
         counter += deltaTime;
-        if(counter >= lifeTime)
-        {
-            if(!isActivated)
-            {
+        if (counter >= lifeTime) {
+            if (!isActivated) {
                 activate();
             }
-            if(counter >= lifeTime+0.2)
-            {
+            if (counter >= lifeTime + 0.2) {
                 remove();
             }
         }
         velocity.y -= GRAVITY * WEIGHT * deltaTime;
-        if(!isActivated)
-        {
-            y+= velocity.y;
+        if (!isActivated) {
+            y += velocity.y;
         }
     }
 
     @Override
-    public void draw(GraphicsContext graphicsContext)
-    {
-        if(!isActivated)
-        {
+    public void draw(GraphicsContext graphicsContext) {
+        if (!isActivated) {
             graphicsContext.setFill(Color.BLACK);
             graphicsContext.fillOval(x - 10, y - 10, 10 * 2, 10 * 2);
-        }
-        else
-        {
+        } else {
             graphicsContext.setFill(Color.ORANGERED);
-            graphicsContext.fillOval(x - RADIUS, y - RADIUS, RADIUS*2, RADIUS*2);
+            graphicsContext.fillOval(x - RADIUS, y - RADIUS, RADIUS * 2, RADIUS * 2);
         }
     }
 

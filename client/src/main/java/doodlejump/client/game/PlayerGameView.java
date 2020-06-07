@@ -9,9 +9,7 @@ import doodlejump.client.sound.SoundPlayer;
 import doodlejump.core.networking.Player;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,12 +32,12 @@ public class PlayerGameView extends GameView {
         this.eventHandler = e -> {
             playerController.onKeyPress(e);
 
-            if (e.getCode() == KeyCode.Z) {
-                onWind();
-            }
-            if (e.getCode() == KeyCode.X) {
-                onBomb();
-            }
+//            if (e.getCode() == KeyCode.Z) {
+//                onWind();
+//            }
+//            if (e.getCode() == KeyCode.X) {
+//                onBomb();
+//            }
         };
 
         effects = new ArrayList<Effect>();
