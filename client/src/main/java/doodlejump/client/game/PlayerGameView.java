@@ -50,8 +50,6 @@ public class PlayerGameView extends GameView {
         double playerTop = player.getY() + Player.HEIGHT / 2.0;
         double viewBottom = -minCameraY - GameView.WINDOW_HEIGHT;
 
-        System.out.printf("pY: %f cY: %f%n", playerTop, viewBottom);
-
         if (playerTop < viewBottom) {
             System.out.println("U ded");
 
