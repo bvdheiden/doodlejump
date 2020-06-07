@@ -26,7 +26,7 @@ public class Circle {
         //SetImageByFilePath("assets/Default.png");
     }
 
-    public void SetImageByFilePath(String filePath) {
+    public void setImageByFilePath(String filePath) {
         try {
             this.art = new Image(new FileInputStream(filePath));
         } catch (FileNotFoundException e) {
@@ -34,31 +34,31 @@ public class Circle {
         }
     }
 
-    public void Draw(GraphicsContext graphicsContext) {
+    public void draw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(circleColor);
         graphicsContext.strokeOval(xPos, yPos, radius, radius);
     }
 
-    public void FilledDraw(GraphicsContext graphicsContext) {
+    public void filledDraw(GraphicsContext graphicsContext) {
         graphicsContext.setFill(circleColor);
         graphicsContext.fillOval(xPos, yPos, radius, radius);
     }
 
-    public void FilledDrawWithLine(GraphicsContext graphicsContext, Color lineColor) {
+    public void filledDrawWithLine(GraphicsContext graphicsContext, Color lineColor) {
         graphicsContext.setStroke(circleColor);
         graphicsContext.fillOval(xPos, yPos, radius, radius);
         graphicsContext.setStroke(lineColor);
         graphicsContext.strokeOval(xPos, yPos, radius, radius);
     }
 
-    public void ChangePos(int newXPos, int newYPos) {
+    public void changePos(int newXPos, int newYPos) {
         pos.x = newXPos;
         pos.y = newYPos;
         xPos = newXPos;
         yPos = newYPos;
     }
 
-    public void ChangePos(Vector2 newPos) {
+    public void changePos(Vector2 newPos) {
         pos = newPos;
         xPos = (int) newPos.x;
         yPos = (int) newPos.y;

@@ -103,7 +103,7 @@ public class PlayerController {
         } else if (other.getColliderTag() == ColliderTag.BOMB) {
             Vector2 blastDirection = new Vector2();
             blastDirection = this.pos.subtract(other.getPos());
-            blastDirection.NormalizeThis();
+            blastDirection.normalizeThis();
             blastDirection.MultiplyThisByDouble(jumpPower);
             velocity.AddToThis(blastDirection);
         }
@@ -133,8 +133,10 @@ public class PlayerController {
                 bombCol = new CircleCollider(new Vector2(pos.x, pos.y + 550), 100);
                 bombCol.setColliderTag(ColliderTag.BOMB);
                 bombPressed = true;
-            } else {
-                bombCol.OnDestroy();
+            }
+            else
+            {
+                bombCol.onDestroy();
                 bombPressed = false;
             }
         }
@@ -160,7 +162,7 @@ public class PlayerController {
             velocity.y -= gravityVal * weightVal * deltaTime;
         }
 
-        velocitySpeed = velocity.GetMagnitude();
+        velocitySpeed = velocity.getMagnitude();
 
         if (velocitySpeed > maxSpeed) {
             velocitySpeed = maxSpeed;
@@ -175,11 +177,11 @@ public class PlayerController {
             pos.x = -10;
         }
         collider.setPos(new Vector2(pos));
-        rectangle.ChangePos((int) (pos.x - halfWidth), (int) (pos.y - halfHeight));
+        rectangle.changePos((int)(pos.x-halfWidth), (int)(pos.y-halfHeight));
         playerData.setPosition(pos.x, pos.y);
 
-        if (!velocity.IsZero()) {
-            velocity = velocity.Normalize().MultiplyByDouble(velocitySpeed - (friction * deltaTime));
+        if(!velocity.IsZero()) {
+            velocity = velocity.normalize().MultiplyByDouble(velocitySpeed-(friction*deltaTime));
         }
         if (!isCollidingWithGround) {
             grounded = false;
@@ -188,6 +190,6 @@ public class PlayerController {
 
     public void Draw(GraphicsContext graphicsContext) {
         //System.out.println("hello");
-        rectangle.FilledDraw(graphicsContext);
+        rectangle.filledDraw(graphicsContext);
     }
 }

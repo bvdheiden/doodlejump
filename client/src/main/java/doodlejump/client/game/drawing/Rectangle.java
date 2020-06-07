@@ -31,7 +31,7 @@ public class Rectangle {
         //SetImageByFilePath("assets/Default.png");
     }
 
-    public void SetImageByFilePath(String filePath) {
+    public void setImageByFilePath(String filePath) {
         try {
             this.art = new Image(new FileInputStream(filePath));
         } catch (FileNotFoundException e) {
@@ -39,28 +39,28 @@ public class Rectangle {
         }
     }
 
-    public void Draw(GraphicsContext graphicsContext) {
+    public void draw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(rectangleColor);
         graphicsContext.strokeRect(xPos, yPos, xSize, ySize);
     }
 
-    public void FilledDraw(GraphicsContext graphicsContext) {
+    public void filledDraw(GraphicsContext graphicsContext) {
         graphicsContext.setFill(rectangleColor);
         graphicsContext.fillRect(xPos, yPos, xSize, ySize);
     }
 
-    public void ImageDraw(GraphicsContext graphicsContext) {
+    public void imageDraw(GraphicsContext graphicsContext) {
         graphicsContext.drawImage(art, xPos, yPos, xSize, ySize);
     }
 
-    public void ChangePos(int newXPos, int newYPos) {
+    public void changePos(int newXPos, int newYPos) {
         pos.x = newXPos;
         pos.y = newYPos;
         xPos = newXPos;
         yPos = newYPos;
     }
 
-    public void ChangePos(Vector2 newPos) {
+    public void changePos(Vector2 newPos) {
         pos = newPos;
         xPos = (int) newPos.x;
         yPos = (int) newPos.y;

@@ -22,7 +22,7 @@ public class Chunk {
     {
         for(Platform p : platformList)
         {
-            p.getCollider().OnDestroy();
+            p.getCollider().onDestroy();
         }
     }
 

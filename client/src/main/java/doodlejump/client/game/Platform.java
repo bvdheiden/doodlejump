@@ -24,7 +24,7 @@ public class Platform {
         collider.setColliderTag(ColliderTag.PLATFORM);
         collider.setOwnerObject(this);
     }
-    
+
     public double getX() {
         return x;
     }

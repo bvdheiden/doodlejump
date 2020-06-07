@@ -26,38 +26,38 @@ public abstract class Collider2D
     }
 
     //check for collision
-    public boolean Collide(ColliderType collideWith, Collider2D other) {
+    public boolean collide(ColliderType collideWith, Collider2D other) {
         return false;
     }
 
     //collisionChecks
-    protected boolean CircleCollision(CircleCollider other) {
+    protected boolean circleCollision(CircleCollider other) {
         System.out.println("the collision checks should not call the parent class");
         return false;
     }
 
-    protected boolean BoxCollision(BoxCollider other) {
+    protected boolean boxCollision(BoxCollider other) {
         System.out.println("the collision checks should not call the parent class");
         return false;
     }
 
-    protected boolean ContainsPoint(Vector2 point) {
+    protected boolean containsPoint(Vector2 point) {
         System.out.println("the collision checks should not call the parent class");
         return false;
     }
     /////////////////
 
-    public void OnDestroy() {
+    public void onDestroy() {
         CollisionSystem.INSTANCE.setShouldRemoveFromColliders(true);
         CollisionSystem.INSTANCE.getCollidersToBeRemoved().add(this);
     }
 
-    public void PreCollisons()
+    public void preCollisons()
     {
 
     }
 
-    public void UpdateCollisons(Collider2D other) {
+    public void updateCollisons(Collider2D other) {
 
     }
 

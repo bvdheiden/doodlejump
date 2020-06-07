@@ -40,7 +40,7 @@ public class PlayerGameView extends GameView {
         super.update(deltaTime);
 
         playerController.update(deltaTime);
-        collisionSystem.CheckCollosions();
+        collisionSystem.checkCollosions();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class PlayerGameView extends GameView {
         }
 
         //uncomment to see colliders
-        collisionSystem.DebugDraw(graphicsContext);
+        collisionSystem.debugDraw(graphicsContext);
     }
 
     @Override

@@ -4,8 +4,8 @@ import doodlejump.client.game.collision.Vector2;
 import doodlejump.client.game.collision.enums.ColliderType;
 
 public class BoxCollider extends Collider2D {
-    public double width;
-    public double height;
+    private double width;
+    private double height;
 
     public BoxCollider(Vector2 pos, double width, double height) {
         super();
@@ -15,8 +15,8 @@ public class BoxCollider extends Collider2D {
 
         this.colliderType = ColliderType.BOX_COLLIDER;
 
-        preCollisionCallback = this::PreCollisons;
-        collisionCallback = this::UpdateCollisons;
+        preCollisionCallback = this::preCollisons;
+        collisionCallback = this::updateCollisons;
     }
 
     @Override
@@ -26,12 +26,12 @@ public class BoxCollider extends Collider2D {
 
 
     @Override
-    public boolean Collide(ColliderType collideWith, Collider2D other) {
+    public boolean collide(ColliderType collideWith, Collider2D other) {
         switch (collideWith) {
             case CIRCLE_COLLIDER:
-                return CircleCollision((CircleCollider) other);
+                return circleCollision((CircleCollider) other);
             case BOX_COLLIDER:
-                return BoxCollision((BoxCollider) other);
+                return boxCollision((BoxCollider) other);
             case DEFAULT:
                 return false;
             default:
@@ -41,32 +41,32 @@ public class BoxCollider extends Collider2D {
     }
 
     @Override
-    public boolean CircleCollision(CircleCollider other) {
+    public boolean circleCollision(CircleCollider other) {
         double circleDistanceX = Math.abs(other.pos.x - this.pos.x);
         double circleDistanceY = Math.abs(other.pos.y - this.pos.y);
 
-        if (circleDistanceX > (this.width / 2 + other.radius)) {
+        if (circleDistanceX > (this.getWidth() / 2 + other.getRadius())) {
             return false;
         }
-        if (circleDistanceY > (this.height / 2 + other.radius)) {
+        if (circleDistanceY > (this.getHeight() / 2 + other.getRadius())) {
             return false;
         }
 
-        if (circleDistanceX <= (this.width / 2)) {
+        if (circleDistanceX <= (this.getWidth() / 2)) {
             return true;
         }
-        if (circleDistanceY <= (this.height / 2)) {
+        if (circleDistanceY <= (this.getHeight() / 2)) {
             return true;
         }
 
-        double cornerDistance_sq = Math.pow((circleDistanceX - this.width / 2), 2) +
-                Math.pow((circleDistanceY - this.height / 2), 2);
+        double cornerDistance_sq = Math.pow((circleDistanceX - this.getWidth() / 2), 2) +
+                Math.pow((circleDistanceY - this.getHeight() / 2), 2);
 
-        return (cornerDistance_sq <= (other.radius * other.radius));
+        return (cornerDistance_sq <= (other.getRadius() * other.getRadius()));
     }
 
     @Override
-    public boolean BoxCollision(BoxCollider other) {
+    public boolean boxCollision(BoxCollider other) {
         return (this.getRight() >= other.getLeft() &&    // right edge past left
                 this.getLeft() <= other.getRight() &&    // left edge past right
                 this.getTop() >= other.getBottom() &&    // top edge past bottom
@@ -75,7 +75,7 @@ public class BoxCollider extends Collider2D {
     }
 
     @Override
-    public boolean ContainsPoint(Vector2 point) {
+    public boolean containsPoint(Vector2 point) {
         return (point.x >= this.getLeft() &&
                 point.x <= this.getRight() &&
                 point.y >= this.getTop() &&
@@ -83,29 +83,39 @@ public class BoxCollider extends Collider2D {
     }
 
     @Override
-    public void PreCollisons()
+    public void preCollisons()
     {
 
     }
 
     @Override
-    public void UpdateCollisons(Collider2D other) {
+    public void updateCollisons(Collider2D other) {
 
+    }
+
+    public double getWidth()
+    {
+        return this.width;
+    }
+
+    public double getHeight()
+    {
+        return this.height;
     }
 
     public double getLeft() {
-        return this.pos.x - this.width * 0.5;
+        return this.pos.x - this.getWidth() * 0.5;
     }
 
     public double getRight() {
-        return this.pos.x + this.width * 0.5;
+        return this.pos.x + this.getWidth() * 0.5;
     }
 
     public double getTop() {
-        return this.pos.y + this.height * 0.5;
+        return this.pos.y + this.getHeight() * 0.5;
     }
 
     public double getBottom() {
-        return this.pos.y - this.height * 0.5;
+        return this.pos.y - this.getHeight() * 0.5;
     }
 }
