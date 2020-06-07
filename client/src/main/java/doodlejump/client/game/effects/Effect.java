@@ -2,32 +2,26 @@ package doodlejump.client.game.effects;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public class Effect
-{
+public class Effect {
     protected boolean shouldBeRemoved = false;
 
-    public void activate()
-    {
+    public void activate() {
 
     }
 
-    public void update(double deltaTime)
-    {
+    public void update(double deltaTime) {
 
     }
 
-    public void draw(GraphicsContext graphicsContext)
-    {
+    public void draw(GraphicsContext graphicsContext) {
 
     }
 
-    public void remove()
-    {
+    public void remove() {
 
     }
 
-    public boolean isShouldBeRemoved()
-    {
+    public boolean isShouldBeRemoved() {
         return shouldBeRemoved;
     }
 }

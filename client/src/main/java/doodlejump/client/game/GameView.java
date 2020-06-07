@@ -27,7 +27,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
     private final DeltaTimer interfaceUpdateTimer = new DeltaTimer(1.0 / 10, true, true);
     private final ChunkLoader chunkLoader;
-    private final CloudManager cloudManager;
+    protected final CloudManager cloudManager;
     private Label scoreLabel;
     protected double minCameraY = 0.0;
     protected Player player;
