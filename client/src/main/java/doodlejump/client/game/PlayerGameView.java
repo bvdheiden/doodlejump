@@ -24,6 +24,8 @@ public class PlayerGameView extends GameView {
     @Override
     public void stop() {
         super.stop();
+
+        collisionSystem.emptySystem();
     }
 
     @Override

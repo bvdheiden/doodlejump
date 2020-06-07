@@ -138,6 +138,10 @@ public class Client extends Application {
         client.setOnNewPlayerPosition(player -> {
             roomView.onNewPlayerPosition(player.getName(), player.getX(), player.getY());
         });
+
+        client.setOnGameFinish(didWin -> {
+            roomView.onGameFinish(didWin);
+        });
     }
 
     @Override

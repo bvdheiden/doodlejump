@@ -30,6 +30,7 @@ public enum GameClient {
     private PlayerPositionListener playerPositionListener;
     private PlayerLoginListener playerLoginListener;
     private PlayerReadyListener playerReadyListener;
+    private GameFinishListener gameFinishListener;
 
 
     /**
@@ -100,6 +101,11 @@ public enum GameClient {
                             case PLAYER_POSITION -> {
                                 if (playerPositionListener != null)
                                     playerPositionListener.onNewPlayerPosition((Player) transaction.getPayload());
+                            }
+
+                            case GAME_FINISH -> {
+                                if (gameFinishListener != null)
+                                    gameFinishListener.onFinish((boolean) transaction.getPayload());
                             }
                         }
                     }));
@@ -219,7 +225,7 @@ public enum GameClient {
             return;
         }
 
-        client.send(new Transaction(TransactionType.PLAYER_DIED, player));
+        client.send(new Transaction(TransactionType.PLAYER_DIED));
     }
 
     /**
@@ -310,6 +316,15 @@ public enum GameClient {
      */
     public void setOnGameStart(GameStartListener listener) {
         this.gameStartListener = listener;
+    }
+
+    /**
+     * On game finish callback
+     *
+     * @param listener
+     */
+    public void setOnGameFinish(GameFinishListener listener) {
+        this.gameFinishListener = listener;
     }
 
     private boolean canSendTransaction() {

@@ -4,9 +4,11 @@ import doodlejump.client.game.GameView;
 import doodlejump.client.game.PlayerGameView;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
@@ -146,5 +148,31 @@ public class RoomView extends BorderPane {
                 .filter(p -> p.getName().equals(playerName))
                 .findFirst()
                 .get();
+    }
+
+    public void onGameFinish(boolean didWin) {
+        playerGameView.stop();
+        serverGameView.stop();
+
+        Platform.runLater(() -> {
+            for (Player player : playerList) {
+                player.setReady(false);
+            }
+
+            listView.refresh();
+
+            readyButton.setDisable(false);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game finished");
+            alert.setHeaderText(null);
+            if (didWin) {
+                alert.setContentText("You have won the game!");
+            } else {
+                alert.setContentText("You have lost the game!");
+            }
+
+            alert.show();
+        });
     }
 }

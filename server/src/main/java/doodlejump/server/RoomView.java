@@ -18,8 +18,8 @@ public class RoomView extends VBox implements RoomCreationListener, RoomDestruct
     public RoomView() {
         setSpacing(10);
         getChildren().addAll(
-            ControlFactory.createLabel("Rooms", ControlFactory.LabelStyle.HEADER_1),
-            listView
+                ControlFactory.createLabel("Rooms", ControlFactory.LabelStyle.HEADER_1),
+                listView
         );
     }
 

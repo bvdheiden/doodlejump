@@ -60,6 +60,8 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         this.playing = false;
         this.player = null;
 
+        minCameraY = 0.0;
+
         if (player != null) {
             player.setPosition(0, 0);
         }
