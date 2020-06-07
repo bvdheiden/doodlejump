@@ -1,6 +1,7 @@
 package doodlejump.client.game;
 
 import doodlejump.client.game.collision.CollisionSystem;
+import doodlejump.client.game.pickups.Pickup;
 import doodlejump.client.networking.GameClient;
 import doodlejump.client.sound.SoundPlayer;
 import doodlejump.core.networking.Player;
@@ -82,6 +83,11 @@ public class PlayerGameView extends GameView
         super.draw(graphicsContext);
 
         for (Chunk chunk : activeChunks) {
+            for (Pickup pickup : chunk.getPickupList()) {
+                graphicsContext.setFill(pickup.getPaint());
+                graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius(), pickup.getRadius());
+            }
+
             graphicsContext.setStroke(Color.GREEN);
             graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
         }
