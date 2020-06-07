@@ -16,7 +16,6 @@ public class Wind extends Pickup {
     public void onPickup(Collider2D other) {
         super.onPickup(other);
         if (other.getColliderTag() == ColliderTag.PLAYER_UNIT) {
-            System.out.println("wind test");
             collider.onDestroy();
             GameClient.INSTANCE.sendWind();
             shouldBeRemoved = true;

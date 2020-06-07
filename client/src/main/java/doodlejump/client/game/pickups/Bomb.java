@@ -19,7 +19,6 @@ public class Bomb extends Pickup {
     public void onPickup(Collider2D other) {
         super.onPickup(other);
         if (other.getColliderTag() == ColliderTag.PLAYER_UNIT) {
-            System.out.println("bom test 3");
             collider.onDestroy();
             GameClient.INSTANCE.sendBomb();
             shouldBeRemoved = true;
