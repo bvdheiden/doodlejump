@@ -18,7 +18,6 @@ public class Bomb extends Pickup {
     @Override
     public void onPickup(Collider2D other) {
         super.onPickup(other);
-        System.out.println("bom test 2");
         if (other.getColliderTag() == ColliderTag.PLAYER_UNIT) {
             System.out.println("bom test 3");
             collider.onDestroy();

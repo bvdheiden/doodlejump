@@ -44,6 +44,7 @@ public class PlayerController {
     private boolean grounded = true;
     private boolean isCollidingWithGround = false;
     private double windCounter = 0;
+    private boolean shouldBeMovedByWind = false;
 
     public PlayerController(Player getPlayerData) {
         this.playerData = getPlayerData;
@@ -146,7 +147,7 @@ public class PlayerController {
         else if (e.getCode() == KeyCode.SPACE)
         {
             velocity.y += JUMP_POWER;
-            //playerData.setCurrentlyBlownByWind(true);
+            shouldBeMovedByWind = true;
             if (grounded) {
                 //velocity.y += jumpPower;
             }
@@ -170,12 +171,12 @@ public class PlayerController {
         lastPos.x = pos.x;
         lastPos.y = pos.y;
 
-        if (playerData.isCurrentlyBlownByWind()) {
+        if (shouldBeMovedByWind) {
             velocity.x -= WIND_DEBUF_X_AXIS;
             velocity.y -= WIND_DEBUF_Y_AXIS;
             windCounter += deltaTime;
             if (windCounter > WIND_DURATION) {
-                playerData.setCurrentlyBlownByWind(false);
+                shouldBeMovedByWind = false;
                 windCounter = 0;
             }
         }
@@ -209,5 +210,15 @@ public class PlayerController {
         if (!isCollidingWithGround) {
             grounded = false;
         }
+    }
+
+    public boolean getShouldBeMovedByWind()
+    {
+        return shouldBeMovedByWind;
+    }
+
+    public void setShouldBeMovedByWind(boolean shouldBeMovedByWind)
+    {
+        this.shouldBeMovedByWind = shouldBeMovedByWind;
     }
 }
