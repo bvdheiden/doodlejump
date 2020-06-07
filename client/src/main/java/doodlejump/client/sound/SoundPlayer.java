@@ -18,6 +18,10 @@ public class SoundPlayer {
                     Clip clip = AudioSystem.getClip();
                     AudioInputStream inputStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(FILENAME_PREFIX + fileName));
                     clip.open(inputStream);
+                    FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    float range = volume.getMaximum() - volume.getMinimum();
+                    float gain = (range * .8f) + volume.getMinimum();
+                    volume.setValue(gain);
                     clip.start();
                 } catch (Exception e) {
                     System.out.println("play sound error: " + e.getMessage() + " for " + FILENAME_PREFIX + fileName);
@@ -35,6 +39,10 @@ public class SoundPlayer {
                     Clip clip = AudioSystem.getClip();
                     AudioInputStream inputStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(FILENAME_PREFIX + fileName));
                     clip.open(inputStream);
+                    FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    float range = volume.getMaximum() - volume.getMinimum();
+                    float gain = (range * .75f) + volume.getMinimum();
+                    volume.setValue(gain);
                     clip.loop(Clip.LOOP_CONTINUOUSLY);
 
                     clipList.add(clip);
