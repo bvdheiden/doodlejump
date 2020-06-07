@@ -139,7 +139,6 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     protected void update(double deltaTime) {
         // update logic here
 
-        chunkLoader.onPlayerMovement(player.getX(), player.getY());
         minCameraY = Math.min(minCameraY, -(player.getY() - WINDOW_HEIGHT / 2.0) - WINDOW_HEIGHT - 40);
     }
 
@@ -150,6 +149,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     protected void fixedUpdate(double deltaTime) {
         // fixed update logic here
+        chunkLoader.onPlayerMovement(player.getX(), player.getY());
     }
 
     private void emptyDraw() {
