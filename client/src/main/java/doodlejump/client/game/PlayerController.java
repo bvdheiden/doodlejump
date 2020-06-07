@@ -13,8 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 
-public class PlayerController
-{
+public class PlayerController {
     private Player playerData;
 
     private Vector2 pos;
@@ -47,17 +46,16 @@ public class PlayerController
     private BoxCollider ground;
     private Rectangle rectangle;
 
-    public PlayerController(Player getPlayerData)
-    {
+    public PlayerController(Player getPlayerData) {
         this.playerData = getPlayerData;
 
         //movement stuff
-        this.pos = new Vector2(playerData.getX()+60,playerData.getY()+520);
+        this.pos = new Vector2(playerData.getX() + 60, playerData.getY() + 520);
         this.lastPos = new Vector2();
         this.velocity = new Vector2();
-        this.width = 30;
+        this.width = Player.WIDTH;
         this.halfWidth = width * 0.5;
-        this.height = 70;
+        this.height = Player.HEIGHT;
         this.halfHeight = height * 0.5;
 
         //collision stuff
@@ -67,48 +65,42 @@ public class PlayerController
         this.collider.setColliderTag(ColliderTag.PLAYER_UNIT);
         this.collider.setOwnerObject(this);
 
-        this.ground = new BoxCollider(new Vector2(0,-100), 40000, 100);
+        this.ground = new BoxCollider(new Vector2(0, -100), 40000, 100);
         this.ground.setColliderTag(ColliderTag.GROUND);
 
-        this.rectangle = new Rectangle((int)(pos.x-halfWidth), (int)(pos.y-halfHeight), (int) width, (int) height);
-        this.rectangle.setRectangleColor(Color.rgb(251,207,207));
+        this.rectangle = new Rectangle((int) (pos.x - halfWidth), (int) (pos.y - halfHeight), (int) width, (int) height);
+        this.rectangle.setRectangleColor(Color.rgb(251, 207, 207));
         //rectangle.setRectangleColor(Color.blue);
     }
 
-    private void PreCollision()
-    {
+    private void PreCollision() {
         isCollidingWithGround = false;
     }
 
     private void OnCollision(Collider2D other) {
         if (other.getColliderTag() == ColliderTag.PLATFORM) {
             isCollidingWithGround = true;
-            if(this.pos.y-halfHeight < other.getPos().y+10 && this.lastPos.y-halfHeight > other.getPos().y+10 )
-            {
-                this.pos.y = other.getPos().y+halfHeight+10;
+            if (this.pos.y - halfHeight < other.getPos().y + 10 && this.lastPos.y - halfHeight > other.getPos().y + 10) {
+                this.pos.y = other.getPos().y + halfHeight + 10;
                 velocity.y = 0;
                 velocity.y += jumpPower;
                 grounded = true;
             }
-        }
-        else if (other.getColliderTag() == ColliderTag.GROUND) {
+        } else if (other.getColliderTag() == ColliderTag.GROUND) {
             isCollidingWithGround = true;
-            this.pos.y = other.getPos().y+halfHeight+50;
+            this.pos.y = other.getPos().y + halfHeight + 50;
             velocity.y = 0;
             velocity.y += jumpPower;
             grounded = true;
-        }
-        else if (other.getColliderTag() == ColliderTag.JUMP_PLATFORM) {
+        } else if (other.getColliderTag() == ColliderTag.JUMP_PLATFORM) {
             isCollidingWithGround = true;
-            if(this.pos.y-halfHeight < other.getPos().y+10 && this.lastPos.y-halfHeight > other.getPos().y+10 )
-            {
-                this.pos.y = other.getPos().y+halfHeight+10;
+            if (this.pos.y - halfHeight < other.getPos().y + 10 && this.lastPos.y - halfHeight > other.getPos().y + 10) {
+                this.pos.y = other.getPos().y + halfHeight + 10;
                 velocity.y = 0;
-                velocity.y += jumpPower*15;
+                velocity.y += jumpPower * 15;
                 grounded = true;
             }
-        }
-        else if (other.getColliderTag() == ColliderTag.BOMB) {
+        } else if (other.getColliderTag() == ColliderTag.BOMB) {
             Vector2 blastDirection = new Vector2();
             blastDirection = this.pos.subtract(other.getPos());
             blastDirection.NormalizeThis();
@@ -120,37 +112,28 @@ public class PlayerController
     //for testing
     Collider2D bombCol;
     boolean bombPressed = false;
+
     //
     public void OnKeyPress(KeyEvent e) {
-        if (e.getCode() == KeyCode.D|| e.getCode() == KeyCode.RIGHT) {
-            if(velocity.x < maxMovSpeed)
-            {
+        if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+            if (velocity.x < maxMovSpeed) {
                 velocity.x += accelaration;
             }
-        }
-        else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
-            if(velocity.x > -maxMovSpeed)
-            {
+        } else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+            if (velocity.x > -maxMovSpeed) {
                 velocity.x -= accelaration;
             }
-        }
-        else if(e.getCode() == KeyCode.SPACE)
-        {
+        } else if (e.getCode() == KeyCode.SPACE) {
             playerData.setCurrentlyBlownByWind(true);
             if (grounded) {
                 //velocity.y += jumpPower;
             }
-        }
-        else if(e.getCode() == KeyCode.B)
-        {
-            if(!bombPressed)
-            {
-                bombCol = new CircleCollider(new Vector2(pos.x,pos.y+550),100);
+        } else if (e.getCode() == KeyCode.B) {
+            if (!bombPressed) {
+                bombCol = new CircleCollider(new Vector2(pos.x, pos.y + 550), 100);
                 bombCol.setColliderTag(ColliderTag.BOMB);
                 bombPressed = true;
-            }
-            else
-            {
+            } else {
                 bombCol.OnDestroy();
                 bombPressed = false;
             }
@@ -163,49 +146,42 @@ public class PlayerController
         lastPos.x = pos.x;
         lastPos.y = pos.y;
 
-        if(playerData.isCurrentlyBlownByWind())
-        {
-            velocity.x -= accelaration/10;
-            velocity.y -= jumpPower/100;
+        if (playerData.isCurrentlyBlownByWind()) {
+            velocity.x -= accelaration / 10;
+            velocity.y -= jumpPower / 100;
             windCounter += deltaTime;
-            if(windCounter > windDuration)
-            {
+            if (windCounter > windDuration) {
                 playerData.setCurrentlyBlownByWind(false);
                 windCounter = 0;
             }
         }
 
-        if(!grounded)
-        {
-            velocity.y -= gravityVal*weightVal*deltaTime;
+        if (!grounded) {
+            velocity.y -= gravityVal * weightVal * deltaTime;
         }
 
         velocitySpeed = velocity.GetMagnitude();
 
-        if(velocitySpeed > maxSpeed)
-        {
+        if (velocitySpeed > maxSpeed) {
             velocitySpeed = maxSpeed;
         }
 
-        this.pos.x += velocity.x*deltaTime;
-        this.pos.y += velocity.y*deltaTime;
+        this.pos.x += velocity.x * deltaTime;
+        this.pos.y += velocity.y * deltaTime;
 
-        if(pos.x < -10)
-        {
-            pos.x=410;
-        }
-        else if(pos.x > 410)
-        {
-            pos.x=-10;
+        if (pos.x < -10) {
+            pos.x = 410;
+        } else if (pos.x > 410) {
+            pos.x = -10;
         }
         collider.setPos(new Vector2(pos));
-        rectangle.ChangePos((int)(pos.x-halfWidth), (int)(pos.y-halfHeight));
+        rectangle.ChangePos((int) (pos.x - halfWidth), (int) (pos.y - halfHeight));
         playerData.setPosition(pos.x, pos.y);
 
-        if(!velocity.IsZero()) {
-            velocity = velocity.Normalize().MultiplyByDouble(velocitySpeed-(friction*deltaTime));
+        if (!velocity.IsZero()) {
+            velocity = velocity.Normalize().MultiplyByDouble(velocitySpeed - (friction * deltaTime));
         }
-        if(!isCollidingWithGround) {
+        if (!isCollidingWithGround) {
             grounded = false;
         }
     }

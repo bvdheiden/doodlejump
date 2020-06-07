@@ -107,10 +107,9 @@ public class RoomView extends BorderPane {
         gameView2.start(seed, getServerPlayer(), false);
     }
 
-    public void onNewPlayerPosition(String playerName, double x, double y, double velocityX, double velocityY) {
+    public void onNewPlayerPosition(String playerName, double x, double y) {
         Player player = getPlayer(playerName);
         player.setPosition(x, y);
-        player.setVelocity(velocityX, velocityY);
     }
 
     private void onFindRoomPressed(ActionEvent event) {

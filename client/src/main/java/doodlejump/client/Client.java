@@ -56,7 +56,7 @@ public class Client extends Application {
             clientStuff();
         }
 
-        primaryStage.setMaximized(true);
+//        primaryStage.setMaximized(true);
         primaryStage.setScene(new Scene(main));
         primaryStage.setTitle("DoodleJump client");
         primaryStage.show();
@@ -136,7 +136,7 @@ public class Client extends Application {
         });
 
         client.setOnNewPlayerPosition(player -> {
-            roomView.onNewPlayerPosition(player.getName(), player.getX(), player.getY(), player.getVelocityX(), player.getVelocityY());
+            roomView.onNewPlayerPosition(player.getName(), player.getX(), player.getY());
         });
     }
 

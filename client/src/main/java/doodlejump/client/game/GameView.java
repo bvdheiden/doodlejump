@@ -6,7 +6,6 @@ import doodlejump.client.game.generators.VariedJumpGenerator;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
-import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -62,22 +61,13 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         this.isHost = isHost;
 
         collisionSystem = CollisionSystem.INSTANCE;
-        if(isHost)
-        {
+        if (isHost) {
             playerController = new PlayerController(player);
         }
 
-        addEventFilter(KeyEvent.KEY_PRESSED,
-                new EventHandler<KeyEvent>() {
-                    public void handle(KeyEvent e) {
-                        playerController.OnKeyPress(e);
-                    }
-
-                    ;
-                });
+        addEventFilter(KeyEvent.KEY_PRESSED, e -> playerController.OnKeyPress(e));
 
         player.setPosition(0, 0);
-        player.setVelocity(0, 0);
 
         chunkLoader.setSeed(seed);
     }
@@ -89,7 +79,6 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
 
         if (player != null) {
             player.setPosition(0, 0);
-            player.setVelocity(0, 0);
         }
 
         chunkLoader.reset();
@@ -159,7 +148,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     public void update(double deltaTime) {
         // update logic here
-        if(isHost) {
+        if (isHost) {
             playerController.update(deltaTime);
         }
         collisionSystem.CheckCollosions();
@@ -183,16 +172,13 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     public void draw(GraphicsContext graphicsContext) {
         final Affine preTransform = graphicsContext.getTransform();
-        graphicsContext.setFill(Color.rgb(210,255,254));
+        graphicsContext.setFill(Color.rgb(210, 255, 254));
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         graphicsContext.scale(1, -1);
-        graphicsContext.translate(0, -(player.getY()-100) - WINDOW_HEIGHT + 80);
+        graphicsContext.translate(0, -(player.getY() - 100) - WINDOW_HEIGHT + 80);
 
-        // draw logic here
-        if(isHost)
-        {
-            playerController.Draw(graphicsContext);
-        };
+        graphicsContext.setFill(Color.RED);
+        graphicsContext.fillRect(player.getX() - Player.WIDTH / 2.0, player.getY() - Player.HEIGHT / 2.0, Player.WIDTH, Player.HEIGHT);
 
         graphicsContext.setStroke(Color.BLUE);
         graphicsContext.strokeLine(0, player.getY(), WINDOW_WIDTH, player.getY());
@@ -201,7 +187,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
             graphicsContext.setStroke(Color.GREEN);
             graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
 
-            graphicsContext.setFill(Color.rgb(255,239,208));
+            graphicsContext.setFill(Color.rgb(255, 239, 208));
             for (Platform platform : chunk.getPlatformList()) {
                 graphicsContext.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
             }
