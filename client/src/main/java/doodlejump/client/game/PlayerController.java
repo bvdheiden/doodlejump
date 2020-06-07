@@ -113,11 +113,11 @@ public class PlayerController {
     {
         //velocity.y += JUMP_POWER * jumpPowerMultiplier;
         if(Math.random() < 0.5) {
-            SoundPlayer.play(JUMP_SOUND_PATH_ONE);
+            //SoundPlayer.play(JUMP_SOUND_PATH_ONE);
         }
         else
         {
-            SoundPlayer.play(JUMP_SOUND_PATH_TWO);
+            //SoundPlayer.play(JUMP_SOUND_PATH_TWO);
         }
     }
 
@@ -145,7 +145,8 @@ public class PlayerController {
         }
         else if (e.getCode() == KeyCode.SPACE)
         {
-            playerData.setCurrentlyBlownByWind(true);
+            velocity.y += JUMP_POWER;
+            //playerData.setCurrentlyBlownByWind(true);
             if (grounded) {
                 //velocity.y += jumpPower;
             }

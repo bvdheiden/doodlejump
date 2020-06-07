@@ -32,7 +32,7 @@ public class Pickup {
 
     public void onPickup(Collider2D other)
     {
-        System.out.println("bom test 1");
+
     }
 
     public double getX() {

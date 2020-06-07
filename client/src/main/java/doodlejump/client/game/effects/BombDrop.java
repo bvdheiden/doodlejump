@@ -3,6 +3,7 @@ package doodlejump.client.game.effects;
 import doodlejump.client.game.collision.Vector2;
 import doodlejump.client.game.collision.colliders.CircleCollider;
 import doodlejump.client.game.collision.enums.ColliderTag;
+import doodlejump.client.sound.SoundPlayer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -12,6 +13,7 @@ public class BombDrop extends Effect
     private static final double GRAVITY = 9.8;
     private static final double WEIGHT = 170;
     private static final double FRICTION = 1000;
+    private static final String EXPLOSION_SOUND_PATH = "Explosion39.wav";
     private double x;
     private double y;
 
@@ -39,6 +41,8 @@ public class BombDrop extends Effect
         this.collider = new CircleCollider(new Vector2(x, y), RADIUS);
         collider.setColliderTag(ColliderTag.BOMB);
         collider.setOwnerObject(this);
+        isActivated = true;
+        SoundPlayer.play(EXPLOSION_SOUND_PATH);
     }
 
     @Override
