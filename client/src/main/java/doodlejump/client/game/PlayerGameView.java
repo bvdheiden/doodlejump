@@ -3,6 +3,7 @@ package doodlejump.client.game;
 import doodlejump.client.game.collision.CollisionSystem;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -11,14 +12,17 @@ public class PlayerGameView extends GameView {
     private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
     private CollisionSystem collisionSystem;
     private PlayerController playerController;
+    private EventHandler<? super KeyEvent> eventHandler;
 
     @Override
     public void start(long seed, Player player) {
         super.start(seed, player);
 
-        addEventFilter(KeyEvent.KEY_PRESSED, e -> playerController.onKeyPress(e));
-        collisionSystem = CollisionSystem.INSTANCE;
-        playerController = new PlayerController(player);
+        this.playerController = new PlayerController(player);
+        this.eventHandler = e -> playerController.onKeyPress(e);
+        this.collisionSystem = CollisionSystem.INSTANCE;
+
+        addEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
     }
 
     @Override
@@ -26,6 +30,8 @@ public class PlayerGameView extends GameView {
         super.stop();
 
         collisionSystem.emptySystem();
+
+        removeEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
     }
 
     @Override

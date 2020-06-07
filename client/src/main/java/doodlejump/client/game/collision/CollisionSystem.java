@@ -29,6 +29,11 @@ public enum CollisionSystem {
     public void checkCollosions() {
         boolean hasCollided;
 
+        if (emptyTheSystem) {
+            allColliders.clear();
+            emptyTheSystem = false;
+        }
+
         for (int i = 0; i < allColliders.size(); i++) {
             allColliders.get(i).getPreCollisionCallback().run();
         }
@@ -61,11 +66,6 @@ public enum CollisionSystem {
             }
             collidersToBeRemoved.clear();
             shouldRemoveFromColliders = false;
-        }
-
-        if (emptyTheSystem) {
-            allColliders.clear();
-            emptyTheSystem = false;
         }
     }
 
