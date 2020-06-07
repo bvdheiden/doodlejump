@@ -17,8 +17,8 @@ public class CloudManager {
     private final DeltaTimer cloudSpawnTimer = new DeltaTimer(1, true, true);
     private final List<Cloud> cloudList = new ArrayList<>();
     private final List<Image> imageList = new ArrayList<>();
-    private double screenWidth;
-    private double screenHeight;
+    private final double screenWidth;
+    private final double screenHeight;
 
     public CloudManager(double screenWidth, double screenHeight) {
         this.screenWidth = screenWidth;
@@ -67,7 +67,7 @@ public class CloudManager {
     private void spawnCloud() {
         double speed = Cloud.MIN_SPEED + (Math.random() * (Cloud.MAX_SPEED - Cloud.MIN_SPEED));
         Image image = imageList.get(new Random().nextInt(imageList.size()));
-        double y = Math.random() * screenHeight;
+        double y = Cloud.HEIGHT + (Math.random() * (screenHeight - Cloud.HEIGHT));
 
         Cloud cloud = new Cloud(speed, image, screenWidth, y);
 
