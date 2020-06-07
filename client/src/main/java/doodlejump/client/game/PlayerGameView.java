@@ -85,7 +85,7 @@ public class PlayerGameView extends GameView
         for (Chunk chunk : activeChunks) {
             for (Pickup pickup : chunk.getPickupList()) {
                 graphicsContext.setFill(pickup.getPaint());
-                graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius(), pickup.getRadius());
+                graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius() * 2, pickup.getRadius() * 2);
             }
 
             graphicsContext.setStroke(Color.GREEN);

@@ -2,7 +2,6 @@ package doodlejump.client.game;
 
 import doodlejump.client.game.generators.LongJumpGenerator;
 import doodlejump.client.game.generators.VariedJumpGenerator;
-import doodlejump.client.game.pickups.Pickup;
 import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
@@ -25,11 +24,15 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     private final GraphicsContext graphicsContext;
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
+    private final DeltaTimer interfaceUpdateTimer = new DeltaTimer(1.0 / 10, true, true);
     private final ChunkLoader chunkLoader;
+    private Label scoreLabel;
     protected double minCameraY = 0.0;
     protected Player player;
     private boolean playing;
     private Affine preTransform;
+    private int lastDrawnScore;
+    private int score;
 
     public GameView() {
         this.getChildren().add(this.canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -53,8 +56,13 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     public void start(long seed, Player player) {
         this.playing = true;
         this.player = player;
+        this.lastDrawnScore = 0;
+        this.score = 0;
 
         player.setPosition(0, 0);
+
+        updateScore();
+        scoreLabel.setVisible(true);
 
         chunkLoader.setSeed(seed);
     }
@@ -69,23 +77,21 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
             player.setPosition(0, 0);
         }
 
+        scoreLabel.setVisible(false);
+
         chunkLoader.reset();
 
         emptyDraw();
     }
 
     private void setupInterface() {
-        Label difficultyLabel = new Label("Difficulty: 0");
-        difficultyLabel.setFont(new Font(20));
-        difficultyLabel.setTextFill(Color.WHITE);
-        AnchorPane.setTopAnchor(difficultyLabel, 20.0);
-        AnchorPane.setRightAnchor(difficultyLabel, 20.0);
+        this.scoreLabel = new Label("Score: 0");
+        scoreLabel.setFont(new Font(20));
+        scoreLabel.setTextFill(Color.BLACK);
+        AnchorPane.setTopAnchor(scoreLabel, 20.0);
+        AnchorPane.setRightAnchor(scoreLabel, 20.0);
 
-        chunkLoader.chunkDifficultyProperty().addListener((observable, oldValue, newValue) -> {
-            difficultyLabel.setText("Difficulty: " + newValue);
-        });
-
-        getChildren().addAll(difficultyLabel);
+        getChildren().addAll(scoreLabel);
     }
 
     private void setupChunkLoading() {
@@ -130,6 +136,18 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         fixedUpdateTimer.update(deltaTime);
         while (fixedUpdateTimer.timeout())
             fixedUpdate(fixedUpdateTimer.getWait());
+
+        interfaceUpdateTimer.update(deltaTime);
+        if (interfaceUpdateTimer.timeout()) {
+            updateScore();
+        }
+    }
+
+    private void updateScore() {
+        if (score != lastDrawnScore) {
+            scoreLabel.setText("Score: " + score);
+            this.lastDrawnScore = score;
+        }
     }
 
     /**
@@ -141,6 +159,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         // update logic here
 
         minCameraY = Math.min(minCameraY, -(player.getY() - WINDOW_HEIGHT / 2.0) - WINDOW_HEIGHT - 40);
+        score = (int) Math.max(score, player.getY());
     }
 
     /**
