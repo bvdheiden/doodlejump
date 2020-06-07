@@ -1,6 +1,9 @@
 package doodlejump.client.game;
 
 import doodlejump.client.game.collision.CollisionSystem;
+
+import doodlejump.client.game.effects.BombDrop;
+import doodlejump.client.game.effects.Effect;
 import doodlejump.client.game.pickups.Pickup;
 import doodlejump.client.networking.GameClient;
 import doodlejump.client.sound.SoundPlayer;
@@ -9,6 +12,9 @@ import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PlayerGameView extends GameView
 {
@@ -19,12 +25,16 @@ public class PlayerGameView extends GameView
     private PlayerController playerController;
     private EventHandler<? super KeyEvent> eventHandler;
 
+    private ArrayList<Effect> effects;
+
     @Override
     public void start(long seed, Player player) {
         super.start(seed, player);
 
         this.playerController = new PlayerController(player);
         this.eventHandler = e -> playerController.onKeyPress(e);
+
+        effects = new ArrayList<Effect>();
 
         SoundPlayer.loop(BACKGROUND_MUSIC_SOUND_PATH);
 
@@ -58,6 +68,11 @@ public class PlayerGameView extends GameView
 
         playerController.update(deltaTime);
         CollisionSystem.INSTANCE.checkCollosions();
+
+        for(Effect f : effects)
+        {
+            f.update(deltaTime);
+        }
     }
 
     @Override
@@ -76,11 +91,24 @@ public class PlayerGameView extends GameView
 
             GameClient.INSTANCE.sendDead();
         }
+
+        Iterator<Effect> it = effects.iterator();
+        while (it.hasNext()) {
+            Effect f = it.next();
+            if (f.isShouldBeRemoved()) {
+                it.remove();
+            }
+        }
     }
 
     @Override
     public void draw(GraphicsContext graphicsContext) {
         super.draw(graphicsContext);
+
+        for(Effect f : effects)
+        {
+            f.draw(graphicsContext);
+        }
 
         for (Chunk chunk : activeChunks) {
             for (Pickup pickup : chunk.getPickupList()) {
@@ -107,10 +135,11 @@ public class PlayerGameView extends GameView
     }
 
     public void onWind() {
-        // @todo apply wind effect to player
+        player.setCurrentlyBlownByWind(true);
     }
 
     public void onBomb() {
-        // @todo spawn bomb above player
+        BombDrop bomb =  new BombDrop(player.getX(),player.getY()+1000);
+        effects.add(bomb);
     }
 }
