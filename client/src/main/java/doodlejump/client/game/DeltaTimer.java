@@ -5,8 +5,8 @@ package doodlejump.client.game;
  * Is is especially created for FPS independent timing purposes.
  */
 public class DeltaTimer implements Updateable {
-    private double wait;
     private final boolean loop;
+    private double wait;
     private double time;
     private int timeout;
 

@@ -9,11 +9,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Circle {
+    private final int radius;
+    private final int halfRadius;
     private Color circleColor;
     private Image art;
     private Vector2 pos;
-    private final int radius;
-    private final int halfRadius;
     private int xPos;
     private int yPos;
 

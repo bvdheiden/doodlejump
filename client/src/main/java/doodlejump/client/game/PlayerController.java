@@ -21,21 +21,20 @@ public class PlayerController {
     private static final double FRICTION = 1000;
     private static final double WIND_DURATION = 3;
     private static final double WINDOW_PADDING = 10;
-
-    //for testing
-    Collider2D bombCol;
-    boolean bombPressed = false;
     private final Player playerData;
     private final Vector2 pos;
     private final Vector2 lastPos;
+    private final BoxCollider collider;
+    private final BoxCollider groundCollider;
+    private final Rectangle rectangle;
+    //for testing
+    Collider2D bombCol;
+    boolean bombPressed = false;
     private Vector2 velocity;
     private double velocitySpeed;
     private boolean grounded = true;
     private boolean isCollidingWithGround = false;
     private double windCounter = 0;
-    private final BoxCollider collider;
-    private final BoxCollider groundCollider;
-    private final Rectangle rectangle;
 
     public PlayerController(Player getPlayerData) {
         this.playerData = getPlayerData;
@@ -55,7 +54,7 @@ public class PlayerController {
         this.groundCollider = new BoxCollider(new Vector2(0, -100), 40000, 100);
         this.groundCollider.setColliderTag(ColliderTag.GROUND);
 
-        this.rectangle = new Rectangle((int) (pos.x - Player.HALF_HEIGHT), (int) (pos.y - Player.HALF_HEIGHT), (int) Player.WIDTH, (int) Player.HEIGHT);
+        this.rectangle = new Rectangle((int) (pos.x - Player.HALF_WIDTH), (int) (pos.y - Player.HALF_HEIGHT), (int) Player.WIDTH, (int) Player.HEIGHT);
         this.rectangle.setRectangleColor(Color.rgb(251, 207, 207));
         //rectangle.setRectangleColor(Color.blue);
     }
