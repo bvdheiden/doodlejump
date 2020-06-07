@@ -118,10 +118,11 @@ public class PlayerGameView extends GameView {
 
         for (Chunk chunk : activeChunks) {
             for (Pickup pickup : chunk.getPickupList()) {
-                graphicsContext.setFill(pickup.getPaint());
-                graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius() * 2, pickup.getRadius() * 2);
+                if (!pickup.isShouldBeRemoved()) {
+                    graphicsContext.setFill(pickup.getPaint());
+                    graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius() * 2, pickup.getRadius() * 2);
+                }
             }
-
             graphicsContext.setStroke(Color.GREEN);
             graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
         }

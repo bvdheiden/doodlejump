@@ -50,4 +50,12 @@ public class Pickup {
     public Paint getPaint() {
         return paint;
     }
+
+    public boolean isShouldBeRemoved() {
+        return shouldBeRemoved;
+    }
+
+    public void setShouldBeRemoved(boolean shouldBeRemoved) {
+        this.shouldBeRemoved = shouldBeRemoved;
+    }
 }
