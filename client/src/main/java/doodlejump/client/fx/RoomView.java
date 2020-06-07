@@ -125,6 +125,9 @@ public class RoomView extends BorderPane {
     }
 
     private void onReadyPressed(ActionEvent event) {
+        if (playerList.size() == 0)
+            return;
+
         GameClient.INSTANCE.ready();
         getHostPlayer().setReady(true);
         listView.refresh();
