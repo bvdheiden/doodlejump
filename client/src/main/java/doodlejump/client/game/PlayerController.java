@@ -197,6 +197,7 @@ public class PlayerController {
         } else if (pos.x > GameView.WINDOW_WIDTH + WINDOW_PADDING) {
             pos.x = -WINDOW_PADDING;
         }
+
         collider.setPos(new Vector2(pos));
         rectangle.changePos((int) (pos.x - Player.HALF_HEIGHT), (int) (pos.y - Player.HALF_HEIGHT));
         playerData.setPosition(pos.x, pos.y);

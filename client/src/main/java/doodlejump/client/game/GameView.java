@@ -171,8 +171,6 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      * @param graphicsContext graphics context
      */
     protected void draw(GraphicsContext graphicsContext) {
-        graphicsContext.setFill(Color.rgb(200, 40, 40));
-        graphicsContext.fillRect(player.getX() - Player.WIDTH / 2.0, player.getY() - Player.HEIGHT / 2.0, Player.WIDTH, Player.HEIGHT);
 
         for (Chunk chunk : activeChunks) {
             graphicsContext.setFill(Color.rgb(40, 150, 50));
@@ -180,6 +178,8 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
                 graphicsContext.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
             }
         }
+        graphicsContext.setFill(Color.rgb(200, 40, 40));
+        graphicsContext.fillRect(player.getX() - Player.WIDTH / 2.0, player.getY() - Player.HEIGHT / 2.0, Player.WIDTH, Player.HEIGHT);
     }
 
     private void postDraw(GraphicsContext graphicsContext) {

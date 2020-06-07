@@ -5,6 +5,7 @@ public enum ColliderTag {
     PLATFORM,
     JUMP_PLATFORM,
     PICKUP,
+    BOMB_PICKUP,
     BOMB,
     BUTTON,
     GROUND,
