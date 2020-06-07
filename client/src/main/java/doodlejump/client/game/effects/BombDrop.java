@@ -9,16 +9,15 @@ import javafx.scene.paint.Color;
 
 public class BombDrop extends Effect
 {
-    private static final double RADIUS = 75;;
+    private static final double RADIUS = 150;;
     private static final double GRAVITY = 9.8;
-    private static final double WEIGHT = 170;
-    private static final double FRICTION = 1000;
+    private static final double WEIGHT = 1.5;
     private static final String EXPLOSION_SOUND_PATH = "Explosion39.wav";
     private double x;
     private double y;
 
     private double counter = 0;
-    private double lifeTime = 2;
+    private double lifeTime = 1.1f;
 
     private Vector2 velocity;
     private double velocitySpeed;
@@ -61,11 +60,10 @@ public class BombDrop extends Effect
             }
         }
         velocity.y -= GRAVITY * WEIGHT * deltaTime;
-        velocitySpeed = velocity.getMagnitude();
-        if (!velocity.isZero()) {
-            velocity = velocity.normalize().multiplyByDouble(velocitySpeed - (FRICTION * deltaTime));
+        if(!isActivated)
+        {
+            y+= velocity.y;
         }
-        y+= velocity.y;
     }
 
     @Override
@@ -74,7 +72,7 @@ public class BombDrop extends Effect
         if(!isActivated)
         {
             graphicsContext.setFill(Color.BLACK);
-            graphicsContext.fillOval(x - RADIUS, y - RADIUS, 10 * 2, 10 * 2);
+            graphicsContext.fillOval(x - 10, y - 10, 10 * 2, 10 * 2);
         }
         else
         {

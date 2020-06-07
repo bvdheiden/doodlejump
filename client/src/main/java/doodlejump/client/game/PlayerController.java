@@ -112,13 +112,13 @@ public class PlayerController {
 
     private void jump(double jumpPowerMultiplier)
     {
-        //velocity.y += JUMP_POWER * jumpPowerMultiplier;
+        velocity.y += JUMP_POWER * jumpPowerMultiplier;
         if(Math.random() < 0.5) {
-            //SoundPlayer.play(JUMP_SOUND_PATH_ONE);
+            SoundPlayer.play(JUMP_SOUND_PATH_ONE);
         }
         else
         {
-            //SoundPlayer.play(JUMP_SOUND_PATH_TWO);
+            SoundPlayer.play(JUMP_SOUND_PATH_TWO);
         }
     }
 
@@ -146,7 +146,7 @@ public class PlayerController {
         }
         else if (e.getCode() == KeyCode.SPACE)
         {
-            velocity.y += JUMP_POWER;
+            //velocity.y += JUMP_POWER;
             //shouldBeMovedByWind = true;
             if (grounded) {
                 //velocity.y += jumpPower;

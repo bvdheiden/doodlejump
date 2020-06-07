@@ -123,12 +123,12 @@ public class PlayerGameView extends GameView {
                     graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius() * 2, pickup.getRadius() * 2);
                 }
             }
-            graphicsContext.setStroke(Color.GREEN);
-            graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
+            //graphicsContext.setStroke(Color.GREEN);
+            //graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
         }
 
         //uncomment to see colliders
-        CollisionSystem.INSTANCE.debugDraw(graphicsContext);
+        //CollisionSystem.INSTANCE.debugDraw(graphicsContext);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class PlayerGameView extends GameView {
     }
 
     public void onBomb() {
-        BombDrop bomb = new BombDrop(player.getX(), player.getY() + 500);
+        BombDrop bomb = new BombDrop(player.getX(), player.getY() + 1500);
         effects.add(bomb);
         System.out.println("boom");
     }
