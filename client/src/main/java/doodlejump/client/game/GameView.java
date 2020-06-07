@@ -19,18 +19,16 @@ import java.util.List;
 public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkLoadListener, ChunkLoader.@Nullable ChunkUnloadListener {
     public static final double WINDOW_WIDTH = 400.0;
     public static final double WINDOW_HEIGHT = 800.0;
+    protected final List<Chunk> activeChunks = new ArrayList<>();
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
     private final ChunkLoader chunkLoader;
+    protected double minCameraY = 0.0;
+    protected Player player;
     private boolean playing;
     private Affine preTransform;
-
-    private double minCameraY = 0.0;
-
-    protected final List<Chunk> activeChunks = new ArrayList<>();
-    protected Player player;
 
     public GameView() {
         this.getChildren().add(this.canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT));

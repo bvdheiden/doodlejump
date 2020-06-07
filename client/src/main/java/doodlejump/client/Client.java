@@ -2,7 +2,6 @@ package doodlejump.client;
 
 import doodlejump.client.fx.LoginView;
 import doodlejump.client.fx.RoomView;
-import doodlejump.client.game.GameView;
 import doodlejump.client.game.PlayerGameView;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;

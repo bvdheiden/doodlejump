@@ -18,7 +18,7 @@ public class ChunkLoader implements PlayerMovementListener {
     private final double windowHeight;
     private long seed;
 
-    private SimpleIntegerProperty chunkDifficulty = new SimpleIntegerProperty();
+    private final SimpleIntegerProperty chunkDifficulty = new SimpleIntegerProperty();
 
     private ChunkLoadListener chunkLoadListener;
     private ChunkUnloadListener chunkUnloadListener;

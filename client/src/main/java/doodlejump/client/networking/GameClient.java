@@ -202,13 +202,24 @@ public enum GameClient {
      * Send player position to server.
      */
     public void sendPosition() {
-        if (!isRunning() || client == null || player == null) {
+        if (!canSendTransaction() || player == null) {
             return;
         }
 
         System.out.printf("x: %f y: %f%n", player.getX(), player.getY());
 
         client.send(new Transaction(TransactionType.PLAYER_POSITION, player));
+    }
+
+    /**
+     * Send player dead.
+     */
+    public void sendDead() {
+        if (!canSendTransaction() || player == null) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.PLAYER_DIED, player));
     }
 
     /**
