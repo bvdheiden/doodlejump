@@ -147,7 +147,7 @@ public class PlayerController {
         else if (e.getCode() == KeyCode.SPACE)
         {
             velocity.y += JUMP_POWER;
-            shouldBeMovedByWind = true;
+            //shouldBeMovedByWind = true;
             if (grounded) {
                 //velocity.y += jumpPower;
             }

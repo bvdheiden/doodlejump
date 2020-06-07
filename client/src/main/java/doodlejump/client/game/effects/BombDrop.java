@@ -65,6 +65,7 @@ public class BombDrop extends Effect
         if (!velocity.isZero()) {
             velocity = velocity.normalize().multiplyByDouble(velocitySpeed - (FRICTION * deltaTime));
         }
+        y+= velocity.y;
     }
 
     @Override

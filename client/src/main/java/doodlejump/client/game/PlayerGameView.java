@@ -137,7 +137,7 @@ public class PlayerGameView extends GameView {
     }
 
     public void onBomb() {
-        BombDrop bomb = new BombDrop(player.getX(), player.getY() + 1000);
+        BombDrop bomb = new BombDrop(player.getX(), player.getY() + 500);
         effects.add(bomb);
         System.out.println("boom");
     }
