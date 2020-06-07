@@ -141,12 +141,14 @@ public class PlayerGameView extends GameView {
     }
 
     public void onWind() {
-        player.setCurrentlyBlownByWind(true);
+        playerController.setShouldBeMovedByWind(true);
+        System.out.println("clout");
         cloudManager.moveFaster(3);
     }
 
     public void onBomb() {
         BombDrop bomb = new BombDrop(player.getX(), player.getY() + 1000);
         effects.add(bomb);
+        System.out.println("boom");
     }
 }
