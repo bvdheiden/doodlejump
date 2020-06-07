@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 public class PlayerGameView extends GameView
 {
     private static final String BACKGROUND_MUSIC_SOUND_PATH = "bensoundFunnySong.wav";
+    private static final String DEAD_SOUND = "ded.wav";
 
     private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
     private PlayerController playerController;
@@ -67,6 +68,8 @@ public class PlayerGameView extends GameView
 
         if (playerTop < viewBottom) {
             System.out.println("U ded");
+
+            SoundPlayer.play(DEAD_SOUND);
 
             stop();
 
