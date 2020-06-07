@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
 
 public class PlayerGameView extends GameView {
     private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
-    private CollisionSystem collisionSystem;
     private PlayerController playerController;
     private EventHandler<? super KeyEvent> eventHandler;
 
@@ -20,7 +19,6 @@ public class PlayerGameView extends GameView {
 
         this.playerController = new PlayerController(player);
         this.eventHandler = e -> playerController.onKeyPress(e);
-        this.collisionSystem = CollisionSystem.INSTANCE;
 
         addEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
     }
@@ -29,9 +27,10 @@ public class PlayerGameView extends GameView {
     public void stop() {
         super.stop();
 
-        collisionSystem.emptySystem();
+        CollisionSystem.INSTANCE.emptySystem();
 
-        removeEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
+        if (eventHandler != null)
+            removeEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class PlayerGameView extends GameView {
         super.update(deltaTime);
 
         playerController.update(deltaTime);
-        collisionSystem.checkCollosions();
+        CollisionSystem.INSTANCE.checkCollosions();
     }
 
     @Override
@@ -77,7 +76,7 @@ public class PlayerGameView extends GameView {
         }
 
         //uncomment to see colliders
-        collisionSystem.debugDraw(graphicsContext);
+        CollisionSystem.INSTANCE.debugDraw(graphicsContext);
     }
 
     @Override
