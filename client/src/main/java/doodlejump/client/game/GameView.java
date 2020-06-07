@@ -88,6 +88,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         this.scoreLabel = new Label("Score: 0");
         scoreLabel.setFont(new Font(20));
         scoreLabel.setTextFill(Color.BLACK);
+        scoreLabel.setVisible(false);
         AnchorPane.setTopAnchor(scoreLabel, 20.0);
         AnchorPane.setRightAnchor(scoreLabel, 20.0);
 
