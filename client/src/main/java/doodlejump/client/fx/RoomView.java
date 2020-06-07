@@ -1,6 +1,7 @@
 package doodlejump.client.fx;
 
 import doodlejump.client.game.GameView;
+import doodlejump.client.game.PlayerGameView;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import javafx.collections.FXCollections;
@@ -20,16 +21,16 @@ public class RoomView extends BorderPane {
     private final ListView<Player> listView;
 
     private final HBox gameLayout;
-    private final GameView gameView1;
-    private final GameView gameView2;
+    private final PlayerGameView playerGameView;
+    private final GameView serverGameView;
     private boolean connected;
 
     public RoomView() {
         this.findRoomButton = new Button("Find room");
         this.readyButton = new Button("Ready");
         this.listView = new ListView<>(playerList);
-        this.gameView1 = new GameView();
-        this.gameView2 = new GameView();
+        this.playerGameView = new PlayerGameView();
+        this.serverGameView = new GameView();
 
         HBox buttonLayout = new HBox(findRoomButton, readyButton);
         VBox roomLayout = new VBox(buttonLayout, listView);
@@ -38,13 +39,13 @@ public class RoomView extends BorderPane {
         findRoomButton.setOnAction(this::onFindRoomPressed);
         readyButton.setOnAction(this::onReadyPressed);
 
-        this.gameLayout = new HBox(gameView1, gameView2);
+        this.gameLayout = new HBox(playerGameView, serverGameView);
         setCenter(gameLayout);
     }
 
     public void stopGame() {
-        gameView1.stop();
-        gameView2.stop();
+        playerGameView.stop();
+        serverGameView.stop();
 
         for (Player player : playerList)
             player.setReady(false);
@@ -103,8 +104,8 @@ public class RoomView extends BorderPane {
     public void onGameStart(long seed) {
         readyButton.setDisable(true);
 
-        gameView1.start(seed, getHostPlayer(), true);
-        gameView2.start(seed, getServerPlayer(), false);
+        playerGameView.start(seed, getHostPlayer());
+        serverGameView.start(seed, getServerPlayer());
     }
 
     public void onNewPlayerPosition(String playerName, double x, double y) {

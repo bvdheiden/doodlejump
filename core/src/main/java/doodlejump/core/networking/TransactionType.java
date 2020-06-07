@@ -11,4 +11,5 @@ public enum TransactionType {
     ROOM_DISCONNECT,
     ROOM_DISCONNECTED,
     GAME_STARTED,
+    GAME_PICKUP
 }

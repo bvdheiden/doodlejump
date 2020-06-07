@@ -3,6 +3,7 @@ package doodlejump.client;
 import doodlejump.client.fx.LoginView;
 import doodlejump.client.fx.RoomView;
 import doodlejump.client.game.GameView;
+import doodlejump.client.game.PlayerGameView;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import doodlejump.core.networking.listeners.PlayerLoginListener;
@@ -37,8 +38,8 @@ public class Client extends Application {
         Parent main;
 
         if (launchDebug) {
-            GameView gameView = new GameView();
-            gameView.start(new Random().nextLong(), new Player("Test"), true);
+            PlayerGameView gameView = new PlayerGameView();
+            gameView.start(new Random().nextLong(), new Player("Test"));
 
             main = gameView;
         } else {
