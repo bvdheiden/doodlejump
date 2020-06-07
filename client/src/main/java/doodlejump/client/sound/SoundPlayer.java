@@ -30,11 +30,11 @@ public class SoundPlayer {
             public void run() {
                 try {
                     Clip clip = AudioSystem.getClip();
-                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(fileName));
+                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(FILENAME_PREFIX + fileName));
                     clip.open(inputStream);
                     clip.loop(Clip.LOOP_CONTINUOUSLY);
                 } catch (Exception e) {
-                    System.out.println("play sound error: " + e.getMessage() + " for " + fileName);
+                    System.out.println("play sound error: " + e.getMessage() + " for " + FILENAME_PREFIX + fileName);
                 }
             }
         }).start();
