@@ -201,7 +201,10 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     @Override
     public void onChunkLoad(Chunk chunk) {
         System.out.println("Chunk loaded");
-
+        if(!isHost)
+        {
+            chunk.OnDestroy();
+        }
         activeChunks.add(chunk);
     }
 
