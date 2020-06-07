@@ -51,7 +51,7 @@ public abstract class SimpleGenerator extends ChunkGenerator {
             if (getRandom(y).nextBoolean()) {
                 pickupList.add(new Bomb(x - Bomb.RADIUS / 2.0, y + Bomb.RADIUS));
             } else {
-                pickupList.add(new Wind(x - Bomb.RADIUS / 2.0,y + Wind.RADIUS));
+                pickupList.add(new Wind(x - Wind.RADIUS / 2.0,y + Wind.RADIUS));
             }
         }
 
