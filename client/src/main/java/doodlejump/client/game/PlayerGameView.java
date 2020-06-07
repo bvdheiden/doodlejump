@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 
 public class PlayerGameView extends GameView
 {
-    private static final String BACKGROUND_MUSIC_SOUND_PATH = "D:\\JavaProjectsGitVersions\\doodlejump\\client\\src\\main\\resources\\sounds\\bensoundFunnysong.wav";
+    private static final String BACKGROUND_MUSIC_SOUND_PATH = "bensoundFunnysong.wav";
 
     private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
     private PlayerController playerController;
