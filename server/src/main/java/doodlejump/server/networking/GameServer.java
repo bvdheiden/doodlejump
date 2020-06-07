@@ -141,6 +141,7 @@ public class GameServer {
         System.out.println("Player died");
 
         client.send(new Transaction(TransactionType.GAME_FINISH, false));
+        client.getRoom().reset();
         client.getRoom().broadcast(client, new Transaction(TransactionType.GAME_FINISH, true));
     }
 
