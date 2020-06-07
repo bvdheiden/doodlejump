@@ -1,7 +1,6 @@
 package doodlejump.client.game;
 
 import doodlejump.client.game.collision.CollisionSystem;
-
 import doodlejump.client.game.effects.BombDrop;
 import doodlejump.client.game.effects.Effect;
 import doodlejump.client.game.pickups.Pickup;
@@ -16,8 +15,7 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class PlayerGameView extends GameView
-{
+public class PlayerGameView extends GameView {
     private static final String BACKGROUND_MUSIC_SOUND_PATH = "bensoundFunnySong.wav";
     private static final String DEAD_SOUND = "ded.wav";
 
@@ -69,8 +67,7 @@ public class PlayerGameView extends GameView
         playerController.update(deltaTime);
         CollisionSystem.INSTANCE.checkCollosions();
 
-        for(Effect f : effects)
-        {
+        for (Effect f : effects) {
             f.update(deltaTime);
         }
     }
@@ -105,8 +102,7 @@ public class PlayerGameView extends GameView
     public void draw(GraphicsContext graphicsContext) {
         super.draw(graphicsContext);
 
-        for(Effect f : effects)
-        {
+        for (Effect f : effects) {
             f.draw(graphicsContext);
         }
 
@@ -136,10 +132,11 @@ public class PlayerGameView extends GameView
 
     public void onWind() {
         player.setCurrentlyBlownByWind(true);
+        cloudManager.moveFaster(3);
     }
 
     public void onBomb() {
-        BombDrop bomb =  new BombDrop(player.getX(),player.getY()+1000);
+        BombDrop bomb = new BombDrop(player.getX(), player.getY() + 1000);
         effects.add(bomb);
     }
 }

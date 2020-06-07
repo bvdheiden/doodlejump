@@ -13,12 +13,16 @@ public class CloudManager {
     private static final String CLOUD_1 = "cloud1.png";
     private static final String CLOUD_2 = "cloud2.png";
     private static final String CLOUD_3 = "cloud3.png";
+    private static final double FASTER_MULTIPLIER = 10;
 
     private final DeltaTimer cloudSpawnTimer = new DeltaTimer(1, true, true);
+    private final DeltaTimer fasterTimer = new DeltaTimer(0, false, false);
+
     private final List<Cloud> cloudList = new ArrayList<>();
     private final List<Image> imageList = new ArrayList<>();
     private final double screenWidth;
     private final double screenHeight;
+    private boolean moveFaster;
 
     public CloudManager(double screenWidth, double screenHeight) {
         this.screenWidth = screenWidth;
@@ -43,10 +47,15 @@ public class CloudManager {
             cloudSpawnTimer.setWait(2 + (Math.random() * 3));
         }
 
+        fasterTimer.update(deltaTime);
+        if (fasterTimer.timeout()) {
+            this.moveFaster = false;
+        }
+
         List<Cloud> removeClouds = new ArrayList<>();
 
         for (Cloud cloud : cloudList) {
-            cloud.update(deltaTime);
+            cloud.update(moveFaster ? deltaTime * FASTER_MULTIPLIER : deltaTime);
 
             if (cloud.getX() + Cloud.WIDTH < 0) {
                 removeClouds.add(cloud);
@@ -62,6 +71,12 @@ public class CloudManager {
         for (Cloud cloud : cloudList) {
             gc.drawImage(cloud.getImage(), cloud.getX(), -cloud.getY(), Cloud.WIDTH, Cloud.HEIGHT);
         }
+    }
+
+    public void moveFaster(double seconds) {
+        this.moveFaster = true;
+        fasterTimer.setWait(seconds);
+        fasterTimer.start();
     }
 
     private void spawnCloud() {
