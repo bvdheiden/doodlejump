@@ -18,6 +18,14 @@ public class Chunk {
         this.endY = endY;
     }
 
+    public void OnDestroy()
+    {
+        for(Platform p : platformList)
+        {
+            p.getCollider().OnDestroy();
+        }
+    }
+
     public List<Platform> getPlatformList() {
         return Collections.unmodifiableList(platformList);
     }

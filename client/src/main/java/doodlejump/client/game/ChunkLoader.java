@@ -103,7 +103,8 @@ public class ChunkLoader implements PlayerMovementListener {
     private void unloadChunk() {
         if (chunkUnloadListener != null)
             chunkUnloadListener.onChunkUnload(chunkList.getFirst());
-        chunkList.removeFirst();
+        Chunk unloadedChunk = chunkList.pop();
+        unloadedChunk.OnDestroy();
     }
 
     private @NotNull Chunk generateChunk() {
