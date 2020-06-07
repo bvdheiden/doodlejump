@@ -60,6 +60,9 @@ public class GameServer {
 
                                     client.getRoom().broadcast(client, transaction);
                                 }
+                                case PLAYER_DIED -> playerDied(client);
+                                case GAME_BOMB_PICKUP -> client.getRoom().broadcast(client, transaction);
+                                case GAME_WIND_PICKUP -> client.getRoom().broadcast(client, transaction);
                             }
                         });
 
@@ -136,6 +139,14 @@ public class GameServer {
         }
     }
 
+    private void playerDied(SocketClient client) {
+        System.out.println("Player died");
+
+        client.send(new Transaction(TransactionType.GAME_FINISH, false));
+        client.getRoom().reset();
+        client.getRoom().broadcast(client, new Transaction(TransactionType.GAME_FINISH, true));
+    }
+
     private void clientDisconnect(SocketClient client) {
         roomDisconnect(client);
         socketClientList.remove(client);
@@ -157,7 +168,7 @@ public class GameServer {
         client.send(new Transaction(TransactionType.ROOM_CONNECTED));
         for (SocketClient roomClient : room.getClientList()) {
             if (roomClient != client)
-            client.send(new Transaction(TransactionType.PLAYER_CONNECTED, roomClient.getPlayer()));
+                client.send(new Transaction(TransactionType.PLAYER_CONNECTED, roomClient.getPlayer()));
         }
         for (SocketClient roomClient : room.getReadyClientList()) {
             if (roomClient != client)

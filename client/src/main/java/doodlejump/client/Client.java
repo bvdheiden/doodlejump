@@ -2,40 +2,61 @@ package doodlejump.client;
 
 import doodlejump.client.fx.LoginView;
 import doodlejump.client.fx.RoomView;
+import doodlejump.client.game.PlayerGameView;
 import doodlejump.client.networking.GameClient;
 import doodlejump.core.networking.Player;
 import doodlejump.core.networking.listeners.PlayerLoginListener;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class Client extends Application {
-    private final GameClient client = GameClient.INSTANCE;
+import java.util.Random;
 
+public class Client extends Application {
+    private static boolean launchDebug;
+    private final GameClient client = GameClient.INSTANCE;
     private LoginView loginView;
     private RoomView roomView;
 
     private Player hostPlayer;
 
+    public static void main(String[] args) {
+        if (args.length > 0 && args[0].equals("--debug")) {
+            launchDebug = true;
+        }
+
+        Application.launch(Client.class);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.loginView = new LoginView();
-        this.roomView = new RoomView();
-        roomView.setVisible(false);
+        Parent main;
 
-        VBox mainLayout = new VBox(loginView, roomView);
-        mainLayout.setSpacing(20);
+        if (launchDebug) {
+            PlayerGameView gameView = new PlayerGameView();
+            gameView.start(new Random().nextLong(), new Player("Test"));
 
-        BorderPane main = new BorderPane();
-        main.setCenter(mainLayout);
+            main = gameView;
+        } else {
+            this.loginView = new LoginView();
+            this.roomView = new RoomView();
+            roomView.setVisible(false);
 
+            VBox mainLayout = new VBox(loginView, roomView);
+            mainLayout.setSpacing(20);
 
-        clientStuff();
+            BorderPane mainBorder = new BorderPane();
+            mainBorder.setCenter(mainLayout);
+            main = mainBorder;
 
-        primaryStage.setMaximized(true);
+            clientStuff();
+        }
+
+//        primaryStage.setMaximized(true);
         primaryStage.setScene(new Scene(main));
         primaryStage.setTitle("DoodleJump client");
         primaryStage.show();
@@ -45,9 +66,9 @@ public class Client extends Application {
         client.start();
 
         client.setOnConnection(() -> {
-           Platform.runLater(() -> {
-               loginView.onConnection();
-           });
+            Platform.runLater(() -> {
+                loginView.onConnection();
+            });
         });
 
         client.setOnDisconnection(() -> {
@@ -115,7 +136,19 @@ public class Client extends Application {
         });
 
         client.setOnNewPlayerPosition(player -> {
-            roomView.onNewPlayerPosition(player.getName(), player.getX(), player.getY(), player.getVelocityX(), player.getVelocityY());
+            roomView.onNewPlayerPosition(player.getName(), player.getX(), player.getY());
+        });
+
+        client.setOnGameFinish(didWin -> {
+            roomView.onGameFinish(didWin);
+        });
+
+        client.setOnBomb(() -> {
+            roomView.onBomb();
+        });
+
+        client.setOnWind(() -> {
+            roomView.onWind();
         });
     }
 
@@ -124,6 +157,4 @@ public class Client extends Application {
         super.stop();
         client.stop();
     }
-
-
 }

@@ -1,5 +1,7 @@
 package doodlejump.client.game;
 
+import doodlejump.client.game.pickups.Pickup;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +16,12 @@ public class Chunk {
         this.pickupList = pickupList;
         this.startY = startY;
         this.endY = endY;
+    }
+
+    public void OnDestroy() {
+        for (Platform p : platformList) {
+            p.getCollider().onDestroy();
+        }
     }
 
     public List<Platform> getPlatformList() {

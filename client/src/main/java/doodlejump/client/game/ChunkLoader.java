@@ -16,10 +16,8 @@ public class ChunkLoader implements PlayerMovementListener {
     private final List<ChunkGenerator> generatorList = new ArrayList<>();
     private final double windowWidth;
     private final double windowHeight;
+    private final SimpleIntegerProperty chunkDifficulty = new SimpleIntegerProperty();
     private long seed;
-
-    private SimpleIntegerProperty chunkDifficulty = new SimpleIntegerProperty();
-
     private ChunkLoadListener chunkLoadListener;
     private ChunkUnloadListener chunkUnloadListener;
 
@@ -67,7 +65,7 @@ public class ChunkLoader implements PlayerMovementListener {
             initialize();
 
         // check if player is well passed a chunk
-        if (newY - 200 > chunkList.getFirst().getEndY()) {
+        if (newY - 800 > chunkList.getFirst().getEndY()) {
             unloadChunk();
         }
 
@@ -84,16 +82,6 @@ public class ChunkLoader implements PlayerMovementListener {
 
     public void setOnChunkUnload(@Nullable ChunkUnloadListener listener) {
         this.chunkUnloadListener = listener;
-    }
-
-    @FunctionalInterface
-    public interface ChunkLoadListener {
-        void onChunkLoad(Chunk chunk);
-    }
-
-    @FunctionalInterface
-    public interface ChunkUnloadListener {
-        void onChunkUnload(Chunk chunk);
     }
 
     private void initialize() {
@@ -113,7 +101,8 @@ public class ChunkLoader implements PlayerMovementListener {
     private void unloadChunk() {
         if (chunkUnloadListener != null)
             chunkUnloadListener.onChunkUnload(chunkList.getFirst());
-        chunkList.removeFirst();
+        Chunk unloadedChunk = chunkList.pop();
+        unloadedChunk.OnDestroy();
     }
 
     private @NotNull Chunk generateChunk() {
@@ -138,8 +127,18 @@ public class ChunkLoader implements PlayerMovementListener {
         Random random = new Random(seed + (long) chunkStartY);
         ChunkGenerator chunkGenerator = chunkGeneratorList.get(random.nextInt(chunkGeneratorList.size()));
 
+        boolean usePickup = true;
+
+        if (chunkList.size() > 0) {
+            Chunk lastChunk = chunkList.getLast();
+
+            if (lastChunk.getPickupList().size() > 0) {
+                usePickup = false;
+            }
+        }
+
         // generate chunk
-        return chunkGenerator.generateChunk(chunkStartY);
+        return chunkGenerator.generateChunk(chunkStartY, usePickup);
     }
 
     private int calculateChunkDifficulty(double startY) {
@@ -147,5 +146,15 @@ public class ChunkLoader implements PlayerMovementListener {
             return 0;
 
         return (int) (startY / 100.0);
+    }
+
+    @FunctionalInterface
+    public interface ChunkLoadListener {
+        void onChunkLoad(Chunk chunk);
+    }
+
+    @FunctionalInterface
+    public interface ChunkUnloadListener {
+        void onChunkUnload(Chunk chunk);
     }
 }

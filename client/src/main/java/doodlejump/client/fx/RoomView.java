@@ -1,11 +1,15 @@
 package doodlejump.client.fx;
 
 import doodlejump.client.game.GameView;
+import doodlejump.client.game.PlayerGameView;
 import doodlejump.client.networking.GameClient;
+import doodlejump.client.sound.SoundPlayer;
 import doodlejump.core.networking.Player;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
@@ -13,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class RoomView extends BorderPane {
+    private static final String WIN_SOUND = "win.wav";
     private final ObservableList<Player> playerList = FXCollections.observableArrayList();
 
     private final Button findRoomButton;
@@ -20,18 +25,16 @@ public class RoomView extends BorderPane {
     private final ListView<Player> listView;
 
     private final HBox gameLayout;
-
+    private final PlayerGameView playerGameView;
+    private final GameView serverGameView;
     private boolean connected;
-
-    private final GameView gameView1;
-    private final GameView gameView2;
 
     public RoomView() {
         this.findRoomButton = new Button("Find room");
         this.readyButton = new Button("Ready");
         this.listView = new ListView<>(playerList);
-        this.gameView1 = new GameView();
-        this.gameView2 = new GameView();
+        this.playerGameView = new PlayerGameView();
+        this.serverGameView = new GameView();
 
         HBox buttonLayout = new HBox(findRoomButton, readyButton);
         VBox roomLayout = new VBox(buttonLayout, listView);
@@ -40,13 +43,14 @@ public class RoomView extends BorderPane {
         findRoomButton.setOnAction(this::onFindRoomPressed);
         readyButton.setOnAction(this::onReadyPressed);
 
-        this.gameLayout = new HBox(gameView1, gameView2);
+        this.gameLayout = new HBox(playerGameView, serverGameView);
+        gameLayout.setSpacing(20);
         setCenter(gameLayout);
     }
 
     public void stopGame() {
-        gameView1.stop();
-        gameView2.stop();
+        playerGameView.stop();
+        serverGameView.stop();
 
         for (Player player : playerList)
             player.setReady(false);
@@ -105,14 +109,13 @@ public class RoomView extends BorderPane {
     public void onGameStart(long seed) {
         readyButton.setDisable(true);
 
-        gameView1.start(seed, getHostPlayer(), true);
-        gameView2.start(seed, getServerPlayer(), false);
+        playerGameView.start(seed, getHostPlayer());
+        serverGameView.start(seed, getServerPlayer());
     }
 
-    public void onNewPlayerPosition(String playerName, double x, double y, double velocityX, double velocityY) {
+    public void onNewPlayerPosition(String playerName, double x, double y) {
         Player player = getPlayer(playerName);
         player.setPosition(x, y);
-        player.setVelocity(velocityX, velocityY);
     }
 
     private void onFindRoomPressed(ActionEvent event) {
@@ -124,6 +127,9 @@ public class RoomView extends BorderPane {
     }
 
     private void onReadyPressed(ActionEvent event) {
+        if (playerList.size() == 0)
+            return;
+
         GameClient.INSTANCE.ready();
         getHostPlayer().setReady(true);
         listView.refresh();
@@ -131,9 +137,9 @@ public class RoomView extends BorderPane {
 
     private Player getHostPlayer() {
         return playerList.stream()
-            .filter(Player::isHost)
-            .findFirst()
-            .get();
+                .filter(Player::isHost)
+                .findFirst()
+                .get();
     }
 
     private Player getServerPlayer() {
@@ -148,5 +154,41 @@ public class RoomView extends BorderPane {
                 .filter(p -> p.getName().equals(playerName))
                 .findFirst()
                 .get();
+    }
+
+    public void onGameFinish(boolean didWin) {
+        playerGameView.stop();
+        serverGameView.stop();
+
+        Platform.runLater(() -> {
+            for (Player player : playerList) {
+                player.setReady(false);
+            }
+
+            listView.refresh();
+
+            readyButton.setDisable(false);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game finished");
+            alert.setHeaderText(null);
+            if (didWin) {
+                SoundPlayer.play(WIN_SOUND);
+
+                alert.setContentText("You have won the game!");
+            } else {
+                alert.setContentText("You have lost the game!");
+            }
+
+            alert.show();
+        });
+    }
+
+    public void onBomb() {
+        playerGameView.onBomb();
+    }
+
+    public void onWind() {
+        playerGameView.onWind();
     }
 }

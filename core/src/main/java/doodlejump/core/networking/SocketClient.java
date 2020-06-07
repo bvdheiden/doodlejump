@@ -9,9 +9,13 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SocketClient {
+    private static final boolean USE_DATA_OVERHEAD = false;
+
     private final Socket socket;
     private final ObjectOutputStream out;
     private final ObjectInputStream in;
+    private final DataOutputStream dataOut;
+    private final DataInputStream dataIn;
     private final List<TransactionListener> transactionListenerList = new CopyOnWriteArrayList<>();
     private final List<DisconnectionListener> disconnectionListenerList = new CopyOnWriteArrayList<>();
 
@@ -22,16 +26,20 @@ public class SocketClient {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
+        this.dataOut = new DataOutputStream(socket.getOutputStream());
+        this.dataIn = new DataInputStream(socket.getInputStream());
 
         new Thread(() -> {
             while (socket.isConnected() && !socket.isClosed()) {
                 try {
-                    Transaction transaction = (Transaction) in.readObject();
+                    if (USE_DATA_OVERHEAD) {
+                        String type = dataIn.readUTF();
 
-                    Log.printf("Received transaction %s with payload: %s from client: %s.", transaction.getType(), transaction.getPayload(), hashCode());
-
-                    for (TransactionListener listener : transactionListenerList) {
-                        listener.onTransaction(transaction);
+                        if (type.equals("object")) {
+                            readTransaction();
+                        }
+                    } else {
+                        readTransaction();
                     }
                 } catch (IOException | ClassNotFoundException exception) {
                     Log.printf("Failed to receive data from client: %s.", hashCode());
@@ -43,12 +51,26 @@ public class SocketClient {
         }).start();
     }
 
+    private void readTransaction() throws IOException, ClassNotFoundException {
+        Transaction transaction = (Transaction) in.readObject();
+
+        Log.printf("Received transaction %s with payload: %s from client: %s.", transaction.getType(), transaction.getPayload(), hashCode());
+
+        for (TransactionListener listener : transactionListenerList) {
+            listener.onTransaction(transaction);
+        }
+    }
+
     public void send(Transaction transaction) {
         if (!socket.isConnected() || socket.isClosed()) {
             return;
         }
 
         try {
+            if (USE_DATA_OVERHEAD) {
+                dataOut.writeUTF("object");
+            }
+
             out.reset();
             out.writeObject(transaction);
 

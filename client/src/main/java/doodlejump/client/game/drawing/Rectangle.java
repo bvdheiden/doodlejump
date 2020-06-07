@@ -1,97 +1,85 @@
 package doodlejump.client.game.drawing;
 
+import doodlejump.client.game.collision.Vector2;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
-
-public class Rectangle
-{
-    private Renderable square2D;
+public class Rectangle {
+    private final int xSize;
+    private final int ySize;
+    private final int xSizeOffset;
+    private final int ySizeOffset;
     private Color rectangleColor;
     private Image art;
-    private int xSizeOffset;
-    private int ySizeOffset;
+    private Vector2 pos;
+    private int xPos;
+    private int yPos;
 
-    public Rectangle(int xPos,int yPos,int xSize, int ySize, float rotation)
-    {
-        this.square2D = new Renderable(new Rectangle2D.Double(-(xSize/2),-(ySize/2),xSize,ySize), new Point2D.Double(xPos,yPos), rotation, 1);
-        this.xSizeOffset = xSize/2;
-        this.ySizeOffset = ySize/2;
-        SetImageByFilePath("assets/Default.png");
+    public Rectangle(int xPos, int yPos, int xSize, int ySize) {
+        this.pos = new Vector2(xPos, yPos);
+        this.xSizeOffset = xSize / 2;
+        this.ySizeOffset = ySize / 2;
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.rectangleColor = Color.ALICEBLUE;
+        //SetImageByFilePath("assets/Default.png");
     }
 
-    public void SetImageByFilePath(String filePath)
-    {
-        File file = new File(filePath);
-
+    public void setImageByFilePath(String filePath) {
         try {
-            art = ImageIO.read(file);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            this.art = new Image(new FileInputStream(filePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    public void Draw(GraphicsContext graphicsContext)
-    {
+    public void draw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(rectangleColor);
-        //graphicsContext.draw(square2D.getTransformedShape());
+        graphicsContext.strokeRect(xPos, yPos, xSize, ySize);
     }
 
-
-
-
-
-
-
-
-    public void FilledDraw(Graphics2D graphics2D)
-    {
-        //graphics2D.setColor(rectangleColor);
-        //graphics2D.fill(square2D.getTransformedShape());
-        //graphics2D.draw(square2D.getTransformedShape());
+    public void filledDraw(GraphicsContext graphicsContext) {
+        graphicsContext.setFill(rectangleColor);
+        graphicsContext.fillRect(xPos, yPos, xSize, ySize);
     }
 
-    public void ImageDraw(Graphics2D graphics2D)
-    {
-        graphics2D.drawImage(art,square2D.getTransform(xSizeOffset, ySizeOffset),null);
+    public void imageDraw(GraphicsContext graphicsContext) {
+        graphicsContext.drawImage(art, xPos, yPos, xSize, ySize);
     }
 
+    public void changePos(int newXPos, int newYPos) {
+        pos.x = newXPos;
+        pos.y = newYPos;
+        xPos = newXPos;
+        yPos = newYPos;
+    }
+
+    public void changePos(Vector2 newPos) {
+        pos = newPos;
+        xPos = (int) newPos.x;
+        yPos = (int) newPos.y;
+    }
 
     //getters and setters from here
-    public Color getRectangleColor()
-    {
+    public Color getRectangleColor() {
         return rectangleColor;
     }
 
-    public void setRectangleColor(Color rectangleColor)
-    {
+    public void setRectangleColor(Color rectangleColor) {
         this.rectangleColor = rectangleColor;
     }
 
-    public Renderable getSquare2D()
-    {
-        return square2D;
-    }
-
-    public void setSquare2D(Renderable square2D)
-    {
-        this.square2D = square2D;
-    }
-
-    public Image getArt()
-    {
+    public Image getArt() {
         return art;
     }
 
-    public void setArt(Image art)
-    {
+    public void setArt(Image art) {
         this.art = art;
     }
 }

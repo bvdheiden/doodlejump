@@ -5,8 +5,8 @@ package doodlejump.client.game;
  * Is is especially created for FPS independent timing purposes.
  */
 public class DeltaTimer implements Updateable {
+    private final boolean loop;
     private double wait;
-    private boolean loop;
     private double time;
     private int timeout;
 
@@ -22,7 +22,7 @@ public class DeltaTimer implements Updateable {
     /**
      * Creates a new single use DeltaTimer object.
      *
-     * @param wait the time to wait until a timeout occurred
+     * @param wait      the time to wait until a timeout occurred
      * @param autoStart whether the timer must auto start
      */
     public DeltaTimer(double wait, boolean autoStart) {
@@ -32,9 +32,9 @@ public class DeltaTimer implements Updateable {
     /**
      * Creates a new DeltaTimer object.
      *
-     * @param wait the time to wait until a timeout occurred
+     * @param wait      the time to wait until a timeout occurred
      * @param autoStart whether the timer must auto start
-     * @param loop whether this timer must loop
+     * @param loop      whether this timer must loop
      */
     public DeltaTimer(double wait, boolean autoStart, boolean loop) {
         this.wait = wait;
@@ -81,17 +81,17 @@ public class DeltaTimer implements Updateable {
         return true;
     }
 
+    public double getWait() {
+        return this.wait;
+    }
+
     /**
      * sets the time until the timeout.
+     *
      * @param wait the new timeout time
      */
     public void setWait(double wait) {
         this.wait = wait;
-    }
-
-
-    public double getWait() {
-        return this.wait;
     }
 
     @Override

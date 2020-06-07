@@ -1,5 +1,5 @@
 package doodlejump.client.game.drawing;
-
+/*
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -66,4 +66,4 @@ public class Renderable
     public void setScale(float scale) {
         this.scale = scale;
     }
-}
+}*/

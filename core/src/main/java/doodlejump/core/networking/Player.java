@@ -3,18 +3,23 @@ package doodlejump.core.networking;
 import java.io.Serializable;
 
 public class Player implements Serializable {
+    public static final double WIDTH = 30;
+    public static final double HEIGHT = 70;
+    public static final double HALF_WIDTH = WIDTH / 2.0;
+    public static final double HALF_HEIGHT = HEIGHT / 2.0;
+
     private final String name;
     private double x;
     private double y;
-    private double velocityX;
-    private double velocityY;
     private boolean isReady;
+    private boolean currentlyBlownByWind;
     private volatile boolean isHost;
 
     public Player(String name) {
         this.name = name;
         this.x = 0.0;
         this.y = 0.0;
+        currentlyBlownByWind = false;
     }
 
     public String getName() {
@@ -42,32 +47,6 @@ public class Player implements Serializable {
         this.y = y;
     }
 
-    public void addVelocity(double x, double y) {
-        this.velocityX += x;
-        this.velocityY += y;
-    }
-
-    public void setVelocity(double x, double y) {
-        this.velocityX = x;
-        this.velocityY = y;
-    }
-
-    public double getVelocityX() {
-        return velocityX;
-    }
-
-    public void setVelocityX(double velocityX) {
-        this.velocityX = velocityX;
-    }
-
-    public double getVelocityY() {
-        return velocityY;
-    }
-
-    public void setVelocityY(double velocityY) {
-        this.velocityY = velocityY;
-    }
-
     public boolean isReady() {
         return isReady;
     }
@@ -87,5 +66,13 @@ public class Player implements Serializable {
     @Override
     public String toString() {
         return name + ": " + (isReady ? "ready" : "not ready");
+    }
+
+    public boolean isCurrentlyBlownByWind() {
+        return currentlyBlownByWind;
+    }
+
+    public void setCurrentlyBlownByWind(boolean currentlyBlownByWind) {
+        this.currentlyBlownByWind = currentlyBlownByWind;
     }
 }

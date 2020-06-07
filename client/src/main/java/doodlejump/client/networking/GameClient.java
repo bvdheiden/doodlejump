@@ -30,7 +30,9 @@ public enum GameClient {
     private PlayerPositionListener playerPositionListener;
     private PlayerLoginListener playerLoginListener;
     private PlayerReadyListener playerReadyListener;
-
+    private GameFinishListener gameFinishListener;
+    private BombListener bombListener;
+    private WindListener windListener;
 
     /**
      * Start the socket to the server.
@@ -101,6 +103,21 @@ public enum GameClient {
                                 if (playerPositionListener != null)
                                     playerPositionListener.onNewPlayerPosition((Player) transaction.getPayload());
                             }
+
+                            case GAME_FINISH -> {
+                                if (gameFinishListener != null)
+                                    gameFinishListener.onFinish((boolean) transaction.getPayload());
+                            }
+
+                            case GAME_BOMB_PICKUP -> {
+                                if (bombListener != null)
+                                    bombListener.onBomb();
+                            }
+
+                            case GAME_WIND_PICKUP -> {
+                                if (windListener != null)
+                                    windListener.onWind();
+                            }
                         }
                     }));
 
@@ -153,6 +170,7 @@ public enum GameClient {
 
     /**
      * Log in with username.
+     *
      * @param name username
      */
     public void login(String name) {
@@ -201,7 +219,7 @@ public enum GameClient {
      * Send player position to server.
      */
     public void sendPosition() {
-        if (!isRunning() || client == null || player == null) {
+        if (!canSendTransaction() || player == null) {
             return;
         }
 
@@ -211,7 +229,41 @@ public enum GameClient {
     }
 
     /**
+     * Send player dead.
+     */
+    public void sendDead() {
+        if (!canSendTransaction() || player == null) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.PLAYER_DIED));
+    }
+
+    /**
+     * Send bomb to other player.
+     */
+    public void sendBomb() {
+        if (!canSendTransaction() || player == null) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.GAME_BOMB_PICKUP));
+    }
+
+    /**
+     * Send wind effect to other player.
+     */
+    public void sendWind() {
+        if (!canSendTransaction() || player == null) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.GAME_WIND_PICKUP));
+    }
+
+    /**
      * On server connection callback.
+     *
      * @param listener callback
      */
     public void setOnConnection(ConnectionListener listener) {
@@ -220,6 +272,7 @@ public enum GameClient {
 
     /**
      * On server disconnection callback.
+     *
      * @param listener callback
      */
     public void setOnDisconnection(DisconnectionListener listener) {
@@ -228,6 +281,7 @@ public enum GameClient {
 
     /**
      * On player login callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerLogin(PlayerLoginListener listener) {
@@ -236,6 +290,7 @@ public enum GameClient {
 
     /**
      * On room connection callback.
+     *
      * @param listener callback
      */
     public void setOnRoomConnection(ConnectionListener listener) {
@@ -244,6 +299,7 @@ public enum GameClient {
 
     /**
      * On room disconnection callback.
+     *
      * @param listener callback
      */
     public void setOnRoomDisconnection(DisconnectionListener listener) {
@@ -252,6 +308,7 @@ public enum GameClient {
 
     /**
      * On player in room connection callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerConnection(PlayerConnectionListener listener) {
@@ -260,6 +317,7 @@ public enum GameClient {
 
     /**
      * On player in room disconnection callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerDisconnection(PlayerDisconnectionListener listener) {
@@ -268,6 +326,7 @@ public enum GameClient {
 
     /**
      * On player in room ready callback.
+     *
      * @param listener callback
      */
     public void setOnPlayerReady(PlayerReadyListener listener) {
@@ -276,6 +335,7 @@ public enum GameClient {
 
     /**
      * On player in room new position callback.
+     *
      * @param listener callback
      */
     public void setOnNewPlayerPosition(PlayerPositionListener listener) {
@@ -284,10 +344,28 @@ public enum GameClient {
 
     /**
      * On game in room start callback.
+     *
      * @param listener callback
      */
     public void setOnGameStart(GameStartListener listener) {
         this.gameStartListener = listener;
+    }
+
+    /**
+     * On game finish callback
+     *
+     * @param listener callback
+     */
+    public void setOnGameFinish(GameFinishListener listener) {
+        this.gameFinishListener = listener;
+    }
+
+    public void setOnBomb(BombListener listener) {
+        this.bombListener = listener;
+    }
+
+    public void setOnWind(WindListener listener) {
+        this.windListener = listener;
     }
 
     private boolean canSendTransaction() {

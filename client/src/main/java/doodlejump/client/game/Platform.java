@@ -19,9 +19,8 @@ public class Platform {
         this.x = x;
         this.y = y;
         this.width = width;
-        this.collider = new BoxCollider(new Vector2(x, y), width, HEIGHT);
+        this.collider = new BoxCollider(new Vector2(x + width * 0.5, y + HEIGHT * 0.5), width, HEIGHT);
 
-        collider.collisionCallback = this::OnCollision;
         collider.setColliderTag(ColliderTag.PLATFORM);
         collider.setOwnerObject(this);
     }
@@ -42,7 +41,7 @@ public class Platform {
         return HEIGHT;
     }
 
-    private void OnCollision(Collider2D collider2D) {
-        // do collision
+    public Collider2D getCollider() {
+        return collider;
     }
 }

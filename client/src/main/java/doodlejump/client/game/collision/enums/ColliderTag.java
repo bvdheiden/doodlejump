@@ -1,13 +1,16 @@
 package doodlejump.client.game.collision.enums;
 
-public enum ColliderTag
-{
+public enum ColliderTag {
     PLAYER_UNIT,
-    ENEMY_UNIT,
     PLATFORM,
+    JUMP_PLATFORM,
+    PICKUP,
+    BOMB_PICKUP,
+    BOMB,
     BUTTON,
+    GROUND,
     MOUSE,
     WALL,
     TEST,
-    DEFAULT;
+    DEFAULT
 }
