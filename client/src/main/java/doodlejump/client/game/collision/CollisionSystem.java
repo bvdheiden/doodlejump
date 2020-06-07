@@ -90,24 +90,12 @@ public enum CollisionSystem {
         return allColliders;
     }
 
-    public void setAllColliders(ArrayList<Collider2D> allColliders) {
-        this.allColliders = allColliders;
-    }
-
     public ArrayList<Collider2D> getCollidersToBeAdded() {
         return collidersToBeAdded;
     }
 
-    public void setCollidersToBeAdded(ArrayList<Collider2D> collidersToBeAdded) {
-        this.collidersToBeAdded = collidersToBeAdded;
-    }
-
     public ArrayList<Collider2D> getCollidersToBeRemoved() {
         return collidersToBeRemoved;
-    }
-
-    public void setCollidersToBeRemoved(ArrayList<Collider2D> collidersToBeRemoved) {
-        this.collidersToBeRemoved = collidersToBeRemoved;
     }
 
     public boolean isShouldAddToColliders() {
