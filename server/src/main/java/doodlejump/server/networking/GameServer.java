@@ -61,6 +61,8 @@ public class GameServer {
                                     client.getRoom().broadcast(client, transaction);
                                 }
                                 case PLAYER_DIED -> playerDied(client);
+                                case GAME_BOMB_PICKUP -> client.getRoom().broadcast(client, transaction);
+                                case GAME_WIND_PICKUP -> client.getRoom().broadcast(client, transaction);
                             }
                         });
 
