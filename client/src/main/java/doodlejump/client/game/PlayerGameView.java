@@ -47,9 +47,6 @@ public class PlayerGameView extends GameView {
     public void draw(GraphicsContext graphicsContext) {
         super.draw(graphicsContext);
 
-        graphicsContext.setStroke(Color.BLUE);
-        graphicsContext.strokeLine(0, player.getY(), WINDOW_WIDTH, player.getY());
-
         for (Chunk chunk : activeChunks) {
             graphicsContext.setStroke(Color.GREEN);
             graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());

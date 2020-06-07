@@ -24,9 +24,10 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     private final DeltaTimer drawTimer = new DeltaTimer(1.0 / 60, true, true);
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
     private final ChunkLoader chunkLoader;
-    private boolean isHost;
     private boolean playing;
     private Affine preTransform;
+
+    private double minCameraY = 0.0;
 
     protected final List<Chunk> activeChunks = new ArrayList<>();
     protected Player player;
@@ -60,7 +61,6 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     public void stop() {
         this.playing = false;
         this.player = null;
-        this.isHost = false;
 
         if (player != null) {
             player.setPosition(0, 0);
@@ -145,6 +145,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         // fixed update logic here
 
         chunkLoader.onPlayerMovement(player.getX(), player.getY());
+        minCameraY = Math.min(minCameraY, -(player.getY() - WINDOW_HEIGHT / 2.0) - WINDOW_HEIGHT - 40);
     }
 
     private void preDraw(GraphicsContext graphicsContext) {
@@ -152,7 +153,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         graphicsContext.setFill(Color.rgb(210, 255, 254));
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         graphicsContext.scale(1, -1);
-        graphicsContext.translate(0, -(player.getY() - 100) - WINDOW_HEIGHT + 80);
+        graphicsContext.translate(0, minCameraY);
     }
 
     /**
