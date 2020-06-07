@@ -9,6 +9,7 @@ import doodlejump.client.sound.SoundPlayer;
 import doodlejump.core.networking.Player;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
@@ -30,7 +31,16 @@ public class PlayerGameView extends GameView {
         super.start(seed, player);
 
         this.playerController = new PlayerController(player);
-        this.eventHandler = e -> playerController.onKeyPress(e);
+        this.eventHandler = e -> {
+            playerController.onKeyPress(e);
+
+            if (e.getCode() == KeyCode.Z) {
+                onWind();
+            }
+            if (e.getCode() == KeyCode.X) {
+                onBomb();
+            }
+        };
 
         effects = new ArrayList<Effect>();
 
