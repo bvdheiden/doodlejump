@@ -14,10 +14,10 @@ public class Rectangle {
     private Vector2 pos;
     private int xPos;
     private int yPos;
-    private int xSize;
-    private int ySize;
-    private int xSizeOffset;
-    private int ySizeOffset;
+    private final int xSize;
+    private final int ySize;
+    private final int xSizeOffset;
+    private final int ySizeOffset;
 
     public Rectangle(int xPos, int yPos, int xSize, int ySize) {
         this.pos = new Vector2(xPos, yPos);

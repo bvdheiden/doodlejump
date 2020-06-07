@@ -6,7 +6,7 @@ package doodlejump.client.game;
  */
 public class DeltaTimer implements Updateable {
     private double wait;
-    private boolean loop;
+    private final boolean loop;
     private double time;
     private int timeout;
 

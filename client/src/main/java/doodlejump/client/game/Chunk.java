@@ -18,10 +18,8 @@ public class Chunk {
         this.endY = endY;
     }
 
-    public void OnDestroy()
-    {
-        for(Platform p : platformList)
-        {
+    public void OnDestroy() {
+        for (Platform p : platformList) {
             p.getCollider().onDestroy();
         }
     }

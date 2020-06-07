@@ -11,5 +11,5 @@ public enum ColliderTag {
     MOUSE,
     WALL,
     TEST,
-    DEFAULT;
+    DEFAULT
 }

@@ -63,31 +63,25 @@ public enum CollisionSystem {
             shouldRemoveFromColliders = false;
         }
 
-        if(emptyTheSystem)
-        {
+        if (emptyTheSystem) {
             allColliders.clear();
             emptyTheSystem = false;
         }
     }
 
-    public void emptySystem()
-    {
+    public void emptySystem() {
         emptyTheSystem = true;
     }
 
     public void debugDraw(GraphicsContext graphicsContext) {
         graphicsContext.setStroke(Color.YELLOW);
-        for(Collider2D col : allColliders)
-        {
-            if(col.getColliderType() == ColliderType.BOX_COLLIDER)
-            {
-                BoxCollider box = (BoxCollider)col;
-                graphicsContext.strokeRect(box.getPos().x-box.getWidth()*0.5, box.getPos().y-box.getHeight()*0.5, box.getWidth(), box.getHeight());
-            }
-            else if(col.getColliderType() == ColliderType.CIRCLE_COLLIDER)
-            {
-                CircleCollider circle = (CircleCollider)col;
-                graphicsContext.strokeOval(circle.getPos().x-circle.getRadius(), circle.getPos().y-circle.getRadius(), circle.getRadius()*2, circle.getRadius()*2);
+        for (Collider2D col : allColliders) {
+            if (col.getColliderType() == ColliderType.BOX_COLLIDER) {
+                BoxCollider box = (BoxCollider) col;
+                graphicsContext.strokeRect(box.getPos().x - box.getWidth() * 0.5, box.getPos().y - box.getHeight() * 0.5, box.getWidth(), box.getHeight());
+            } else if (col.getColliderType() == ColliderType.CIRCLE_COLLIDER) {
+                CircleCollider circle = (CircleCollider) col;
+                graphicsContext.strokeOval(circle.getPos().x - circle.getRadius(), circle.getPos().y - circle.getRadius(), circle.getRadius() * 2, circle.getRadius() * 2);
             }
         }
     }

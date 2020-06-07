@@ -16,7 +16,7 @@ public class PlayerGameView extends GameView {
     public void start(long seed, Player player) {
         super.start(seed, player);
 
-        addEventFilter(KeyEvent.KEY_PRESSED, e -> playerController.OnKeyPress(e));
+        addEventFilter(KeyEvent.KEY_PRESSED, e -> playerController.onKeyPress(e));
         collisionSystem = CollisionSystem.INSTANCE;
         playerController = new PlayerController(player);
     }

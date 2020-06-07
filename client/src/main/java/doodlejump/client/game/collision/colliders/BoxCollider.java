@@ -4,8 +4,8 @@ import doodlejump.client.game.collision.Vector2;
 import doodlejump.client.game.collision.enums.ColliderType;
 
 public class BoxCollider extends Collider2D {
-    private double width;
-    private double height;
+    private final double width;
+    private final double height;
 
     public BoxCollider(Vector2 pos, double width, double height) {
         super();
@@ -71,7 +71,7 @@ public class BoxCollider extends Collider2D {
                 this.getLeft() <= other.getRight() &&    // left edge past right
                 this.getTop() >= other.getBottom() &&    // top edge past bottom
                 this.getBottom() <= other.getTop())      // bottom edge past top
-        ;
+                ;
     }
 
     @Override
@@ -83,8 +83,7 @@ public class BoxCollider extends Collider2D {
     }
 
     @Override
-    public void preCollisons()
-    {
+    public void preCollisons() {
 
     }
 
@@ -93,13 +92,11 @@ public class BoxCollider extends Collider2D {
 
     }
 
-    public double getWidth()
-    {
+    public double getWidth() {
         return this.width;
     }
 
-    public double getHeight()
-    {
+    public double getHeight() {
         return this.height;
     }
 

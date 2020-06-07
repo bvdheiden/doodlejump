@@ -12,8 +12,8 @@ public class Circle {
     private Color circleColor;
     private Image art;
     private Vector2 pos;
-    private int radius;
-    private int halfRadius;
+    private final int radius;
+    private final int halfRadius;
     private int xPos;
     private int yPos;
 

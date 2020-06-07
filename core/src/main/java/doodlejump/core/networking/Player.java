@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class Player implements Serializable {
     public static final double WIDTH = 30;
     public static final double HEIGHT = 70;
+    public static final double HALF_WIDTH = WIDTH / 2.0;
+    public static final double HALF_HEIGHT = HEIGHT / 2.0;
 
     private final String name;
     private double x;

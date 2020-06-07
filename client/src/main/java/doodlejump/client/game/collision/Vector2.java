@@ -88,6 +88,10 @@ public final class Vector2 {
         return Math.sqrt(xDist * xDist + yDist * yDist);
     }
 
+    public final static Vector2 normalize(Vector2 v) {
+        return v.normalize();
+    }
+
     ///divide
     public final Vector2 divideByDouble(double divideBy) {
         if (divideBy == 0) {
@@ -98,16 +102,16 @@ public final class Vector2 {
             return new Vector2(newX, newY);
         }
     }
+    //////
 
     public final void divideThisByDouble(double divideBy) {
         if (divideBy == 0) {
-            this.SetToZero();
+            this.setToZero();
         } else {
             this.x /= divideBy;
             this.y /= divideBy;
         }
     }
-    //////
 
     public final Vector2 divideXByDouble(double divideBy) {
         if (divideBy == 0) {
@@ -133,10 +137,6 @@ public final class Vector2 {
         return new Vector2(this.x /= m, this.y /= m);
     }
 
-    public final static Vector2 normalize(Vector2 v) {
-        return v.normalize();
-    }
-
     public final void normalizeThis() {
         double m = this.getMagnitude();
         this.x /= m;
@@ -145,18 +145,17 @@ public final class Vector2 {
     //////
 
 
-
     ///magnitude
     public final double getMagnitude() {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
     ///add
-    public final Vector2 Add(Vector2 v) {
+    public final Vector2 add(Vector2 v) {
         return new Vector2(this.x + v.x, this.y + v.y);
     }
 
-    public final void AddToThis(Vector2 v) {
+    public final void addToThis(Vector2 v) {
         this.x += v.x;
         this.y += v.y;
     }
@@ -173,45 +172,45 @@ public final class Vector2 {
     //////
 
     ///multiply
-    public final Vector2 MultiplyByInt(int m) {
+    public final Vector2 multiplyByInt(int m) {
         return new Vector2(this.x * m, this.y * m);
     }
 
-    public final void MultiplyThisByInt(int m) {
+    public final void multiplyThisByInt(int m) {
         this.x *= m;
         this.y *= m;
     }
 
-    public final Vector2 MultiplyByDouble(double m) {
+    public final Vector2 multiplyByDouble(double m) {
         return new Vector2(this.x * m, this.y * m);
     }
 
-    public final void MultiplyThisByDouble(double m) {
+    public final void multiplyThisByDouble(double m) {
         this.x *= m;
         this.y *= m;
     }
 
-    public final void SetToZero() {
+    public final void setToZero() {
         this.x = 0;
         this.y = 0;
     }
 
-    public final boolean IsZero() {
+    public final boolean isZero() {
         return (this.x == 0 && this.y == 0);
     }
 
-    public final boolean Equals(Vector2 other) {
+    public final boolean equals(Vector2 other) {
         return (this.x == other.x && this.y == other.y);
     }
     //////
 
     ///dot product
-    public final double Dot(Vector2 v) {
+    public final double dot(Vector2 v) {
         return this.x * v.x + this.y * v.y;
     }
 
     ///distance
-    public final double Distance(Vector2 other) {
+    public final double distance(Vector2 other) {
         double xDist = other.x - this.x;
         double yDist = other.y - this.y;
         return Math.sqrt(xDist * xDist + yDist * yDist);

@@ -5,7 +5,7 @@ import doodlejump.client.game.collision.enums.ColliderType;
 
 public class CircleCollider extends Collider2D {
 
-    private double radius;
+    private final double radius;
 
     public CircleCollider(Vector2 pos, double radius) {
         super();
@@ -36,7 +36,7 @@ public class CircleCollider extends Collider2D {
 
     @Override
     public boolean circleCollision(CircleCollider other) {
-        return ((this.radius + other.radius) > this.pos.Distance(other.pos));
+        return ((this.radius + other.radius) > this.pos.distance(other.pos));
     }
 
     @Override
@@ -70,12 +70,11 @@ public class CircleCollider extends Collider2D {
 
     @Override
     public boolean containsPoint(Vector2 point) {
-        return (this.pos.Distance(point) < this.radius);
+        return (this.pos.distance(point) < this.radius);
     }
 
     @Override
-    public void preCollisons()
-    {
+    public void preCollisons() {
 
     }
 

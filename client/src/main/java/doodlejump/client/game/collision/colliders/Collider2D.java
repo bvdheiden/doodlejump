@@ -7,17 +7,13 @@ import doodlejump.client.game.collision.Vector2;
 import doodlejump.client.game.collision.enums.ColliderTag;
 import doodlejump.client.game.collision.enums.ColliderType;
 
-public abstract class Collider2D
-{
+public abstract class Collider2D {
+    public CollisionCallback collisionCallback;
+    public Callback preCollisionCallback;
     protected Object ownerObject = null;
     protected ColliderTag colliderTag = ColliderTag.DEFAULT;
     protected ColliderType colliderType;
     protected boolean isColliding;
-
-    public CollisionCallback collisionCallback;
-
-    public Callback preCollisionCallback;
-
     protected Vector2 pos;
 
     protected Collider2D() {
@@ -52,8 +48,7 @@ public abstract class Collider2D
         CollisionSystem.INSTANCE.getCollidersToBeRemoved().add(this);
     }
 
-    public void preCollisons()
-    {
+    public void preCollisons() {
 
     }
 
