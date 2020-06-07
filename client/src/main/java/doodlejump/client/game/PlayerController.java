@@ -24,9 +24,9 @@ public class PlayerController {
     private static final double WINDOW_PADDING = 10;
     private static final double WIND_DEBUF_X_AXIS = ACCELERATION/10;
     private static final double WIND_DEBUF_Y_AXIS = JUMP_POWER/100;
-    private static final String JUMP_SOUND_PATH_ONE = "D:\\JavaProjectsGitVersions\\doodlejump\\client\\src\\main\\resources\\sounds\\Jump.wav";
-    private static final String JUMP_SOUND_PATH_TWO = "D:\\JavaProjectsGitVersions\\doodlejump\\client\\src\\main\\resources\\sounds\\Powerup2.wav";
-    private static final String EXPLOSION_SOUND_PATH = "D:\\JavaProjectsGitVersions\\doodlejump\\client\\src\\main\\resources\\sounds\\Explosion39.wav";
+    private static final String JUMP_SOUND_PATH_ONE = "Jump.wav";
+    private static final String JUMP_SOUND_PATH_TWO = "Powerup2.wav";
+    private static final String EXPLOSION_SOUND_PATH = "Explosion39.wav";
 
     private final Player playerData;
     private final Vector2 pos;
