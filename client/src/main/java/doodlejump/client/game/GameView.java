@@ -1,5 +1,6 @@
 package doodlejump.client.game;
 
+import doodlejump.client.game.effects.CloudManager;
 import doodlejump.client.game.generators.LongJumpGenerator;
 import doodlejump.client.game.generators.VariedJumpGenerator;
 import doodlejump.core.networking.Player;
@@ -26,6 +27,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     private final DeltaTimer fixedUpdateTimer = new DeltaTimer(1.0 / 120, true, true);
     private final DeltaTimer interfaceUpdateTimer = new DeltaTimer(1.0 / 10, true, true);
     private final ChunkLoader chunkLoader;
+    private final CloudManager cloudManager;
     private Label scoreLabel;
     protected double minCameraY = 0.0;
     protected Player player;
@@ -38,6 +40,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         this.getChildren().add(this.canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.graphicsContext = this.canvas.getGraphicsContext2D();
         this.chunkLoader = new ChunkLoader(WINDOW_WIDTH, WINDOW_HEIGHT);
+        this.cloudManager = new CloudManager(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Request focus for detecting keyboard input
         canvas.requestFocus();
@@ -159,6 +162,7 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     protected void update(double deltaTime) {
         // update logic here
 
+        cloudManager.update(deltaTime);
         minCameraY = Math.min(minCameraY, -(player.getY() - WINDOW_HEIGHT / 2.0) - WINDOW_HEIGHT - 40);
         score = (int) Math.max(score, player.getY());
     }
@@ -181,8 +185,12 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
     private void preDraw(GraphicsContext graphicsContext) {
         this.preTransform = graphicsContext.getTransform();
         graphicsContext.setFill(Color.rgb(210, 255, 254));
+//        graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         graphicsContext.scale(1, -1);
+
+        cloudManager.draw(graphicsContext);
+
         graphicsContext.translate(0, minCameraY);
     }
 
@@ -192,9 +200,6 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      * @param graphicsContext graphics context
      */
     protected void draw(GraphicsContext graphicsContext) {
-        graphicsContext.setFill(Color.rgb(200, 40, 40));
-        graphicsContext.fillRect(player.getX() - Player.WIDTH / 2.0, player.getY() - Player.HEIGHT / 2.0, Player.WIDTH, Player.HEIGHT);
-
         for (Chunk chunk : activeChunks) {
             graphicsContext.setFill(Color.rgb(40, 150, 50));
 
@@ -202,6 +207,9 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
                 graphicsContext.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
             }
         }
+
+        graphicsContext.setFill(Color.rgb(200, 40, 40));
+        graphicsContext.fillRect(player.getX() - Player.WIDTH / 2.0, player.getY() - Player.HEIGHT / 2.0, Player.WIDTH, Player.HEIGHT);
     }
 
     private void postDraw(GraphicsContext graphicsContext) {
