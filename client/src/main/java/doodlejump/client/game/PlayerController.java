@@ -50,7 +50,7 @@ public class PlayerController {
         this.playerData = getPlayerData;
 
         //movement stuff
-        this.pos = new Vector2(playerData.getX() + 60, playerData.getY() + 520);
+        this.pos = new Vector2(playerData.getX() + 60, playerData.getY() + GameView.WINDOW_HEIGHT / 2.0 - Player.HEIGHT);
         this.lastPos = new Vector2();
         this.velocity = new Vector2();
         this.width = Player.WIDTH;
