@@ -127,8 +127,18 @@ public class ChunkLoader implements PlayerMovementListener {
         Random random = new Random(seed + (long) chunkStartY);
         ChunkGenerator chunkGenerator = chunkGeneratorList.get(random.nextInt(chunkGeneratorList.size()));
 
+        boolean usePickup = true;
+
+        if (chunkList.size() > 0) {
+            Chunk lastChunk = chunkList.getLast();
+
+            if (lastChunk.getPickupList().size() > 0) {
+                usePickup = false;
+            }
+        }
+
         // generate chunk
-        return chunkGenerator.generateChunk(chunkStartY);
+        return chunkGenerator.generateChunk(chunkStartY, usePickup);
     }
 
     private int calculateChunkDifficulty(double startY) {

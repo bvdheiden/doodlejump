@@ -2,6 +2,7 @@ package doodlejump.client.game;
 
 import doodlejump.client.game.generators.LongJumpGenerator;
 import doodlejump.client.game.generators.VariedJumpGenerator;
+import doodlejump.client.game.pickups.Pickup;
 import doodlejump.core.networking.Player;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
@@ -175,7 +176,13 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         graphicsContext.fillRect(player.getX() - Player.WIDTH / 2.0, player.getY() - Player.HEIGHT / 2.0, Player.WIDTH, Player.HEIGHT);
 
         for (Chunk chunk : activeChunks) {
+            for (Pickup pickup : chunk.getPickupList()) {
+                graphicsContext.setFill(pickup.getPaint());
+                graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius(), pickup.getRadius());
+            }
+
             graphicsContext.setFill(Color.rgb(40, 150, 50));
+
             for (Platform platform : chunk.getPlatformList()) {
                 graphicsContext.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
             }
