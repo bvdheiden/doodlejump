@@ -35,6 +35,8 @@ public class PlayerGameView extends GameView
 
         CollisionSystem.INSTANCE.emptySystem();
 
+        SoundPlayer.stop();
+
         if (eventHandler != null)
             removeEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
     }
