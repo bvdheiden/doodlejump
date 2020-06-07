@@ -111,7 +111,7 @@ public class PlayerController {
 
     private void jump(double jumpPowerMultiplier)
     {
-        velocity.y += JUMP_POWER * jumpPowerMultiplier;
+        //velocity.y += JUMP_POWER * jumpPowerMultiplier;
         if(Math.random() < 0.5) {
             SoundPlayer.play(JUMP_SOUND_PATH_ONE);
         }

@@ -3,6 +3,7 @@ package doodlejump.client.fx;
 import doodlejump.client.game.GameView;
 import doodlejump.client.game.PlayerGameView;
 import doodlejump.client.networking.GameClient;
+import doodlejump.client.sound.SoundPlayer;
 import doodlejump.core.networking.Player;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class RoomView extends BorderPane {
+    private static final String WIN_SOUND = "win.wav";
     private final ObservableList<Player> playerList = FXCollections.observableArrayList();
 
     private final Button findRoomButton;
@@ -171,6 +173,8 @@ public class RoomView extends BorderPane {
             alert.setTitle("Game finished");
             alert.setHeaderText(null);
             if (didWin) {
+                SoundPlayer.play(WIN_SOUND);
+
                 alert.setContentText("You have won the game!");
             } else {
                 alert.setContentText("You have lost the game!");

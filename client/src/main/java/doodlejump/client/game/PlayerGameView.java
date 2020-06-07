@@ -1,8 +1,10 @@
 package doodlejump.client.game;
 
 import doodlejump.client.game.collision.CollisionSystem;
+
 import doodlejump.client.game.effects.BombDrop;
 import doodlejump.client.game.effects.Effect;
+import doodlejump.client.game.pickups.Pickup;
 import doodlejump.client.networking.GameClient;
 import doodlejump.client.sound.SoundPlayer;
 import doodlejump.core.networking.Player;
@@ -17,6 +19,7 @@ import java.util.Iterator;
 public class PlayerGameView extends GameView
 {
     private static final String BACKGROUND_MUSIC_SOUND_PATH = "bensoundFunnySong.wav";
+    private static final String DEAD_SOUND = "ded.wav";
 
     private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
     private PlayerController playerController;
@@ -43,6 +46,8 @@ public class PlayerGameView extends GameView
         super.stop();
 
         CollisionSystem.INSTANCE.emptySystem();
+
+        SoundPlayer.stop();
 
         if (eventHandler != null)
             removeEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
@@ -80,6 +85,8 @@ public class PlayerGameView extends GameView
         if (playerTop < viewBottom) {
             System.out.println("U ded");
 
+            SoundPlayer.play(DEAD_SOUND);
+
             stop();
 
             GameClient.INSTANCE.sendDead();
@@ -104,6 +111,11 @@ public class PlayerGameView extends GameView
         }
 
         for (Chunk chunk : activeChunks) {
+            for (Pickup pickup : chunk.getPickupList()) {
+                graphicsContext.setFill(pickup.getPaint());
+                graphicsContext.fillOval(pickup.getX(), pickup.getY(), pickup.getRadius() * 2, pickup.getRadius() * 2);
+            }
+
             graphicsContext.setStroke(Color.GREEN);
             graphicsContext.strokeRect(0, chunk.getStartY(), WINDOW_WIDTH, chunk.getEndY() - chunk.getStartY());
         }
