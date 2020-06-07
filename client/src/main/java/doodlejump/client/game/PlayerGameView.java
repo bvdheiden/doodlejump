@@ -2,13 +2,17 @@ package doodlejump.client.game;
 
 import doodlejump.client.game.collision.CollisionSystem;
 import doodlejump.client.networking.GameClient;
+import doodlejump.client.sound.SoundPlayer;
 import doodlejump.core.networking.Player;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
-public class PlayerGameView extends GameView {
+public class PlayerGameView extends GameView
+{
+    private static final String BACKGROUND_MUSIC_SOUND_PATH = "D:\\JavaProjectsGitVersions\\doodlejump\\client\\src\\main\\resources\\sounds\\bensoundFunnysong.wav";
+
     private final DeltaTimer uploadTimer = new DeltaTimer(1.0 / 30, true, true);
     private CollisionSystem collisionSystem;
     private PlayerController playerController;
@@ -21,6 +25,8 @@ public class PlayerGameView extends GameView {
         this.playerController = new PlayerController(player);
         this.eventHandler = e -> playerController.onKeyPress(e);
         this.collisionSystem = CollisionSystem.INSTANCE;
+
+        SoundPlayer.loop(BACKGROUND_MUSIC_SOUND_PATH);
 
         addEventFilter(KeyEvent.KEY_PRESSED, eventHandler);
     }
