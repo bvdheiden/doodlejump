@@ -42,6 +42,7 @@ public class RoomView extends BorderPane {
         readyButton.setOnAction(this::onReadyPressed);
 
         this.gameLayout = new HBox(playerGameView, serverGameView);
+        gameLayout.setSpacing(20);
         setCenter(gameLayout);
     }
 
@@ -174,5 +175,13 @@ public class RoomView extends BorderPane {
 
             alert.show();
         });
+    }
+
+    public void onBomb() {
+        playerGameView.onBomb();
+    }
+
+    public void onWind() {
+        playerGameView.onWind();
     }
 }

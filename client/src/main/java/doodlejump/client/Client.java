@@ -142,6 +142,14 @@ public class Client extends Application {
         client.setOnGameFinish(didWin -> {
             roomView.onGameFinish(didWin);
         });
+
+        client.setOnBomb(() -> {
+            roomView.onBomb();
+        });
+
+        client.setOnWind(() -> {
+            roomView.onWind();
+        });
     }
 
     @Override

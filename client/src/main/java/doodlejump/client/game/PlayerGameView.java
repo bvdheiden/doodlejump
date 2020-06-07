@@ -89,4 +89,12 @@ public class PlayerGameView extends GameView {
     public void onChunkUnload(Chunk chunk) {
         super.onChunkUnload(chunk);
     }
+
+    public void onWind() {
+        // @todo apply wind effect to player
+    }
+
+    public void onBomb() {
+        // @todo spawn bomb above player
+    }
 }

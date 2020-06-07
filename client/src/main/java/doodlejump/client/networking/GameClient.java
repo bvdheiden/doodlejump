@@ -31,7 +31,8 @@ public enum GameClient {
     private PlayerLoginListener playerLoginListener;
     private PlayerReadyListener playerReadyListener;
     private GameFinishListener gameFinishListener;
-
+    private BombListener bombListener;
+    private WindListener windListener;
 
     /**
      * Start the socket to the server.
@@ -106,6 +107,16 @@ public enum GameClient {
                             case GAME_FINISH -> {
                                 if (gameFinishListener != null)
                                     gameFinishListener.onFinish((boolean) transaction.getPayload());
+                            }
+
+                            case GAME_BOMB_PICKUP -> {
+                                if (bombListener != null)
+                                    bombListener.onBomb();
+                            }
+
+                            case GAME_WIND_PICKUP -> {
+                                if (windListener != null)
+                                    windListener.onWind();
                             }
                         }
                     }));
@@ -229,6 +240,28 @@ public enum GameClient {
     }
 
     /**
+     * Send bomb to other player.
+     */
+    public void sendBomb() {
+        if (!canSendTransaction() || player == null) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.GAME_BOMB_PICKUP));
+    }
+
+    /**
+     * Send wind effect to other player.
+     */
+    public void sendWind() {
+        if (!canSendTransaction() || player == null) {
+            return;
+        }
+
+        client.send(new Transaction(TransactionType.GAME_WIND_PICKUP));
+    }
+
+    /**
      * On server connection callback.
      *
      * @param listener callback
@@ -321,10 +354,18 @@ public enum GameClient {
     /**
      * On game finish callback
      *
-     * @param listener
+     * @param listener callback
      */
     public void setOnGameFinish(GameFinishListener listener) {
         this.gameFinishListener = listener;
+    }
+
+    public void setOnBomb(BombListener listener) {
+        this.bombListener = listener;
+    }
+
+    public void setOnWind(WindListener listener) {
+        this.windListener = listener;
     }
 
     private boolean canSendTransaction() {

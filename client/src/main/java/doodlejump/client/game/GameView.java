@@ -45,6 +45,8 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         setupInterface();
         setupChunkLoading();
         setupAnimationLoop();
+
+        emptyDraw();
     }
 
     public void start(long seed, Player player) {
@@ -67,6 +69,8 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
         }
 
         chunkLoader.reset();
+
+        emptyDraw();
     }
 
     private void setupInterface() {
@@ -134,6 +138,9 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     protected void update(double deltaTime) {
         // update logic here
+
+        chunkLoader.onPlayerMovement(player.getX(), player.getY());
+        minCameraY = Math.min(minCameraY, -(player.getY() - WINDOW_HEIGHT / 2.0) - WINDOW_HEIGHT - 40);
     }
 
     /**
@@ -143,9 +150,11 @@ public class GameView extends AnchorPane implements ChunkLoader.@Nullable ChunkL
      */
     protected void fixedUpdate(double deltaTime) {
         // fixed update logic here
+    }
 
-        chunkLoader.onPlayerMovement(player.getX(), player.getY());
-        minCameraY = Math.min(minCameraY, -(player.getY() - WINDOW_HEIGHT / 2.0) - WINDOW_HEIGHT - 40);
+    private void emptyDraw() {
+        graphicsContext.setFill(Color.rgb(210, 255, 254));
+        graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     private void preDraw(GraphicsContext graphicsContext) {
